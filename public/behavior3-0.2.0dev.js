@@ -1,23 +1,23 @@
 /**
  * b3
- * 
+ *
  * Copyright (c) 2014 Renato de Pontes Pereira.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to 
- * deal in the Software without restriction, including without limitation the 
+ * of this software and associated documentation files (the "Software"), to
+ * deal in the Software without restriction, including without limitation the
  * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software, and to permit persons to whom the Software is 
+ * sell copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
 **/
@@ -29,39 +29,39 @@ this.b3 = this.b3 || {};
  * ===========
  *
  * * * *
- * 
- * **Behavior3JS** is a Behavior Tree library written in JavaScript. It 
- * provides structures and algorithms that assist you in the task of creating 
- * intelligent agents for your game or application. Check it out some features 
+ *
+ * **Behavior3JS** is a Behavior Tree library written in JavaScript. It
+ * provides structures and algorithms that assist you in the task of creating
+ * intelligent agents for your game or application. Check it out some features
  * of Behavior3JS:
- * 
- * - Based on the work of (Marzinotto et al., 2014), in which they propose a 
+ *
+ * - Based on the work of (Marzinotto et al., 2014), in which they propose a
  *   **formal**, **consistent** and **general** definition of Behavior Trees;
- * - **Optimized to control multiple agents**: you can use a single behavior 
+ * - **Optimized to control multiple agents**: you can use a single behavior
  *   tree instance to handle hundreds of agents;
- * - It was **designed to load and save trees in a JSON format**, in order to 
+ * - It was **designed to load and save trees in a JSON format**, in order to
  *   use, edit and test it in multiple environments, tools and languages;
  * - A **cool visual editor** which you can access online;
- * - Several **composite, decorator and action nodes** available within the 
- *   library. You still can define your own nodes, including composites and 
+ * - Several **composite, decorator and action nodes** available within the
+ *   library. You still can define your own nodes, including composites and
  *   decorators;
  * - **Completely free**, the core module and the visual editor are all published
  *   under the MIT License, which means that you can use them for your open source
  *   and commercial projects;
  * - **Lightweight**, only 11.5KB!
- * 
+ *
  * Visit http://behavior3js.guineashots.com to know more!
  *
- * 
+ *
  * Core Classes and Functions
  * --------------------------
- * 
+ *
  * This library include the following core structures...
  *
  * **Public:**
- * 
+ *
  * - **BehaviorTree**: the structure that represents a Behavior Tree;
- * - **Blackboard**: represents a "memory" in an agent and is required to to 
+ * - **Blackboard**: represents a "memory" in an agent and is required to to
  *   run a `BehaviorTree`;
  * - **Composite**: base class for all composite nodes;
  * - **Decorator**: base class for all decorator nodes;
@@ -69,29 +69,29 @@ this.b3 = this.b3 || {};
  * - **Condition**: base class for all condition nodes;
  *
  * **Internal:**
- * 
- * 
- * - **Tick**: used as container and tracking object through the tree during 
+ *
+ *
+ * - **Tick**: used as container and tracking object through the tree during
  *   the tick signal;
  * - **BaseNode**: the base class that provide all common node features;
- * 
+ *
  * *Some classes are used internally on Behavior3JS, but you may need to access
  * its functionalities eventually, specially the `Tick` object.*
  *
- * 
- * Nodes Included 
+ *
+ * Nodes Included
  * --------------
  *
- * **Composite Nodes**: 
- * 
+ * **Composite Nodes**:
+ *
  * - Sequence;
  * - Priority;
  * - MemSequence;
  * - MemPriority;
- * 
- * 
- * **Decorators**: 
- * 
+ *
+ *
+ * **Decorators**:
+ *
  * - Inverter;
  * - Limiter
  * - MaxTime;
@@ -99,15 +99,15 @@ this.b3 = this.b3 || {};
  * - RepeaterUntilFailure;
  * - RepeaterUntilSuccess;
  *
- * 
+ *
  * **Actions**:
- * 
+ *
  * - Succeeder;
  * - Failer;
  * - Error;
  * - Runner;
  * - Wait.
- * 
+ *
  * @module Behavior3JS
  * @main Behavior3JS
 **/
@@ -123,7 +123,7 @@ this.b3 = this.b3 || {};
 
 /**
  * Version of the library.
- * 
+ *
  * @property VERSION
  * @type {String}
  */
@@ -132,35 +132,35 @@ b3.VERSION   = '0.1.0';
 /**
  * Returned when a criterion has been met by a condition node or an action node
  * has been completed successfully.
- * 
+ *
  * @property SUCCESS
  * @type {Integer}
  */
 b3.SUCCESS   = 1;
 
 /**
- * Returned when a criterion has not been met by a condition node or an action 
+ * Returned when a criterion has not been met by a condition node or an action
  * node could not finish its execution for any reason.
- * 
+ *
  * @property FAILURE
  * @type {Integer}
  */
 b3.FAILURE   = 2;
 
 /**
- * Returned when an action node has been initialized but is still waiting the 
+ * Returned when an action node has been initialized but is still waiting the
  * its resolution.
- * 
+ *
  * @property FAILURE
  * @type {Integer}
  */
 b3.RUNNING   = 3;
 
 /**
- * Returned when some unexpected error happened in the tree, probably by a 
- * programming error (trying to verify an undefined variable). Its use depends 
+ * Returned when some unexpected error happened in the tree, probably by a
+ * programming error (trying to verify an undefined variable). Its use depends
  * on the final implementation of the leaf nodes.
- * 
+ *
  * @property ERROR
  * @type {Integer}
  */
@@ -169,7 +169,7 @@ b3.ERROR     = 4;
 
 /**
  * Describes the node category as Composite.
- * 
+ *
  * @property COMPOSITE
  * @type {String}
  */
@@ -177,7 +177,7 @@ b3.COMPOSITE = 'composite';
 
 /**
  * Describes the node category as Decorator.
- * 
+ *
  * @property DECORATOR
  * @type {String}
  */
@@ -185,7 +185,7 @@ b3.DECORATOR = 'decorator';
 
 /**
  * Describes the node category as Action.
- * 
+ *
  * @property ACTION
  * @type {String}
  */
@@ -193,7 +193,7 @@ b3.ACTION    = 'action';
 
 /**
  * Describes the node category as Condition.
- * 
+ *
  * @property CONDITION
  * @type {String}
  */
@@ -202,14 +202,14 @@ b3.CONDITION = 'condition';
 
 /**
  * List of internal and helper functions in Behavior3JS.
- * 
+ *
  * @class Utils
 **/
 
 
 /**
  * This function is used to create unique IDs for trees and nodes.
- * 
+ *
  * (consult http://www.ietf.org/rfc/rfc4122.txt).
  *
  * @method createUUID
@@ -235,12 +235,12 @@ b3.createUUID = function() {
 
 /**
  * Class is a meta-factory function to create classes in JavaScript. It is a
- * shortcut for the CreateJS syntax style. By default, the class created by 
+ * shortcut for the CreateJS syntax style. By default, the class created by
  * this function have an initialize function (the constructor). Optionally, you
  * can specify the inheritance by passing another class as parameter.
  *
  * By default, all classes created using this function, may receives only a
- * settings parameter as argument. This pattern is commonly used by jQuery and 
+ * settings parameter as argument. This pattern is commonly used by jQuery and
  * its plugins.
  *
  * Usage
@@ -264,13 +264,13 @@ b3.Class = function(baseClass) {
     var cls = function(params) {
         this.initialize(params);
     };
-    
+
     // if base class is provided, inherit
     if (baseClass) {
         cls.prototype = Object.create(baseClass.prototype);
         cls.prototype.constructor = cls;
     }
-    
+
     // create initialize if does not exist on baseClass
     if(!cls.prototype.initialize) {
         cls.prototype.initialize = function() {};
@@ -285,20 +285,20 @@ b3.Class = function(baseClass) {
  * Copyright (c) 2014 Renato de Pontes Pereira.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to 
- * deal in the Software without restriction, including without limitation the 
+ * of this software and associated documentation files (the "Software"), to
+ * deal in the Software without restriction, including without limitation the
  * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software, and to permit persons to whom the Software is 
+ * sell copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
 **/
@@ -314,40 +314,40 @@ this.b3 = this.b3 || {};
 "use strict";
 
 /**
- * The Blackboard is the memory structure required by `BehaviorTree` and its 
- * nodes. It only have 2 public methods: `set` and `get`. These methods works 
+ * The Blackboard is the memory structure required by `BehaviorTree` and its
+ * nodes. It only have 2 public methods: `set` and `get`. These methods works
  * in 3 different contexts: global, per tree, and per node per tree.
- * 
- * Suppose you have two different trees controlling a single object with a 
+ *
+ * Suppose you have two different trees controlling a single object with a
  * single blackboard, then:
  *
- * - In the global context, all nodes will access the stored information. 
- * - In per tree context, only nodes sharing the same tree share the stored 
+ * - In the global context, all nodes will access the stored information.
+ * - In per tree context, only nodes sharing the same tree share the stored
  *   information.
  * - In per node per tree context, the information stored in the blackboard can
  *   only be accessed by the same node that wrote the data.
- *   
- * The context is selected indirectly by the parameters provided to these 
+ *
+ * The context is selected indirectly by the parameters provided to these
  * methods, for example:
- * 
+ *
  *     // getting/setting variable in global context
  *     blackboard.set('testKey', 'value');
  *     var value = blackboard.get('testKey');
- *     
+ *
  *     // getting/setting variable in per tree context
  *     blackboard.set('testKey', 'value', tree.id);
  *     var value = blackboard.get('testKey', tree.id);
- *     
+ *
  *     // getting/setting variable in per node per tree context
  *     blackboard.set('testKey', 'value', tree.id, node.id);
  *     var value = blackboard.get('testKey', tree.id, node.id);
- * 
+ *
  * Note: Internally, the blackboard store these memories in different objects,
- *  being the global on `_baseMemory`, the per tree on `_treeMemory` and the 
- *  per node per tree dynamically create inside the per tree memory (it is 
- *  accessed via `_treeMemory[id].nodeMemory`). Avoid to use these variables 
+ *  being the global on `_baseMemory`, the per tree on `_treeMemory` and the
+ *  per node per tree dynamically create inside the per tree memory (it is
+ *  accessed via `_treeMemory[id].nodeMemory`). Avoid to use these variables
  *  manually, use `get` and `set` instead.
- *  
+ *
  * @class Blackboard
 **/
 var Blackboard = b3.Class();
@@ -387,7 +387,7 @@ var p = Blackboard.prototype;
     };
 
     /**
-     * Internal method to retrieve the node context memory, given the tree 
+     * Internal method to retrieve the node context memory, given the tree
      * memory. If the memory does not exist, this method creates is.
      *
      * @method _getNodeMemory
@@ -406,11 +406,11 @@ var p = Blackboard.prototype;
     };
 
     /**
-     * Internal method to retrieve the context memory. If treeScope and 
-     * nodeScope are provided, this method returns the per node per tree 
-     * memory. If only the treeScope is provided, it returns the per tree 
-     * memory. If no parameter is provided, it returns the global memory. 
-     * Notice that, if only nodeScope is provided, this method will still 
+     * Internal method to retrieve the context memory. If treeScope and
+     * nodeScope are provided, this method returns the per node per tree
+     * memory. If only the treeScope is provided, it returns the per tree
+     * memory. If no parameter is provided, it returns the global memory.
+     * Notice that, if only nodeScope is provided, this method will still
      * return the global memory.
      *
      * @method _getMemory
@@ -434,18 +434,18 @@ var p = Blackboard.prototype;
     };
 
     /**
-     * Stores a value in the blackboard. If treeScope and nodeScope are 
-     * provided, this method will save the value into the per node per tree 
-     * memory. If only the treeScope is provided, it will save the value into 
-     * the per tree memory. If no parameter is provided, this method will save 
-     * the value into the global memory. Notice that, if only nodeScope is 
+     * Stores a value in the blackboard. If treeScope and nodeScope are
+     * provided, this method will save the value into the per node per tree
+     * memory. If only the treeScope is provided, it will save the value into
+     * the per tree memory. If no parameter is provided, this method will save
+     * the value into the global memory. Notice that, if only nodeScope is
      * provided (but treeScope not), this method will still save the value into
      * the global memory.
      *
      * @method set
      * @param {String} key The key to be stored.
      * @param {String} value The value to be stored.
-     * @param {String} treeScope The tree id if accessing the tree or node 
+     * @param {String} treeScope The tree id if accessing the tree or node
      *                           memory.
      * @param {String} nodeScope The node id if accessing the node memory.
     **/
@@ -465,7 +465,7 @@ var p = Blackboard.prototype;
      *
      * @method get
      * @param {String} key The key to be retrieved.
-     * @param {String} treeScope The tree id if accessing the tree or node 
+     * @param {String} treeScope The tree id if accessing the tree or node
      *                           memory.
      * @param {String} nodeScope The node id if accessing the node memory.
      * @returns {Object} The value stored or undefined.
@@ -474,7 +474,7 @@ var p = Blackboard.prototype;
         var memory = this._getMemory(treeScope, nodeScope);
         return memory[key];
     };
-    
+
 b3.Blackboard = Blackboard;
 
 })();/**
@@ -483,20 +483,20 @@ b3.Blackboard = Blackboard;
  * Copyright (c) 2014 Renato de Pontes Pereira.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to 
- * deal in the Software without restriction, including without limitation the 
+ * of this software and associated documentation files (the "Software"), to
+ * deal in the Software without restriction, including without limitation the
  * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software, and to permit persons to whom the Software is 
+ * sell copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
 **/
@@ -512,14 +512,14 @@ this.b3 = this.b3 || {};
 "use strict";
 
 /**
- * A new Tick object is instantiated every tick by BehaviorTree. It is passed 
+ * A new Tick object is instantiated every tick by BehaviorTree. It is passed
  * as parameter to the nodes through the tree during the traversal.
- * 
+ *
  * The role of the Tick class is to store the instances of tree, debug, target
  * and blackboard. So, all nodes can access these informations.
- * 
- * For internal uses, the Tick also is useful to store the open node after the 
- * tick signal, in order to let `BehaviorTree` to keep track and close them 
+ *
+ * For internal uses, the Tick also is useful to store the open node after the
+ * tick signal, in order to let `BehaviorTree` to keep track and close them
  * when necessary.
  *
  * This class also makes a bridge between nodes and the debug, passing the node
@@ -533,55 +533,55 @@ var p = Tick.prototype;
 
     /**
      * The tree reference.
-     * 
+     *
      * @property tree
      * @type {b3.BehaviorTree}
      * @readOnly
      */
-    
+
     /**
      * The debug reference.
-     * 
+     *
      * @property debug
      * @type {Object}
      * @readOnly
      */
-    
+
     /**
      * The target object reference.
-     * 
+     *
      * @property target
      * @type {Object}
      * @readOnly
      */
-    
+
     /**
      * The blackboard reference.
-     * 
+     *
      * @property blackboard
      * @type {Blackboard}
      * @readOnly
      */
-    
+
     /**
      * The list of open nodes. Update during the tree traversal.
-     * 
+     *
      * @property _openNodes
      * @type {Array}
      * @protected
      * @readOnly
      */
-    
+
     /**
-     * The number of nodes entered during the tick. Update during the tree 
+     * The number of nodes entered during the tick. Update during the tree
      * traversal.
-     * 
+     *
      * @property _nodeCount
      * @type {Integer}
      * @protected
      * @readOnly
      */
-    
+
     /**
      * Initialization method.
      *
@@ -615,7 +615,7 @@ var p = Tick.prototype;
     }
 
     /**
-     * Callback when opening a node (called by BaseNode). 
+     * Callback when opening a node (called by BaseNode).
      *
      * @method _openNode
      * @param {Object} node The node that called this method.
@@ -667,20 +667,20 @@ b3.Tick = Tick;
  * Copyright (c) 2014 Renato de Pontes Pereira.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to 
- * deal in the Software without restriction, including without limitation the 
+ * of this software and associated documentation files (the "Software"), to
+ * deal in the Software without restriction, including without limitation the
  * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software, and to permit persons to whom the Software is 
+ * sell copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
 **/
@@ -696,33 +696,33 @@ this.b3 = this.b3 || {};
 "use strict";
 
 /**
- * The BehaviorTree class, as the name implies, represents the Behavior Tree 
+ * The BehaviorTree class, as the name implies, represents the Behavior Tree
  * structure.
- * 
- * There are two ways to construct a Behavior Tree: by manually setting the 
- * root node, or by loading it from a data structure (which can be loaded from 
- * a JSON). Both methods are shown in the examples below and better explained 
+ *
+ * There are two ways to construct a Behavior Tree: by manually setting the
+ * root node, or by loading it from a data structure (which can be loaded from
+ * a JSON). Both methods are shown in the examples below and better explained
  * in the user guide.
  *
- * The tick method must be called periodically, in order to send the tick 
- * signal to all nodes in the tree, starting from the root. The method 
+ * The tick method must be called periodically, in order to send the tick
+ * signal to all nodes in the tree, starting from the root. The method
  * `BehaviorTree.tick` receives a target object and a blackboard as parameters.
- * The target object can be anything: a game agent, a system, a DOM object, 
+ * The target object can be anything: a game agent, a system, a DOM object,
  * etc. This target is not used by any piece of Behavior3JS, i.e., the target
  * object will only be used by custom nodes.
- * 
- * The blackboard is obligatory and must be an instance of `Blackboard`. This 
- * requirement is necessary due to the fact that neither `BehaviorTree` or any 
+ *
+ * The blackboard is obligatory and must be an instance of `Blackboard`. This
+ * requirement is necessary due to the fact that neither `BehaviorTree` or any
  * node will store the execution variables in its own object (e.g., the BT does
- * not store the target, information about opened nodes or number of times the 
- * tree was called). But because of this, you only need a single tree instance 
+ * not store the target, information about opened nodes or number of times the
+ * tree was called). But because of this, you only need a single tree instance
  * to control multiple (maybe hundreds) objects.
- * 
+ *
  * Manual construction of a Behavior Tree
  * --------------------------------------
- * 
+ *
  *     var tree = new b3.BehaviorTree();
- *  
+ *
  *     tree.root = new b3.Sequence({children:[
  *         new b3.Priority({children:[
  *             new MyCustomNode(),
@@ -730,11 +730,11 @@ this.b3 = this.b3 || {};
  *         ]}),
  *         ...
  *     ]});
- *     
- * 
+ *
+ *
  * Loading a Behavior Tree from data structure
  * -------------------------------------------
- * 
+ *
  *     var tree = new b3.BehaviorTree();
  *
  *     tree.load({
@@ -744,14 +744,14 @@ this.b3 = this.b3 || {};
  *         'nodes'       : {
  *             'node-id-1' : {
  *                 'name'        : 'Priority', // this is the node type
- *                 'title'       : 'Root Node', 
- *                 'description' : 'Description', 
- *                 'children'    : ['node-id-2', 'node-id-3'], 
+ *                 'title'       : 'Root Node',
+ *                 'description' : 'Description',
+ *                 'children'    : ['node-id-2', 'node-id-3'],
  *             },
  *             ...
  *         }
  *     })
- *     
+ *
  *
  * @class BehaviorTree
 **/
@@ -761,28 +761,28 @@ var p = BehaviorTree.prototype;
 
     /**
      * The tree id, must be unique. By default, created with `b3.createUUID`.
-     * 
+     *
      * @property id
      * @type {String}
      * @readOnly
      */
-    
+
     /**
      * The tree title.
      *
      * @property title
      * @type {String}
      */
-    
+
     /**
      * Description of the tree.
      *
      * @property description
      * @type {String}
      */
-    
+
     /**
-     * A dictionary with (key-value) properties. Useful to define custom 
+     * A dictionary with (key-value) properties. Useful to define custom
      * variables in the visual editor.
      *
      * @property properties
@@ -820,13 +820,13 @@ var p = BehaviorTree.prototype;
 
     /**
      * This method loads a Behavior Tree from a data structure, populating this
-     * object with the provided data. Notice that, the data structure must 
-     * follow the format specified by Behavior3JS. Consult the guide to know 
+     * object with the provided data. Notice that, the data structure must
+     * follow the format specified by Behavior3JS. Consult the guide to know
      * more about this format.
      *
-     * You probably want to use custom nodes in your BTs, thus, you need to 
-     * provide the `names` object, in which this method can find the nodes by 
-     * `names[NODE_NAME]`. This variable can be a namespace or a dictionary, 
+     * You probably want to use custom nodes in your BTs, thus, you need to
+     * provide the `names` object, in which this method can find the nodes by
+     * `names[NODE_NAME]`. This variable can be a namespace or a dictionary,
      * as long as this method can find the node by its name, for example:
      *
      *     //json
@@ -836,12 +836,12 @@ var p = BehaviorTree.prototype;
      *       'title': ...
      *     }
      *     ...
-     *     
+     *
      *     //code
      *     var bt = new b3.BehaviorTree();
      *     bt.load(data, {'MyCustomNode':MyCustomNode})
-     *     
-     * 
+     *
+     *
      * @method load
      * @param {Object} data The data structure representing a Behavior Tree.
      * @param {Object} [names] A namespace or dict containing custom nodes.
@@ -858,6 +858,7 @@ var p = BehaviorTree.prototype;
         for (var id in data.nodes) {
             var spec = data.nodes[id];
 
+	        console.log(names);
             if (spec.name in names) {
                 // Look for the name in custom nodes
                 var cls = names[spec.name];
@@ -900,9 +901,9 @@ var p = BehaviorTree.prototype;
     /**
      * This method dump the current BT into a data structure.
      *
-     * Note: This method does not record the current node parameters. Thus, 
+     * Note: This method does not record the current node parameters. Thus,
      * it may not be compatible with load for now.
-     * 
+     *
      * @method dump
      * @returns {Object} A data object representing this tree.
     **/
@@ -942,7 +943,7 @@ var p = BehaviorTree.prototype;
                 customNames.push(nodeName);
                 data.custom_nodes.push(subdata);
             }
-            
+
             // store children/child
             if (node.category === b3.COMPOSITE && node.children) {
                 var children = []
@@ -964,21 +965,21 @@ var p = BehaviorTree.prototype;
 
     /**
      * Propagates the tick signal through the tree, starting from the root.
-     * 
-     * This method receives a target object of any type (Object, Array, 
+     *
+     * This method receives a target object of any type (Object, Array,
      * DOMElement, whatever) and a `Blackboard` instance. The target object has
-     * no use at all for all Behavior3JS components, but surely is important 
-     * for custom nodes. The blackboard instance is used by the tree and nodes 
+     * no use at all for all Behavior3JS components, but surely is important
+     * for custom nodes. The blackboard instance is used by the tree and nodes
      * to store execution variables (e.g., last node running) and is obligatory
      * to be a `Blackboard` instance (or an object with the same interface).
-     * 
-     * Internally, this method creates a Tick object, which will store the 
+     *
+     * Internally, this method creates a Tick object, which will store the
      * target and the blackboard objects.
-     * 
-     * Note: BehaviorTree stores a list of open nodes from last tick, if these 
-     * nodes weren't called after the current tick, this method will close them 
+     *
+     * Note: BehaviorTree stores a list of open nodes from last tick, if these
+     * nodes weren't called after the current tick, this method will close them
      * automatically.
-     * 
+     *
      * @method tick
      * @param {Object} target A target object.
      * @param {Blackboard} blackboard An instance of blackboard object.
@@ -1010,7 +1011,7 @@ var p = BehaviorTree.prototype;
             start = i+1;
             if (lastOpenNodes[i] !== currOpenNodes[i]) {
                 break;
-            } 
+            }
         }
 
         // close the nodes
@@ -1024,7 +1025,7 @@ var p = BehaviorTree.prototype;
 
         return state;
     };
-   
+
 
 b3.BehaviorTree = BehaviorTree;
 
@@ -1034,20 +1035,20 @@ b3.BehaviorTree = BehaviorTree;
  * Copyright (c) 2014 Renato de Pontes Pereira.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to 
- * deal in the Software without restriction, including without limitation the 
+ * of this software and associated documentation files (the "Software"), to
+ * deal in the Software without restriction, including without limitation the
  * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software, and to permit persons to whom the Software is 
+ * sell copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
 **/
@@ -1063,22 +1064,22 @@ this.b3 = this.b3 || {};
 "use strict";
 
 /**
- * The BaseNode class is used as super class to all nodes in BehaviorJS. It 
+ * The BaseNode class is used as super class to all nodes in BehaviorJS. It
  * comprises all common variables and methods that a node must have to execute.
  *
- * **IMPORTANT:** Do not inherit from this class, use `b3.Composite`, 
+ * **IMPORTANT:** Do not inherit from this class, use `b3.Composite`,
  * `b3.Decorator`, `b3.Action` or `b3.Condition`, instead.
  *
  * The attributes are specially designed to serialization of the node in a JSON
- * format. In special, the `parameters` attribute can be set into the visual 
- * editor (thus, in the JSON file), and it will be used as parameter on the 
+ * format. In special, the `parameters` attribute can be set into the visual
+ * editor (thus, in the JSON file), and it will be used as parameter on the
  * node initialization at `BehaviorTree.load`.
- * 
+ *
  * BaseNode also provide 5 callback methods, which the node implementations can
- * override. They are `enter`, `open`, `tick`, `close` and `exit`. See their 
+ * override. They are `enter`, `open`, `tick`, `close` and `exit`. See their
  * documentation to know more. These callbacks are called inside the `_execute`
  * method, which is called in the tree traversal.
- * 
+ *
  * @class BaseNode
 **/
 var BaseNode = b3.Class();
@@ -1094,7 +1095,7 @@ var p = BaseNode.prototype;
     **/
 
     /**
-     * Node name. Must be a unique identifier, preferable the same name of the 
+     * Node name. Must be a unique identifier, preferable the same name of the
      * class. You have to set the node name in the prototype.
      *
      * @property name
@@ -1104,8 +1105,8 @@ var p = BaseNode.prototype;
     p.name = null;
 
     /**
-     * Node category. Must be `b3.COMPOSITE`, `b3.DECORATOR`, `b3.ACTION` or 
-     * `b3.CONDITION`. This is defined automatically be inheriting the 
+     * Node category. Must be `b3.COMPOSITE`, `b3.DECORATOR`, `b3.ACTION` or
+     * `b3.CONDITION`. This is defined automatically be inheriting the
      * correspondent class.
      *
      * @property category
@@ -1135,8 +1136,8 @@ var p = BaseNode.prototype;
     p.description = null;
 
     /**
-     * A dictionary (key, value) describing the node parameters. Useful for 
-     * defining parameter values in the visual editor. Note: this is only 
+     * A dictionary (key, value) describing the node parameters. Useful for
+     * defining parameter values in the visual editor. Note: this is only
      * useful for nodes when loading trees from JSON files.
      *
      * @property parameters
@@ -1146,7 +1147,7 @@ var p = BaseNode.prototype;
     p.parameters = null;
 
     /**
-     * A dictionary (key, value) describing the node properties. Useful for 
+     * A dictionary (key, value) describing the node properties. Useful for
      * defining custom variables inside the visual editor.
      *
      * @property properties
@@ -1170,10 +1171,10 @@ var p = BaseNode.prototype;
     }
 
     /**
-     * This is the main method to propagate the tick signal to this node. This 
-     * method calls all callbacks: `enter`, `open`, `tick`, `close`, and 
-     * `exit`. It only opens a node if it is not already open. In the same 
-     * way, this method only close a node if the node  returned a status 
+     * This is the main method to propagate the tick signal to this node. This
+     * method calls all callbacks: `enter`, `open`, `tick`, `close`, and
+     * `exit`. It only opens a node if it is not already open. In the same
+     * way, this method only close a node if the node  returned a status
      * different of `b3.RUNNING`.
      *
      * @method _execute
@@ -1268,7 +1269,7 @@ var p = BaseNode.prototype;
     }
 
     /**
-     * Enter method, override this to use. It is called every time a node is 
+     * Enter method, override this to use. It is called every time a node is
      * asked to execute, before the tick itself.
      *
      * @method enter
@@ -1277,7 +1278,7 @@ var p = BaseNode.prototype;
     p.enter = function(tick) {}
 
     /**
-     * Open method, override this to use. It is called only before the tick 
+     * Open method, override this to use. It is called only before the tick
      * callback and only if the not isn't closed.
      *
      * Note: a node will be closed if it returned `b3.RUNNING` in the tick.
@@ -1288,7 +1289,7 @@ var p = BaseNode.prototype;
     p.open  = function(tick) {}
 
     /**
-     * Tick method, override this to use. This method must contain the real 
+     * Tick method, override this to use. This method must contain the real
      * execution of node (perform a task, call children, etc.). It is called
      * every time a node is asked to execute.
      *
@@ -1299,7 +1300,7 @@ var p = BaseNode.prototype;
 
     /**
      * Close method, override this to use. This method is called after the tick
-     * callback, and only if the tick return a state different from 
+     * callback, and only if the tick return a state different from
      * `b3.RUNNING`.
      *
      * @method close
@@ -1308,14 +1309,14 @@ var p = BaseNode.prototype;
     p.close = function(tick) {}
 
     /**
-     * Exit method, override this to use. Called every time in the end of the 
+     * Exit method, override this to use. Called every time in the end of the
      * execution.
      *
      * @method exit
      * @param {Tick} tick A tick instance.
     **/
     p.exit  = function(tick) {}
-    
+
 b3.BaseNode = BaseNode;
 
 })();/**
@@ -1324,20 +1325,20 @@ b3.BaseNode = BaseNode;
  * Copyright (c) 2014 Renato de Pontes Pereira.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to 
- * deal in the Software without restriction, including without limitation the 
+ * of this software and associated documentation files (the "Software"), to
+ * deal in the Software without restriction, including without limitation the
  * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software, and to permit persons to whom the Software is 
+ * sell copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
 **/
@@ -1353,16 +1354,16 @@ this.b3 = this.b3 || {};
 "use strict";
 
 /**
- * Action is the base class for all action nodes. Thus, if you want to 
- * create new custom action nodes, you need to inherit from this class. 
+ * Action is the base class for all action nodes. Thus, if you want to
+ * create new custom action nodes, you need to inherit from this class.
  *
  * For example, take a look at the Runner action:
- * 
+ *
  *     var Runner = b3.Class(b3.Action);
  *     var p = Runner.prototype;
- *     
+ *
  *         p.name = 'Runner';
- *     
+ *
  *         p.tick = function(tick) {
  *             return b3.RUNNING;
  *         }
@@ -1402,20 +1403,20 @@ b3.Action = Action;
  * Copyright (c) 2014 Renato de Pontes Pereira.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to 
- * deal in the Software without restriction, including without limitation the 
+ * of this software and associated documentation files (the "Software"), to
+ * deal in the Software without restriction, including without limitation the
  * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software, and to permit persons to whom the Software is 
+ * sell copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
 **/
@@ -1431,12 +1432,12 @@ this.b3 = this.b3 || {};
 "use strict";
 
 /**
- * Composite is the base class for all composite nodes. Thus, if you want to 
- * create new custom composite nodes, you need to inherit from this class. 
- * 
+ * Composite is the base class for all composite nodes. Thus, if you want to
+ * create new custom composite nodes, you need to inherit from this class.
+ *
  * When creating composite nodes, you will need to propagate the tick signal to
- * the children nodes manually. To do that, override the `tick` method and call 
- * the `_execute` method on all nodes. For instance, take a look at how the 
+ * the children nodes manually. To do that, override the `tick` method and call
+ * the `_execute` method on all nodes. For instance, take a look at how the
  * Sequence node inherit this class and how it call its children:
  *
  *
@@ -1444,9 +1445,9 @@ this.b3 = this.b3 || {};
  *     var Sequence = b3.Class(b3.Composite);
  *     var p = Sequence.prototype;
  *
- *         // Remember to set the name of the node. 
+ *         // Remember to set the name of the node.
  *         p.name = 'Sequence';
- *         
+ *
  *         // Override the tick function
  *         p.tick = function(tick) {
  *
@@ -1455,7 +1456,7 @@ this.b3 = this.b3 || {};
  *
  *                 // Propagate the tick
  *                 var status = this.children[i]._execute(tick);
- * 
+ *
  *                 if (status !== b3.SUCCESS) {
  *                     return status;
  *                 }
@@ -1503,20 +1504,20 @@ b3.Composite = Composite;
  * Copyright (c) 2014 Renato de Pontes Pereira.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to 
- * deal in the Software without restriction, including without limitation the 
+ * of this software and associated documentation files (the "Software"), to
+ * deal in the Software without restriction, including without limitation the
  * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software, and to permit persons to whom the Software is 
+ * sell copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
 **/
@@ -1532,12 +1533,12 @@ this.b3 = this.b3 || {};
 "use strict";
 
 /**
- * Decorator is the base class for all decorator nodes. Thus, if you want to 
- * create new custom decorator nodes, you need to inherit from this class. 
- * 
+ * Decorator is the base class for all decorator nodes. Thus, if you want to
+ * create new custom decorator nodes, you need to inherit from this class.
+ *
  * When creating decorator nodes, you will need to propagate the tick signal to
  * the child node manually, just like the composite nodes. To do that, override
- * the `tick` method and call the `_execute` method on the child node. For 
+ * the `tick` method and call the `_execute` method on the child node. For
  * instance, take a look at how the Inverter node inherit this class and how it
  * call its children:
  *
@@ -1545,24 +1546,24 @@ this.b3 = this.b3 || {};
  *     // Inherit from Decorator, using the util function Class.
  *     var Inverter = b3.Class(b3.Decorator);
  *     var p = Inverter.prototype;
- *     
- *         // Remember to set the name of the node. 
+ *
+ *         // Remember to set the name of the node.
  *         p.name = 'Inverter';
- *     
+ *
  *         // Override the tick function
  *         p.tick = function(tick) {
  *             if (!this.child) {
  *                 return b3.ERROR;
  *             }
- *     
+ *
  *             // Propagate the tick
  *             var status = this.child._execute(tick);
- *     
+ *
  *             if (status == b3.SUCCESS)
  *                 status = b3.FAILURE;
  *             else if (status == b3.FAILURE)
  *                 status = b3.SUCCESS;
- *     
+ *
  *             return status;
  *         };
  *
@@ -1605,20 +1606,20 @@ b3.Decorator = Decorator;
  * Copyright (c) 2014 Renato de Pontes Pereira.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to 
- * deal in the Software without restriction, including without limitation the 
+ * of this software and associated documentation files (the "Software"), to
+ * deal in the Software without restriction, including without limitation the
  * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software, and to permit persons to whom the Software is 
+ * sell copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
 **/
@@ -1634,8 +1635,8 @@ this.b3 = this.b3 || {};
 "use strict";
 
 /**
- * Condition is the base class for all condition nodes. Thus, if you want to 
- * create new custom condition nodes, you need to inherit from this class. 
+ * Condition is the base class for all condition nodes. Thus, if you want to
+ * create new custom condition nodes, you need to inherit from this class.
  *
  * @class Condition
  * @extends BaseNode
@@ -1672,20 +1673,20 @@ b3.Condition = Condition;
  * Copyright (c) 2014 Renato de Pontes Pereira.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to 
- * deal in the Software without restriction, including without limitation the 
+ * of this software and associated documentation files (the "Software"), to
+ * deal in the Software without restriction, including without limitation the
  * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software, and to permit persons to whom the Software is 
+ * sell copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
 **/
@@ -1701,8 +1702,8 @@ this.b3 = this.b3 || {};
 "use strict";
 
 /**
- * The Sequence node ticks its children sequentially until one of them returns 
- * `FAILURE`, `RUNNING` or `ERROR`. If all children return the success state, 
+ * The Sequence node ticks its children sequentially until one of them returns
+ * `FAILURE`, `RUNNING` or `ERROR`. If all children return the success state,
  * the sequence also returns `SUCCESS`.
  *
  * @class Sequence
@@ -1748,20 +1749,20 @@ b3.Sequence = Sequence;
  * Copyright (c) 2014 Renato de Pontes Pereira.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to 
- * deal in the Software without restriction, including without limitation the 
+ * of this software and associated documentation files (the "Software"), to
+ * deal in the Software without restriction, including without limitation the
  * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software, and to permit persons to whom the Software is 
+ * sell copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
 **/
@@ -1777,8 +1778,8 @@ this.b3 = this.b3 || {};
 "use strict";
 
 /**
- * Priority ticks its children sequentially until one of them returns 
- * `SUCCESS`, `RUNNING` or `ERROR`. If all children return the failure state, 
+ * Priority ticks its children sequentially until one of them returns
+ * `SUCCESS`, `RUNNING` or `ERROR`. If all children return the failure state,
  * the priority also returns `FAILURE`.
  *
  * @class Priority
@@ -1824,20 +1825,20 @@ b3.Priority = Priority;
  * Copyright (c) 2014 Renato de Pontes Pereira.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to 
- * deal in the Software without restriction, including without limitation the 
+ * of this software and associated documentation files (the "Software"), to
+ * deal in the Software without restriction, including without limitation the
  * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software, and to permit persons to whom the Software is 
+ * sell copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
 **/
@@ -1853,8 +1854,8 @@ this.b3 = this.b3 || {};
 "use strict";
 
 /**
- * MemSequence is similar to Sequence node, but when a child returns a 
- * `RUNNING` state, its index is recorded and in the next tick the MemPriority 
+ * MemSequence is similar to Sequence node, but when a child returns a
+ * `RUNNING` state, its index is recorded and in the next tick the MemPriority
  * call the child recorded directly, without calling previous children again.
  *
  * @class MemPriority
@@ -1914,20 +1915,20 @@ b3.MemSequence = MemSequence;
  * Copyright (c) 2014 Renato de Pontes Pereira.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to 
- * deal in the Software without restriction, including without limitation the 
+ * of this software and associated documentation files (the "Software"), to
+ * deal in the Software without restriction, including without limitation the
  * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software, and to permit persons to whom the Software is 
+ * sell copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
 **/
@@ -1943,8 +1944,8 @@ this.b3 = this.b3 || {};
 "use strict";
 
 /**
- * MemPriority is similar to Priority node, but when a child returns a 
- * `RUNNING` state, its index is recorded and in the next tick the, MemPriority 
+ * MemPriority is similar to Priority node, but when a child returns a
+ * `RUNNING` state, its index is recorded and in the next tick the, MemPriority
  * calls the child recorded directly, without calling previous children again.
  *
  * @class MemPriority
@@ -2004,20 +2005,20 @@ b3.MemPriority = MemPriority;
  * Copyright (c) 2014 Renato de Pontes Pereira.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to 
- * deal in the Software without restriction, including without limitation the 
+ * of this software and associated documentation files (the "Software"), to
+ * deal in the Software without restriction, including without limitation the
  * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software, and to permit persons to whom the Software is 
+ * sell copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
 **/
@@ -2082,20 +2083,20 @@ b3.Inverter = Inverter;
  * Copyright (c) 2014 Renato de Pontes Pereira.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to 
- * deal in the Software without restriction, including without limitation the 
+ * of this software and associated documentation files (the "Software"), to
+ * deal in the Software without restriction, including without limitation the
  * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software, and to permit persons to whom the Software is 
+ * sell copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
 **/
@@ -2112,7 +2113,7 @@ this.b3 = this.b3 || {};
 
 /**
  * This decorator limit the number of times its child can be called. After a
- * certain number of times, the Limiter decorator returns `FAILURE` without 
+ * certain number of times, the Limiter decorator returns `FAILURE` without
  * executing the child.
  *
  * @class Limiter
@@ -2148,10 +2149,10 @@ var p = Limiter.prototype;
      * @readonly
     **/
     p.parameters = {'maxLoop': 1};
-    
+
     p.__Decorator_initialize = p.initialize;
     /**
-     * Initialization method. 
+     * Initialization method.
      *
      * Settings parameters:
      *
@@ -2204,11 +2205,11 @@ var p = Limiter.prototype;
 
             if (status == b3.SUCCESS || status == b3.FAILURE)
                 tick.blackboard.set('i', i+1, tick.tree.id, this.id);
-            
+
             return status;
         }
 
-        return b3.FAILURE;        
+        return b3.FAILURE;
     }
 
 b3.Limiter = Limiter;
@@ -2219,20 +2220,20 @@ b3.Limiter = Limiter;
  * Copyright (c) 2014 Renato de Pontes Pereira.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to 
- * deal in the Software without restriction, including without limitation the 
+ * of this software and associated documentation files (the "Software"), to
+ * deal in the Software without restriction, including without limitation the
  * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software, and to permit persons to whom the Software is 
+ * sell copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
 **/
@@ -2248,7 +2249,7 @@ this.b3 = this.b3 || {};
 "use strict";
 
 /**
- * The MaxTime decorator limits the maximum time the node child can execute. 
+ * The MaxTime decorator limits the maximum time the node child can execute.
  * Notice that it does not interrupt the execution itself (i.e., the child must
  * be non-preemptive), it only interrupts the node after a `RUNNING` status.
  *
@@ -2322,7 +2323,7 @@ var p = MaxTime.prototype;
         var startTime = (new Date()).getTime();
         tick.blackboard.set('startTime', startTime, tick.tree.id, this.id);
     };
-    
+
     /**
      * Tick method.
      *
@@ -2334,15 +2335,15 @@ var p = MaxTime.prototype;
         if (!this.child) {
             return b3.ERROR;
         }
-        
+
         var currTime = (new Date()).getTime();
         var startTime = tick.blackboard.get('startTime', tick.tree.id, this.id);
-        
+
         var status = this.child._execute(tick);
         if (currTime - startTime > this.maxTime) {
             return b3.FAILURE;
         }
-        
+
         return status;
     };
 
@@ -2354,20 +2355,20 @@ b3.MaxTime = MaxTime;
  * Copyright (c) 2014 Renato de Pontes Pereira.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to 
- * deal in the Software without restriction, including without limitation the 
+ * of this software and associated documentation files (the "Software"), to
+ * deal in the Software without restriction, including without limitation the
  * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software, and to permit persons to whom the Software is 
+ * sell copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
 **/
@@ -2383,8 +2384,8 @@ this.b3 = this.b3 || {};
 "use strict";
 
 /**
- * Repeater is a decorator that repeats the tick signal until the child node 
- * return `RUNNING` or `ERROR`. Optionally, a maximum number of repetitions 
+ * Repeater is a decorator that repeats the tick signal until the child node
+ * return `RUNNING` or `ERROR`. Optionally, a maximum number of repetitions
  * can be defined.
  *
  * @class Repeater
@@ -2427,10 +2428,10 @@ var p = Repeater.prototype;
      *
      * Settings parameters:
      *
-     * - **maxLoop** (*Integer*) Maximum number of repetitions. Default to -1 
+     * - **maxLoop** (*Integer*) Maximum number of repetitions. Default to -1
      *                           (infinite).
      * - **child** (*BaseNode*) The child node.
-     * 
+     *
      * @method initialize
      * @param {Object} settings Object with parameters.
      * @constructor
@@ -2488,20 +2489,20 @@ b3.Repeater = Repeater;
  * Copyright (c) 2014 Renato de Pontes Pereira.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to 
- * deal in the Software without restriction, including without limitation the 
+ * of this software and associated documentation files (the "Software"), to
+ * deal in the Software without restriction, including without limitation the
  * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software, and to permit persons to whom the Software is 
+ * sell copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
 **/
@@ -2517,8 +2518,8 @@ this.b3 = this.b3 || {};
 "use strict";
 
 /**
- * RepeatUntilFailure is a decorator that repeats the tick signal until the 
- * node child returns `FAILURE`, `RUNNING` or `ERROR`. Optionally, a maximum 
+ * RepeatUntilFailure is a decorator that repeats the tick signal until the
+ * node child returns `FAILURE`, `RUNNING` or `ERROR`. Optionally, a maximum
  * number of repetitions can be defined.
  *
  * @class RepeatUntilFailure
@@ -2561,7 +2562,7 @@ var p = RepeatUntilFailure.prototype;
      *
      * Settings parameters:
      *
-     * - **maxLoop** (*Integer*) Maximum number of repetitions. Default to -1 
+     * - **maxLoop** (*Integer*) Maximum number of repetitions. Default to -1
      *                           (infinite).
      * - **child** (*BaseNode*) The child node.
      *
@@ -2622,20 +2623,20 @@ b3.RepeatUntilFailure = RepeatUntilFailure;
  * Copyright (c) 2014 Renato de Pontes Pereira.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to 
- * deal in the Software without restriction, including without limitation the 
+ * of this software and associated documentation files (the "Software"), to
+ * deal in the Software without restriction, including without limitation the
  * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software, and to permit persons to whom the Software is 
+ * sell copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
 **/
@@ -2651,8 +2652,8 @@ this.b3 = this.b3 || {};
 "use strict";
 
 /**
- * RepeatUntilSuccess is a decorator that repeats the tick signal until the 
- * node child returns `SUCCESS`, `RUNNING` or `ERROR`. Optionally, a maximum 
+ * RepeatUntilSuccess is a decorator that repeats the tick signal until the
+ * node child returns `SUCCESS`, `RUNNING` or `ERROR`. Optionally, a maximum
  * number of repetitions can be defined.
  *
  * @class RepeatUntilSuccess
@@ -2679,7 +2680,7 @@ var p = RepeatUntilSuccess.prototype;
      * @readonly
     **/
     p.title = 'Repeat Until Success';
-    
+
     /**
      * Node parameters.
      *
@@ -2688,14 +2689,14 @@ var p = RepeatUntilSuccess.prototype;
      * @readonly
     **/
     p.parameters = {'maxLoop': -1};
-    
+
     p.__Decorator_initialize = p.initialize;
     /**
      * Initialization method.
      *
      * Settings parameters:
      *
-     * - **maxLoop** (*Integer*) Maximum number of repetitions. Default to -1 
+     * - **maxLoop** (*Integer*) Maximum number of repetitions. Default to -1
      *                           (infinite).
      * - **child** (*BaseNode*) The child node.
      *
@@ -2756,20 +2757,20 @@ b3.RepeatUntilSuccess = RepeatUntilSuccess;
  * Copyright (c) 2014 Renato de Pontes Pereira.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to 
- * deal in the Software without restriction, including without limitation the 
+ * of this software and associated documentation files (the "Software"), to
+ * deal in the Software without restriction, including without limitation the
  * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software, and to permit persons to whom the Software is 
+ * sell copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
 **/
@@ -2822,20 +2823,20 @@ b3.Error = Error;
  * Copyright (c) 2014 Renato de Pontes Pereira.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to 
- * deal in the Software without restriction, including without limitation the 
+ * of this software and associated documentation files (the "Software"), to
+ * deal in the Software without restriction, including without limitation the
  * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software, and to permit persons to whom the Software is 
+ * sell copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
 **/
@@ -2888,20 +2889,20 @@ b3.Failer = Failer;
  * Copyright (c) 2014 Renato de Pontes Pereira.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to 
- * deal in the Software without restriction, including without limitation the 
+ * of this software and associated documentation files (the "Software"), to
+ * deal in the Software without restriction, including without limitation the
  * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software, and to permit persons to whom the Software is 
+ * sell copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
 **/
@@ -2954,20 +2955,20 @@ b3.Runner = Runner;
  * Copyright (c) 2014 Renato de Pontes Pereira.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to 
- * deal in the Software without restriction, including without limitation the 
+ * of this software and associated documentation files (the "Software"), to
+ * deal in the Software without restriction, including without limitation the
  * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software, and to permit persons to whom the Software is 
+ * sell copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
 **/
@@ -3020,20 +3021,20 @@ b3.Succeeder = Succeeder;
  * Copyright (c) 2014 Renato de Pontes Pereira.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to 
- * deal in the Software without restriction, including without limitation the 
+ * of this software and associated documentation files (the "Software"), to
+ * deal in the Software without restriction, including without limitation the
  * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software, and to permit persons to whom the Software is 
+ * sell copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
 **/
@@ -3057,7 +3058,7 @@ this.b3 = this.b3 || {};
 var Wait = b3.Class(b3.Action);
 
 var p = Wait.prototype;
-    
+
     /**
      * Node name. Default to `Wait`.
      *
@@ -3127,11 +3128,11 @@ var p = Wait.prototype;
     p.tick = function(tick) {
         var currTime = (new Date()).getTime();
         var startTime = tick.blackboard.get('startTime', tick.tree.id, this.id);
-        
+
         if (currTime - startTime > this.endTime) {
             return b3.SUCCESS;
         }
-        
+
         return b3.RUNNING;
     }
 

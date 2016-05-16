@@ -1,0 +1,44 @@
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td { margin:0; padding:0; }
+
+@import url(https://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,500,400italic,500italic,700,700italic,900,900italic);
+
+.Treant { position: relative; overflow: hidden; padding: 0 !important; }
+.Treant > .node,
+.Treant > .pseudo { position: absolute; display: block; visibility: hidden; }
+.Treant.Treant-loaded .node,
+.Treant.Treant-loaded .pseudo { visibility: visible; }
+.Treant > .pseudo { width: 0; height: 0; border: none; padding: 0; }
+.Treant .collapse-switch { width: 3px; height: 3px; display: block; border: 1px solid black; position: absolute; top: 1px; right: 1px; cursor: pointer; }
+.Treant .collapsed .collapse-switch { background-color: #868DEE; }
+.Treant > .node img {	border: none; float: left; }
+
+html, body {
+	height: 100%;
+}
+
+body {
+	background-color: #282828;
+	background-image: url('/assets/grid50.png');
+	font-family: 'Roboto', sans-serif;
+	color: #dddddd;
+}
+
+#chart {
+	width: 100%;
+	height: 100%;
+}
+
+.node {
+	width: 100px;
+	padding: 20px;
+	border-radius: 4px;
+	background-color: #363636;
+	border: 2px #414141 solid;
+	text-align: center;
+	box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.3);
+}
+
+.node .node-name {
+	font-weight: bold;
+	font-size: 16pt;
+}
