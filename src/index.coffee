@@ -15,7 +15,13 @@ treeConfig = {
 		nodeAlign: 'BOTTOM',
 		levelSeparation: 60,
 		siblingSeparation: 60,
-		collapsable: true,
+		node: {
+			collapsable: true
+		}
+		animation: {
+			nodeSpeed: 200,
+			connectorsSpeed: 200
+		}
 		connectors: {
 			type: 'straight',
 			style: {
