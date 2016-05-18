@@ -32,17 +32,28 @@ treeConfig = {
 	}
 }
 
-for key, children of data.relations
-	nodeData = data[key]
-	node = treeConfig.nodeStructure = {}
-	node.text = {name: nodeData.name}
-	node.children = []
-	if children
-		for childKey in children
-			child = data[childKey]
-			child.text = {name: child.name}
-			node.children.push child
+setTreantAttributes = (node) ->
+	node.text = {name: node.type}
+	node.image = './assets/' + node.type.toLowerCase() + '.png'
 
-console.log treeConfig
+parseParent = (node) ->
+	nodeKey = Object.keys(node)[0]
+	childrenKeys = node[nodeKey]
+	nodeData = data[nodeKey]
+	setTreantAttributes nodeData
+	nodeData.children = parseChildren childrenKeys
+	return nodeData
+
+parseChildren = (children) ->
+	childNodes = []
+	for key in children
+		nodeData = data[key]
+		setTreantAttributes nodeData
+		childNodes.push nodeData
+		# need get deeper into children? run parseParent on them
+	return childNodes
+
+treeData = parseParent data.relations
+treeConfig.nodeStructure = treeData
 
 new Treant treeConfig

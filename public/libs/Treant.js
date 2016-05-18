@@ -1030,7 +1030,6 @@
 
 		addSwitchEvent: function(my_switch) {
 			var self = this;
-			console.log('EVENT FIRED');
 			UTIL.addEvent(my_switch, 'click', function(e){
 				e.preventDefault();
 				self.toggleCollapse();

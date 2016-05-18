@@ -1,6 +1,6 @@
 {
     "id": "c180ec6c-c475-4f2f-9f57-9e252f238b7d",
-    "name": "Tree",
+    "type": "Tree",
     "description": "A behavior tree",
     "relations": {
         "9c1fc51c-885c-4c5f-9767-7a41069b3929": [
@@ -9,11 +9,11 @@
     },
     "9c1fc51c-885c-4c5f-9767-7a41069b3929": {
         "id": "9c1fc51c-885c-4c5f-9767-7a41069b3929",
-        "name": "Root"
+        "type": "Root"
     },
     "64836b6e-c346-40a1-8297-5d1a85e228eb": {
         "id": "64836b6e-c346-40a1-8297-5d1a85e228eb",
-        "name": "Wait",
+        "type": "Wait",
         "title": "Wait <milliseconds> ms",
         "description": "Returns SUCCESS at the end",
         "properties": {

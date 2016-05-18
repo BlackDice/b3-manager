@@ -10,7 +10,7 @@ body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,
 .Treant > .pseudo { width: 0; height: 0; border: none; padding: 0; }
 .Treant .collapse-switch { width: 100%; height: 100%; display: block; position: absolute; top: 0px; left: 0px; cursor: pointer; }
 .Treant .collapsed { background-color: #464646; border: 2px #515151 solid; }
-.Treant > .node img {	border: none; float: left; }
+.Treant > .node img {	border: none }
 
 html, body {
 	box-sizing: border-box;
@@ -46,5 +46,5 @@ body {
 
 .node .node-name {
 	font-weight: bold;
-	font-size: 16pt;
+	font-size: 12pt;
 }
