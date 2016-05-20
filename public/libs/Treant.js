@@ -1042,6 +1042,7 @@
 			if (! tree.inAnimation) {
 
 				tree.inAnimation = true;
+				console.log(this.collapsed);
 
 				this.collapsed = !this.collapsed; // toglle the collapse at each click
 				if (this.collapsed) {

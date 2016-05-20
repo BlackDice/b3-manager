@@ -1,0 +1,15 @@
+{
+    "id": "c180ec6c-c475-4f2f-9f57-9e252f238b7d",
+    "title": "A behavior tree",
+    "description": "",
+    "root": "9c1fc51c-885c-4c5f-9767-7a41069b3929",
+    "relations": {
+        "9c1fc51c-885c-4c5f-9767-7a41069b3929": [
+            "68d27d37-e0f0-4d2a-896f-34624c55dedf",
+            "64836b6e-c346-40a1-8297-5d1a85e228eb",
+            "543a41dc-c179-4b2d-8f55-93b54e22987c"
+        ],
+        "64836b6e-c346-40a1-8297-5d1a85e228eb": [
+        ]
+    }
+}

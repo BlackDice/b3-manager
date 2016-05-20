@@ -20,7 +20,7 @@ module.exports = {
 		]
 	},
 	resolve: {
-		extensions: ['', '.coffee']
+		extensions: ['', '.coffee', '.js']
 	},
 	externals: {
 		'b3': 'this b3'

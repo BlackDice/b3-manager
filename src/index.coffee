@@ -1,11 +1,16 @@
 
 gojs = require 'gojs'
 b3 = require 'b3'
-data = require('./tree.json')
+data = require './tree.json'
+chief = require '../public/libs/chief'
 
 #tree = new b3.BehaviorTree()
 #tree.load data
 #console.log data
+
+chiefAPI = chief.create()
+
+
 
 
 treeConfig = {
@@ -35,6 +40,7 @@ treeConfig = {
 setTreantAttributes = (node) ->
 	node.text = {name: node.type}
 	node.image = './assets/' + node.type.toLowerCase() + '.png'
+	node.collapsed = false
 
 parseParent = (node) ->
 	nodeKey = Object.keys(node)[0]

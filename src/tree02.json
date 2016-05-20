@@ -1,0 +1,37 @@
+{
+	"id": "c180ec6c-c475-4f2f-9f57-9e252f238b7d",
+	"title": "A behavior tree",
+	"description": "",
+	"root": "9c1fc51c-885c-4c5f-9767-7a41069b3929",
+	"properties": {},
+	"nodes": {
+		"9c1fc51c-885c-4c5f-9767-7a41069b3929": {
+			"id": "9c1fc51c-885c-4c5f-9767-7a41069b3929",
+			"name": "Sequence",
+			"title": "Sequence",
+			"description": "Strolls randomly when bored",
+			"properties": {},
+			"display": {
+				"x": 0,
+				"y": 120
+			},
+			"children": [
+				"68d27d37-e0f0-4d2a-896f-34624c55dedf"
+			]
+		},
+		"68d27d37-e0f0-4d2a-896f-34624c55dedf": {
+			"id": "68d27d37-e0f0-4d2a-896f-34624c55dedf",
+			"name": "Wait",
+			"title": "Wait <milliseconds> ms",
+			"description": "Returns SUCCESS at the end",
+			"properties": {
+				"milliseconds": "?",
+				"random": "?"
+			},
+			"display": {
+				"x": 216,
+				"y": 276
+			}
+		}
+	}
+}
