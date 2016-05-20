@@ -450,6 +450,12 @@
 				node.X += negOffsetX + ((treeWidth < this.drawArea.clientWidth) ? deltaX : this.CONFIG.padding);
 				node.Y += negOffsetY + ((treeHeight < this.drawArea.clientHeight) ? deltaY : this.CONFIG.padding);
 
+				gridSize = this.CONFIG.quantize
+				if (gridSize) {
+					node.X = Math.floor(node.X / gridSize) * gridSize
+					node.Y = Math.floor(node.Y / gridSize) * gridSize
+				}
+
 				var collapsedParent = node.collapsedParent(),
 					hidePoint = null;
 
@@ -462,6 +468,7 @@
 					// node is allready positioned,
 					node.show();
 				} else { // inicijalno stvaranje nodeova, postavi lokaciju
+
 					node.nodeDOM.style.left = node.X + 'px';
 					node.nodeDOM.style.top = node.Y + 'px';
 
@@ -678,7 +685,7 @@
 					pathString = ['M', sp, 'C', p1, p2, ep ];
 				} else if ( connType == "bCurve" ) {
 					pathString = ['M', sp, 'Q', p1, pm, 'T', ep];
-				} else if ( connType == "cCurve" ) {
+				} else if ( connType == "stepRounded" ) {
 					if(aligned == false){
 						pathString = ['M', sp, 'L', p1a, 'C', p1, p1, p1b, 'L', p2a, 'C', p2, p2, p2b, 'L', ep];
 					}
@@ -1070,7 +1077,7 @@
 
 			if (!this.hidden) { new_pos.width = new_pos.height = 0; }
 
-			if(!this.startW || !this.startH) { this.startW = jq_node.width(); this.startH = jq_node.height(); }
+			if(!this.startW || !this.startH) { this.startW = this.nodeDOM.offsetWidth; this.startH = this.nodeDOM.offsetHeight; }
 
 			// if parent was hidden in initial configuration, position the node behind the parent without animations
 			if(!this.positioned || this.hidden) {

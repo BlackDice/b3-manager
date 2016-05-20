@@ -16,6 +16,7 @@ chiefAPI = chief.create()
 treeConfig = {
 	chart: {
 		container: '#chart',
+		quantize: 50,
 		rootOrientation: 'NORTH',
 		nodeAlign: 'BOTTOM',
 		levelSeparation: 60,
@@ -28,7 +29,7 @@ treeConfig = {
 			connectorsSpeed: 200
 		}
 		connectors: {
-			type: 'straight',
+			type: 'stepRounded',
 			style: {
 				'stroke-width': 7,
 				'stroke': '#414141'
@@ -38,9 +39,10 @@ treeConfig = {
 }
 
 setTreantAttributes = (node) ->
-	node.text = {name: node.type}
+	node.text = {name: node.type, desc: ' ', contact: ' '}
 	node.image = './assets/' + node.type.toLowerCase() + '.png'
 	node.collapsed = false
+	node.HTMLclass = 'success' 	# running, error, success
 
 parseParent = (node) ->
 	nodeKey = Object.keys(node)[0]

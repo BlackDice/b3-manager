@@ -34,7 +34,8 @@ body {
 }
 
 .node {
-	width: 100px;
+	width: 150px;
+	height: 110px;
 	padding-top: 20px;
 	padding-bottom: 20px;
 	border-radius: 4px;
@@ -48,3 +49,61 @@ body {
 	font-weight: bold;
 	font-size: 12pt;
 }
+
+/* status icons */
+
+.node .node-desc {
+	position: absolute;
+	top: 10px;
+	left: 10px;
+	width: 20px;
+	height: 20px;
+	background-image: url('/assets/status.png');
+	background-repeat: no-repeat;
+	background-position: -20px center;
+}
+
+.node.running .node-desc {
+	background-position: center 0px;
+}
+
+.node.error .node-desc {
+	background-position: center -20px;
+}
+
+.node.success .node-desc {
+	background-position: center -40px;
+}
+
+/* status borders */
+
+.node .node-contact {
+	display: none;
+	position: absolute;
+	width: 164px;
+	height: 124px;
+	left: -9px;
+	top: -9px;
+	z-index: -10;
+	border-radius: 8px;
+	box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.3);
+}
+
+.node.running .node-contact {
+	display: block;
+	background-color: #9c7500;
+	border: 7px #9c7500 solid;
+}
+
+.node.error .node-contact {
+	display: block;
+	background-color: #d2521a;
+	border: 7px #d2521a solid;
+}
+
+.node.success .node-contact {
+	display: block;
+	background-color: #299b44;
+	border: 7px #299b44 solid;
+}
+
