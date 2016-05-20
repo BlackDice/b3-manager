@@ -8,7 +8,7 @@ chief = require '../public/libs/chief'
 #tree.load data
 #console.log data
 
-chiefAPI = chief.create()
+#chiefAPI = chief.create()
 
 
 
@@ -42,7 +42,7 @@ setTreantAttributes = (node) ->
 	node.text = {name: node.type, desc: ' ', contact: ' '}
 	node.image = './assets/' + node.type.toLowerCase() + '.png'
 	node.collapsed = false
-	node.HTMLclass = 'success' 	# running, error, success
+	node.HTMLclass = 'none' 	# running, error, success
 
 parseParent = (node) ->
 	nodeKey = Object.keys(node)[0]

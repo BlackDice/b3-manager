@@ -1049,7 +1049,6 @@
 			if (! tree.inAnimation) {
 
 				tree.inAnimation = true;
-				console.log(this.collapsed);
 
 				this.collapsed = !this.collapsed; // toglle the collapse at each click
 				if (this.collapsed) {
@@ -1066,9 +1065,10 @@
 		},
 
 		hide: function(collapse_to_point) {
-			this.nodeDOM.style.overflow = "hidden";
+			var nodeDOM = this.nodeDOM;
+			nodeDOM.style.overflow = "hidden";
 
-			var jq_node = $(this.nodeDOM), tree = this.Tree(),
+			var jq_node = $(nodeDOM), tree = this.Tree(),
 				config = tree.CONFIG,
 				new_pos = {
 					left: collapse_to_point.x,
@@ -1077,17 +1077,17 @@
 
 			if (!this.hidden) { new_pos.width = new_pos.height = 0; }
 
-			if(!this.startW || !this.startH) { this.startW = this.nodeDOM.offsetWidth; this.startH = this.nodeDOM.offsetHeight; }
+			if(!this.startW || !this.startH) { this.startW = nodeDOM.offsetWidth; this.startH = nodeDOM.offsetHeight; }
 
 			// if parent was hidden in initial configuration, position the node behind the parent without animations
 			if(!this.positioned || this.hidden) {
-				this.nodeDOM.style.visibility = 'hidden';
+				nodeDOM.style.visibility = 'hidden';
 				jq_node.css(new_pos);
 				this.positioned = true;
 			} else {
 				jq_node.animate(new_pos, config.animation.nodeSpeed, config.animation.nodeAnimation,
 				function(){
-					this.style.visibility = 'hidden';
+					nodeDOM.style.visibility = 'hidden';
 				});
 			}
 
@@ -1107,13 +1107,14 @@
 		},
 
 		show: function() {
-			this.nodeDOM.style.visibility = 'visible';
+			var nodeDOM = this.nodeDOM;
+			nodeDOM.style.visibility = 'visible';
 
 			var new_pos = {
 				left: this.X,
 				top: this.Y
 			},
-			tree = this.Tree(),  config = tree.CONFIG;
+			tree = this.Tree(), config = tree.CONFIG;
 
 			// if the node was hidden, update width and height
 			if(this.hidden) {
@@ -1121,12 +1122,12 @@
 				new_pos.height = this.startH;
 			}
 
-			$(this.nodeDOM).animate(
+			$(nodeDOM).animate(
 				new_pos,
 				config.animation.nodeSpeed, config.animation.nodeAnimation,
 				function() {
 					// $.animate applys "overflow:hidden" to the node, remove it to avoid visual problems
-					this.style.overflow = "";
+					nodeDOM.style.overflow = "";
 				}
 			);
 
