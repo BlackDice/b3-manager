@@ -4,11 +4,14 @@ b3 = require 'b3'
 data = require './tree.json'
 chief = require '../public/libs/chief'
 
+require './main.css'
+require './tree.css'
+
 #tree = new b3.BehaviorTree()
 #tree.load data
 #console.log data
 
-#chiefAPI = chief.create()
+chiefAPI = chief.Chief.create()
 
 
 
@@ -42,7 +45,7 @@ setTreantAttributes = (node) ->
 	node.text = {name: node.type, desc: ' ', contact: ' '}
 	node.image = './assets/' + node.type.toLowerCase() + '.png'
 	node.collapsed = false
-	node.HTMLclass = 'none' 	# running, error, success
+	node.HTMLclass = 'running' 	# running, error, success
 
 parseParent = (node) ->
 	nodeKey = Object.keys(node)[0]
