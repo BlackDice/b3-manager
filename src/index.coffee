@@ -1,6 +1,7 @@
 
-require './main.css'
-require './tree.css'
+require './css/main.css'
+require './css/tree.css'
+require './css/panel.css'
 
 b3 = require 'b3'
 

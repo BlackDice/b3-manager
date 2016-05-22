@@ -12,7 +12,7 @@ toggle = ->
 	$(this).siblings().removeClass 'active'
 	tab = $(this).attr 'href'
 	$('.panelContent').not(tab).css 'display', 'none'
-	$(tab).fadeIn()
+	$(tab).show()
 
 treesTab.on 'click', toggle
 nodesTab.on 'click', toggle
