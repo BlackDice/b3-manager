@@ -10,16 +10,23 @@
 		<script src='/libs/Treant.js'></script>
 		<script src='/libs/behavior3-0.2.0dev.js'></script>
 		<link rel='icon' type='image/png' href='/assets/favicon.png'>
-		<link rel='stylesheet' href='/main.css'>
-		<link rel='stylesheet' href='/panel.css'>
-		<link rel='stylesheet' href='/tree.css'>
 	</head>
 	<body>
 		<div id='panel'>
-			<div id='trees'></div>
-			<div id='nodes'></div>
-			<div id='subjects'>
+			<div id='tabs'>
+				<a href='#trees' id='tab-trees' class='tab active'></a>
+				<a href='#nodes' id='tab-nodes' class='tab'></a>
+				<a href='#subjects' id='tab-subjects' class='tab'></a>
+			</div>
+			<div id='trees' class='panelContent active'>
+				<h2>Trees</h2>
+			</div>
+			<div id='nodes' class='panelContent'>
+				<h2>Nodes</h2>
+			</div>
+			<div id='subjects' class='panelContent'>
 				<h2>Subjects</h2>
+				<a href='#'>Filter</a>
 				<ul id='subjectList'></ul>
 			</div>
 		</div>

@@ -1,7 +1,13 @@
-#chart {
-	width: 100%;
-	height: 100%;
-}
+
+.Treant { position: relative; overflow: hidden; padding: 0 !important; }
+.Treant > .node,
+.Treant > .pseudo { position: absolute; display: block; visibility: hidden; }
+.Treant.Treant-loaded .node,
+.Treant.Treant-loaded .pseudo { visibility: visible; }
+.Treant > .pseudo { width: 0; height: 0; border: none; padding: 0; }
+.Treant .collapse-switch { width: 100%; height: 100%; display: block; position: absolute; top: 0px; left: 0px; cursor: pointer; }
+.Treant .collapsed { background-color: #464646; border: 2px #515151 solid; }
+.Treant > .node img {	border: none }
 
 .node {
 	width: 150px;

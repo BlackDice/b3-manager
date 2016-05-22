@@ -167,6 +167,7 @@
 		// key store for storing reference to node connectors,
 		// key = nodeId where the connector ends
 		this.connectionStore = {};
+
 	};
 
 	Tree.prototype = {
@@ -1224,6 +1225,7 @@
 				this.addSwitchEvent(my_switch);
 				if (this.collapsed) { node.className += " collapsed"; }
 			}
+
 		}
 
 		/////////// APPEND all //////////////
@@ -1396,6 +1398,12 @@
 		newTree.positionTree(callback);
 
 		this.tree_id = newTree.id;
+
+		UTIL.addEvent(window, 'resize', function(e){
+			// redraw
+			newTree.positionTree();
+		});
+
 	};
 
 	Treant.prototype.destroy = function() {
