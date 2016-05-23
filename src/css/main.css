@@ -34,3 +34,29 @@ h2 {
 	width: 100%;
 	height: 100%;
 }
+
+.hidden {
+	opacity: 0;
+}
+
+input {
+	font-size: 18pt;
+	padding: 10px;
+	background-color: #181818;
+	border: none;
+	color: #c5c5c5;
+	outline: none;
+	outline-color: #3f4853;
+}
+
+button {
+	background-color: #202020;
+	color: #363636;
+	border: none;
+	height: 100%;
+	cursor: pointer;
+}
+
+button:hover {
+	color: #c5c5c5;
+}

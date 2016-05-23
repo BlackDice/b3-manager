@@ -8,12 +8,33 @@ b3 = require 'b3'
 require './treeLoader'
 require './tabs'
 
-#tree = new b3.BehaviorTree()
-#tree.load data
-#console.log data
 
-#chief = require '../public/libs/chief'
-#chiefAPI = chief.Chief.create()
+# Panel input
+
+treeForm = $('#trees .panelInput')
+treeInput = $('#trees input')
+
+treeInput.on 'keyup', (evt) ->
+	if evt.keyCode is 13
+		addTree treeInput.val()
+
+treeForm.find('button').on 'click', ->
+	addTree treeInput.val()
+
+$('#addTree').on 'click', ->
+	$(this).toggleClass 'active'
+	treeForm.toggleClass('hidden').find('input').focus()
+
+addTree = (name) ->
+	console.log 'form submitted', name
+
+
+
+
+chief = require '../public/libs/chief'
+chiefAPI = chief.create()
+#newTree = chiefAPI.createTree 'Sequence'  # should be optional later
+
 
 
 

@@ -7,7 +7,8 @@ module.exports = {
 	entry: './src/index.coffee',
 	output: {
 		path: 'public',
-		filename: 'bundle.js'
+		filename: 'bundle.js',
+		pathinfo: true
 	},
 	module: {
 		preLoaders: [

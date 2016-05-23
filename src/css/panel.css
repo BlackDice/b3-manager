@@ -67,7 +67,7 @@
 	padding-right: 40px;
 }
 
-.rightLink:hover {
+.rightLink:hover, .rightLink.active {
 	color: #636363;
 }
 
@@ -75,4 +75,19 @@
 	position: absolute;
 	right: 0px;
 	bottom: -5px;
+}
+
+.panelInput {
+	display: inline-flex;
+	margin-top: 40px;
+	height: 50px;
+}
+
+.panelInput input {
+	flex: 1;
+	width: 80%;
+}
+
+.panelInput button {
+	flex: 0;
 }
