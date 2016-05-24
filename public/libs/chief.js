@@ -4,23 +4,752 @@ function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'defau
 
 var stampit = _interopDefault(require('stampit'));
 var warning = _interopDefault(require('warning'));
-var _isString = _interopDefault(require('lodash.isstring'));
-var _isObject = _interopDefault(require('lodash.isobject'));
-var _isFunction = _interopDefault(require('lodash.isfunction'));
 var invariant = _interopDefault(require('invariant'));
 var uid = _interopDefault(require('uid'));
-var enumify = require('enumify');
-var debug = _interopDefault(require('debug'));
+var _debug = _interopDefault(require('debug'));
 var events = require('events');
-var _upperFirst = _interopDefault(require('lodash.upperfirst'));
 
-const SUCCESS = 1;
-const FAILURE = 2;
-const RUNNING = 3;
-const ERROR = 4;
-const COMPOSITE = 'composite';
-const DECORATOR = 'decorator';
-const ACTION = 'action';
+var __commonjs_global = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : this;
+function __commonjs(fn, module) { return module = { exports: {} }, fn(module, module.exports, __commonjs_global), module.exports; }
+
+var isObjectLike = __commonjs(function (module) {
+/**
+ * Checks if `value` is object-like. A value is object-like if it's not `null`
+ * and has a `typeof` result of "object".
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
+ * @example
+ *
+ * _.isObjectLike({});
+ * // => true
+ *
+ * _.isObjectLike([1, 2, 3]);
+ * // => true
+ *
+ * _.isObjectLike(_.noop);
+ * // => false
+ *
+ * _.isObjectLike(null);
+ * // => false
+ */
+function isObjectLike(value) {
+  return !!value && typeof value == 'object';
+}
+
+module.exports = isObjectLike;
+});
+
+var require$$0$1 = (isObjectLike && typeof isObjectLike === 'object' && 'default' in isObjectLike ? isObjectLike['default'] : isObjectLike);
+
+var isArray = __commonjs(function (module) {
+/**
+ * Checks if `value` is classified as an `Array` object.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @type {Function}
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is correctly classified,
+ *  else `false`.
+ * @example
+ *
+ * _.isArray([1, 2, 3]);
+ * // => true
+ *
+ * _.isArray(document.body.children);
+ * // => false
+ *
+ * _.isArray('abc');
+ * // => false
+ *
+ * _.isArray(_.noop);
+ * // => false
+ */
+var isArray = Array.isArray;
+
+module.exports = isArray;
+});
+
+var require$$2 = (isArray && typeof isArray === 'object' && 'default' in isArray ? isArray['default'] : isArray);
+
+var isString = __commonjs(function (module) {
+var isArray = require$$2,
+    isObjectLike = require$$0$1;
+
+/** `Object#toString` result references. */
+var stringTag = '[object String]';
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/**
+ * Used to resolve the
+ * [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
+ * of values.
+ */
+var objectToString = objectProto.toString;
+
+/**
+ * Checks if `value` is classified as a `String` primitive or object.
+ *
+ * @static
+ * @since 0.1.0
+ * @memberOf _
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is correctly classified,
+ *  else `false`.
+ * @example
+ *
+ * _.isString('abc');
+ * // => true
+ *
+ * _.isString(1);
+ * // => false
+ */
+function isString(value) {
+  return typeof value == 'string' ||
+    (!isArray(value) && isObjectLike(value) && objectToString.call(value) == stringTag);
+}
+
+module.exports = isString;
+});
+
+var require$$0 = (isString && typeof isString === 'object' && 'default' in isString ? isString['default'] : isString);
+
+var isObject = __commonjs(function (module) {
+/**
+ * Checks if `value` is the
+ * [language type](http://www.ecma-international.org/ecma-262/6.0/#sec-ecmascript-language-types)
+ * of `Object`. (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an object, else `false`.
+ * @example
+ *
+ * _.isObject({});
+ * // => true
+ *
+ * _.isObject([1, 2, 3]);
+ * // => true
+ *
+ * _.isObject(_.noop);
+ * // => true
+ *
+ * _.isObject(null);
+ * // => false
+ */
+function isObject(value) {
+  var type = typeof value;
+  return !!value && (type == 'object' || type == 'function');
+}
+
+module.exports = isObject;
+});
+
+var _isObject = (isObject && typeof isObject === 'object' && 'default' in isObject ? isObject['default'] : isObject);
+
+var isFunction = __commonjs(function (module) {
+var isObject = _isObject;
+
+/** `Object#toString` result references. */
+var funcTag = '[object Function]',
+    genTag = '[object GeneratorFunction]';
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/**
+ * Used to resolve the
+ * [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
+ * of values.
+ */
+var objectToString = objectProto.toString;
+
+/**
+ * Checks if `value` is classified as a `Function` object.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is correctly classified,
+ *  else `false`.
+ * @example
+ *
+ * _.isFunction(_);
+ * // => true
+ *
+ * _.isFunction(/abc/);
+ * // => false
+ */
+function isFunction(value) {
+  // The use of `Object#toString` avoids issues with the `typeof` operator
+  // in Safari 8 which returns 'object' for typed array and weak map constructors,
+  // and PhantomJS 1.9 which returns 'function' for `NodeList` instances.
+  var tag = isObject(value) ? objectToString.call(value) : '';
+  return tag == funcTag || tag == genTag;
+}
+
+module.exports = isFunction;
+});
+
+var _isFunction = (isFunction && typeof isFunction === 'object' && 'default' in isFunction ? isFunction['default'] : isFunction);
+
+var _isPrototype = __commonjs(function (module) {
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/**
+ * Checks if `value` is likely a prototype object.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a prototype, else `false`.
+ */
+function isPrototype(value) {
+  var Ctor = value && value.constructor,
+      proto = (typeof Ctor == 'function' && Ctor.prototype) || objectProto;
+
+  return value === proto;
+}
+
+module.exports = isPrototype;
+});
+
+var require$$0$3 = (_isPrototype && typeof _isPrototype === 'object' && 'default' in _isPrototype ? _isPrototype['default'] : _isPrototype);
+
+var _isIndex = __commonjs(function (module) {
+/** Used as references for various `Number` constants. */
+var MAX_SAFE_INTEGER = 9007199254740991;
+
+/** Used to detect unsigned integer values. */
+var reIsUint = /^(?:0|[1-9]\d*)$/;
+
+/**
+ * Checks if `value` is a valid array-like index.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @param {number} [length=MAX_SAFE_INTEGER] The upper bounds of a valid index.
+ * @returns {boolean} Returns `true` if `value` is a valid index, else `false`.
+ */
+function isIndex(value, length) {
+  length = length == null ? MAX_SAFE_INTEGER : length;
+  return !!length &&
+    (typeof value == 'number' || reIsUint.test(value)) &&
+    (value > -1 && value % 1 == 0 && value < length);
+}
+
+module.exports = isIndex;
+});
+
+var require$$1 = (_isIndex && typeof _isIndex === 'object' && 'default' in _isIndex ? _isIndex['default'] : _isIndex);
+
+var isLength = __commonjs(function (module) {
+/** Used as references for various `Number` constants. */
+var MAX_SAFE_INTEGER = 9007199254740991;
+
+/**
+ * Checks if `value` is a valid array-like length.
+ *
+ * **Note:** This function is loosely based on
+ * [`ToLength`](http://ecma-international.org/ecma-262/6.0/#sec-tolength).
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a valid length,
+ *  else `false`.
+ * @example
+ *
+ * _.isLength(3);
+ * // => true
+ *
+ * _.isLength(Number.MIN_VALUE);
+ * // => false
+ *
+ * _.isLength(Infinity);
+ * // => false
+ *
+ * _.isLength('3');
+ * // => false
+ */
+function isLength(value) {
+  return typeof value == 'number' &&
+    value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
+}
+
+module.exports = isLength;
+});
+
+var require$$1$2 = (isLength && typeof isLength === 'object' && 'default' in isLength ? isLength['default'] : isLength);
+
+var _baseProperty = __commonjs(function (module) {
+/**
+ * The base implementation of `_.property` without support for deep paths.
+ *
+ * @private
+ * @param {string} key The key of the property to get.
+ * @returns {Function} Returns the new accessor function.
+ */
+function baseProperty(key) {
+  return function(object) {
+    return object == null ? undefined : object[key];
+  };
+}
+
+module.exports = baseProperty;
+});
+
+var require$$0$4 = (_baseProperty && typeof _baseProperty === 'object' && 'default' in _baseProperty ? _baseProperty['default'] : _baseProperty);
+
+var _getLength = __commonjs(function (module) {
+var baseProperty = require$$0$4;
+
+/**
+ * Gets the "length" property value of `object`.
+ *
+ * **Note:** This function is used to avoid a
+ * [JIT bug](https://bugs.webkit.org/show_bug.cgi?id=142792) that affects
+ * Safari on at least iOS 8.1-8.3 ARM64.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @returns {*} Returns the "length" value.
+ */
+var getLength = baseProperty('length');
+
+module.exports = getLength;
+});
+
+var require$$2$1 = (_getLength && typeof _getLength === 'object' && 'default' in _getLength ? _getLength['default'] : _getLength);
+
+var isArrayLike = __commonjs(function (module) {
+var getLength = require$$2$1,
+    isFunction = _isFunction,
+    isLength = require$$1$2;
+
+/**
+ * Checks if `value` is array-like. A value is considered array-like if it's
+ * not a function and has a `value.length` that's an integer greater than or
+ * equal to `0` and less than or equal to `Number.MAX_SAFE_INTEGER`.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is array-like, else `false`.
+ * @example
+ *
+ * _.isArrayLike([1, 2, 3]);
+ * // => true
+ *
+ * _.isArrayLike(document.body.children);
+ * // => true
+ *
+ * _.isArrayLike('abc');
+ * // => true
+ *
+ * _.isArrayLike(_.noop);
+ * // => false
+ */
+function isArrayLike(value) {
+  return value != null && isLength(getLength(value)) && !isFunction(value);
+}
+
+module.exports = isArrayLike;
+});
+
+var require$$1$1 = (isArrayLike && typeof isArrayLike === 'object' && 'default' in isArrayLike ? isArrayLike['default'] : isArrayLike);
+
+var isArrayLikeObject = __commonjs(function (module) {
+var isArrayLike = require$$1$1,
+    isObjectLike = require$$0$1;
+
+/**
+ * This method is like `_.isArrayLike` except that it also checks if `value`
+ * is an object.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an array-like object,
+ *  else `false`.
+ * @example
+ *
+ * _.isArrayLikeObject([1, 2, 3]);
+ * // => true
+ *
+ * _.isArrayLikeObject(document.body.children);
+ * // => true
+ *
+ * _.isArrayLikeObject('abc');
+ * // => false
+ *
+ * _.isArrayLikeObject(_.noop);
+ * // => false
+ */
+function isArrayLikeObject(value) {
+  return isObjectLike(value) && isArrayLike(value);
+}
+
+module.exports = isArrayLikeObject;
+});
+
+var require$$0$5 = (isArrayLikeObject && typeof isArrayLikeObject === 'object' && 'default' in isArrayLikeObject ? isArrayLikeObject['default'] : isArrayLikeObject);
+
+var isArguments = __commonjs(function (module) {
+var isArrayLikeObject = require$$0$5;
+
+/** `Object#toString` result references. */
+var argsTag = '[object Arguments]';
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/**
+ * Used to resolve the
+ * [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
+ * of values.
+ */
+var objectToString = objectProto.toString;
+
+/** Built-in value references. */
+var propertyIsEnumerable = objectProto.propertyIsEnumerable;
+
+/**
+ * Checks if `value` is likely an `arguments` object.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is correctly classified,
+ *  else `false`.
+ * @example
+ *
+ * _.isArguments(function() { return arguments; }());
+ * // => true
+ *
+ * _.isArguments([1, 2, 3]);
+ * // => false
+ */
+function isArguments(value) {
+  // Safari 8.1 incorrectly makes `arguments.callee` enumerable in strict mode.
+  return isArrayLikeObject(value) && hasOwnProperty.call(value, 'callee') &&
+    (!propertyIsEnumerable.call(value, 'callee') || objectToString.call(value) == argsTag);
+}
+
+module.exports = isArguments;
+});
+
+var require$$3$1 = (isArguments && typeof isArguments === 'object' && 'default' in isArguments ? isArguments['default'] : isArguments);
+
+var _baseTimes = __commonjs(function (module) {
+/**
+ * The base implementation of `_.times` without support for iteratee shorthands
+ * or max array length checks.
+ *
+ * @private
+ * @param {number} n The number of times to invoke `iteratee`.
+ * @param {Function} iteratee The function invoked per iteration.
+ * @returns {Array} Returns the array of results.
+ */
+function baseTimes(n, iteratee) {
+  var index = -1,
+      result = Array(n);
+
+  while (++index < n) {
+    result[index] = iteratee(index);
+  }
+  return result;
+}
+
+module.exports = baseTimes;
+});
+
+var require$$4 = (_baseTimes && typeof _baseTimes === 'object' && 'default' in _baseTimes ? _baseTimes['default'] : _baseTimes);
+
+var _indexKeys = __commonjs(function (module) {
+var baseTimes = require$$4,
+    isArguments = require$$3$1,
+    isArray = require$$2,
+    isLength = require$$1$2,
+    isString = require$$0;
+
+/**
+ * Creates an array of index keys for `object` values of arrays,
+ * `arguments` objects, and strings, otherwise `null` is returned.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @returns {Array|null} Returns index keys, else `null`.
+ */
+function indexKeys(object) {
+  var length = object ? object.length : undefined;
+  if (isLength(length) &&
+      (isArray(object) || isString(object) || isArguments(object))) {
+    return baseTimes(length, String);
+  }
+  return null;
+}
+
+module.exports = indexKeys;
+});
+
+var require$$3 = (_indexKeys && typeof _indexKeys === 'object' && 'default' in _indexKeys ? _indexKeys['default'] : _indexKeys);
+
+var _baseKeys = __commonjs(function (module) {
+/* Built-in method references for those with the same name as other `lodash` methods. */
+var nativeKeys = Object.keys;
+
+/**
+ * The base implementation of `_.keys` which doesn't skip the constructor
+ * property of prototypes or treat sparse arrays as dense.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @returns {Array} Returns the array of property names.
+ */
+function baseKeys(object) {
+  return nativeKeys(Object(object));
+}
+
+module.exports = baseKeys;
+});
+
+var require$$4$1 = (_baseKeys && typeof _baseKeys === 'object' && 'default' in _baseKeys ? _baseKeys['default'] : _baseKeys);
+
+var _getPrototype = __commonjs(function (module) {
+/* Built-in method references for those with the same name as other `lodash` methods. */
+var nativeGetPrototype = Object.getPrototypeOf;
+
+/**
+ * Gets the `[[Prototype]]` of `value`.
+ *
+ * @private
+ * @param {*} value The value to query.
+ * @returns {null|Object} Returns the `[[Prototype]]`.
+ */
+function getPrototype(value) {
+  return nativeGetPrototype(Object(value));
+}
+
+module.exports = getPrototype;
+});
+
+var require$$0$6 = (_getPrototype && typeof _getPrototype === 'object' && 'default' in _getPrototype ? _getPrototype['default'] : _getPrototype);
+
+var _baseHas = __commonjs(function (module) {
+var getPrototype = require$$0$6;
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/**
+ * The base implementation of `_.has` without support for deep paths.
+ *
+ * @private
+ * @param {Object} [object] The object to query.
+ * @param {Array|string} key The key to check.
+ * @returns {boolean} Returns `true` if `key` exists, else `false`.
+ */
+function baseHas(object, key) {
+  // Avoid a bug in IE 10-11 where objects with a [[Prototype]] of `null`,
+  // that are composed entirely of index properties, return `false` for
+  // `hasOwnProperty` checks of them.
+  return object != null &&
+    (hasOwnProperty.call(object, key) ||
+      (typeof object == 'object' && key in object && getPrototype(object) === null));
+}
+
+module.exports = baseHas;
+});
+
+var require$$5 = (_baseHas && typeof _baseHas === 'object' && 'default' in _baseHas ? _baseHas['default'] : _baseHas);
+
+var keys = __commonjs(function (module) {
+var baseHas = require$$5,
+    baseKeys = require$$4$1,
+    indexKeys = require$$3,
+    isArrayLike = require$$1$1,
+    isIndex = require$$1,
+    isPrototype = require$$0$3;
+
+/**
+ * Creates an array of the own enumerable property names of `object`.
+ *
+ * **Note:** Non-object values are coerced to objects. See the
+ * [ES spec](http://ecma-international.org/ecma-262/6.0/#sec-object.keys)
+ * for more details.
+ *
+ * @static
+ * @since 0.1.0
+ * @memberOf _
+ * @category Object
+ * @param {Object} object The object to query.
+ * @returns {Array} Returns the array of property names.
+ * @example
+ *
+ * function Foo() {
+ *   this.a = 1;
+ *   this.b = 2;
+ * }
+ *
+ * Foo.prototype.c = 3;
+ *
+ * _.keys(new Foo);
+ * // => ['a', 'b'] (iteration order is not guaranteed)
+ *
+ * _.keys('hi');
+ * // => ['0', '1']
+ */
+function keys(object) {
+  var isProto = isPrototype(object);
+  if (!(isProto || isArrayLike(object))) {
+    return baseKeys(object);
+  }
+  var indexes = indexKeys(object),
+      skipIndexes = !!indexes,
+      result = indexes || [],
+      length = result.length;
+
+  for (var key in object) {
+    if (baseHas(object, key) &&
+        !(skipIndexes && (key == 'length' || isIndex(key, length))) &&
+        !(isProto && key == 'constructor')) {
+      result.push(key);
+    }
+  }
+  return result;
+}
+
+module.exports = keys;
+});
+
+var require$$0$2 = (keys && typeof keys === 'object' && 'default' in keys ? keys['default'] : keys);
+
+var _arrayMap = __commonjs(function (module) {
+/**
+ * A specialized version of `_.map` for arrays without support for iteratee
+ * shorthands.
+ *
+ * @private
+ * @param {Array} [array] The array to iterate over.
+ * @param {Function} iteratee The function invoked per iteration.
+ * @returns {Array} Returns the new mapped array.
+ */
+function arrayMap(array, iteratee) {
+  var index = -1,
+      length = array ? array.length : 0,
+      result = Array(length);
+
+  while (++index < length) {
+    result[index] = iteratee(array[index], index, array);
+  }
+  return result;
+}
+
+module.exports = arrayMap;
+});
+
+var require$$0$7 = (_arrayMap && typeof _arrayMap === 'object' && 'default' in _arrayMap ? _arrayMap['default'] : _arrayMap);
+
+var _baseValues = __commonjs(function (module) {
+var arrayMap = require$$0$7;
+
+/**
+ * The base implementation of `_.values` and `_.valuesIn` which creates an
+ * array of `object` property values corresponding to the property names
+ * of `props`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @param {Array} props The property names to get values for.
+ * @returns {Object} Returns the array of property values.
+ */
+function baseValues(object, props) {
+  return arrayMap(props, function(key) {
+    return object[key];
+  });
+}
+
+module.exports = baseValues;
+});
+
+var require$$1$3 = (_baseValues && typeof _baseValues === 'object' && 'default' in _baseValues ? _baseValues['default'] : _baseValues);
+
+var values = __commonjs(function (module) {
+var baseValues = require$$1$3,
+    keys = require$$0$2;
+
+/**
+ * Creates an array of the own enumerable string keyed property values of `object`.
+ *
+ * **Note:** Non-object values are coerced to objects.
+ *
+ * @static
+ * @since 0.1.0
+ * @memberOf _
+ * @category Object
+ * @param {Object} object The object to query.
+ * @returns {Array} Returns the array of property values.
+ * @example
+ *
+ * function Foo() {
+ *   this.a = 1;
+ *   this.b = 2;
+ * }
+ *
+ * Foo.prototype.c = 3;
+ *
+ * _.values(new Foo);
+ * // => [1, 2] (iteration order is not guaranteed)
+ *
+ * _.values('hi');
+ * // => ['h', 'i']
+ */
+function values(object) {
+  return object ? baseValues(object, keys(object)) : [];
+}
+
+module.exports = values;
+});
+
+var _values = (values && typeof values === 'object' && 'default' in values ? values['default'] : values);
+
+var SUCCESS = 1;
+var FAILURE = 2;
+var RUNNING = 3;
+var ERROR = 4;
+var COMPOSITE = 'composite';
+var DECORATOR = 'decorator';
+var ACTION = 'action';
 
 /**
 * This function is used to create unique IDs for trees and nodes.
@@ -1869,52 +2598,52 @@ var BehaviorTree = Class(null, {
   }
 });
 
-const defaultUidLength = 12;
+var defaultUidLength = 12;
 
-const Uid = stampit.methods({
-	createUid() {
-		let length = arguments.length <= 0 || arguments[0] === undefined ? defaultUidLength : arguments[0];
+var Uid = stampit.methods({
+	createUid: function createUid() {
+		var length = arguments.length <= 0 || arguments[0] === undefined ? defaultUidLength : arguments[0];
 
 		return uid(length);
 	}
 });
 
-const Private = stampit().init((options, _ref) => {
-	let instance = _ref.instance;
+var Private = stampit().init(function (options, _ref) {
+	var instance = _ref.instance;
 
 	instance.map = new WeakMap();
 }).methods({
-	init(owner) {
-		const ownerMap = new Map();
+	init: function init(owner) {
+		var ownerMap = new Map();
 		this.map.set(owner, ownerMap);
 		return ownerMap;
 	},
-	for(owner) {
+	for: function _for(owner) {
 		return this.map.get(owner);
 	},
-	get(owner, key) {
+	get: function get(owner, key) {
 		return this.for(owner).get(key);
 	},
-	set(owner, key, value) {
+	set: function set(owner, key, value) {
 		this.for(owner).set(key, value);
 	}
 });
 
-const Behavior = stampit({
+var Behavior = stampit({
 	initializers: [initializeNodeMap],
 	methods: {
-		registerBehaviorNode, createBehaviorNode,
-		createBehaviorTree
+		registerBehaviorNode: registerBehaviorNode, createBehaviorNode: createBehaviorNode,
+		createBehaviorTree: createBehaviorTree
 	}
 }).compose(Uid);
 
-const privates$1 = Private.create();
+var privates$1 = Private.create();
 
 function initializeNodeMap() {
 	privates$1.init(this);
 	privates$1.set(this, 'nodes', new Map());
 
-	const standardNodes = Object.values(Object.assign({}, Decorators, Composites, Actions));
+	var standardNodes = _values(Object.assign({}, Decorators, Composites, Actions));
 	standardNodes.forEach(this.registerBehaviorNode, this);
 }
 
@@ -1924,12 +2653,12 @@ function registerBehaviorNode(nodeClass) {
 	invariant(nodeClass.prototype && _isFunction(nodeClass.prototype.tick), 'Node class passed to registerNode() is missing the mandatory tick method on its prototype.' + // eslint-disable-line max-len
 	'Either use B3.Class(B3.BaseNode, {}) or define your own class with such method.');
 
-	const nodeName = nodeClass.prototype.name;
+	var nodeName = nodeClass.prototype.name;
 
-	invariant(_isString(nodeName) && nodeName.length, 'Passed node class %s to registerNode() call needs to have a unique string name specified.', nodeClass // eslint-disable-line max-len
+	invariant(require$$0(nodeName) && nodeName.length, 'Passed node class %s to registerNode() call needs to have a unique string name specified.', nodeClass // eslint-disable-line max-len
 	);
 
-	const nodes = privates$1.get(this, 'nodes');
+	var nodes = privates$1.get(this, 'nodes');
 
 	invariant(!nodes.has(nodeName), 'The name of node has to be unique. There is already node `%s` registered.', nodeName);
 
@@ -1937,17 +2666,17 @@ function registerBehaviorNode(nodeClass) {
 }
 
 function createBehaviorNode(nodeName) {
-	let properties = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+	var properties = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
 
-	invariant(_isString(nodeName), 'Called createBehaviorNode() without name of node to create.' + 'Name is expected to be a non-empty string.');
+	invariant(require$$0(nodeName), 'Called createBehaviorNode() without name of node to create.' + 'Name is expected to be a non-empty string.');
 
-	const nodeClass = privates$1.get(this, 'nodes').get(nodeName);
+	var nodeClass = privates$1.get(this, 'nodes').get(nodeName);
 	if (nodeClass === undefined) {
 		return null;
 	}
 
-	const behaviorNode = Reflect.construct(nodeClass, []);
-	behaviorNode.id = `${ nodeName }-${ this.createUid() }`;
+	var behaviorNode = Reflect.construct(nodeClass, []);
+	behaviorNode.id = nodeName + '-' + this.createUid();
 
 	if (_isObject(properties) && _isObject(behaviorNode.properties)) {
 		Object.assign(behaviorNode.properties, properties);
@@ -1957,40 +2686,34 @@ function createBehaviorNode(nodeName) {
 }
 
 function createBehaviorTree(id) {
-	const behaviorTree = new BehaviorTree();
-	if (_isString(id) && id.length) {
+	var behaviorTree = new BehaviorTree();
+	if (require$$0(id) && id.length) {
 		behaviorTree.id = id;
 	}
 	return behaviorTree;
 }
 
-const Logger = stampit.methods({
-	debug(category) {
+var Logger = stampit.methods({
+	debug: function debug(category) {
 		for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
 			args[_key - 1] = arguments[_key];
 		}
 
-		debug(`b3:chief:${ category }`)(...args);
+		_debug('b3:chief:' + category).apply(undefined, args);
 	}
 });
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-const Persist = stampit({
+var Persist = stampit({
 	initializers: initializer,
-	methods: { persist, retrieve, destroy }
+	methods: { persist: persist, retrieve: retrieve, destroy: destroy }
 }).compose(Logger);
 
 function initializer() {
 	var _ref2 = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
-	let adapter = _ref2.adapter;
-	let _ref = arguments[1];
-	let instance = _ref.instance;
+	var adapter = _ref2.adapter;
+	var _ref = arguments[1];
+	var instance = _ref.instance;
 
 	instance.adapter = instance.adapter || ensureAdapter(adapter);
 }
@@ -2009,41 +2732,379 @@ function ensureAdapter(adapter) {
 	return {};
 }
 
-let PersistType = function (_Enum) {
-	_inherits(TYPE, _Enum);
+var PersistType = {
+	TREE: 'TREE',
+	SUBJECT: 'SUBJECT'
+};
 
-	function TYPE() {
-		_classCallCheck(this, TYPE);
-
-		return _possibleConstructorReturn(this, Object.getPrototypeOf(TYPE).apply(this, arguments));
-	}
-
-	return TYPE;
-}(enumify.Enum);
-PersistType.initEnum(['TREE', 'SUBJECT']);
-
-const EventEmittable = stampit({
+var EventEmittable = stampit({
 	initializers: function initEventEmitter() {
 		Reflect.apply(events.EventEmitter, this, []);
 	},
-	methods: ['emit', 'on', 'once', 'removeListener'].reduce((methods, methodName) => {
+	methods: ['emit', 'on', 'once', 'removeListener'].reduce(function (methods, methodName) {
 		methods[methodName] = events.EventEmitter.prototype[methodName];
 		return methods;
 	}, {})
 });
 
-const ModelPrivate = Private.methods({
-	getProperty(owner, propertyName) {
+var isSymbol = __commonjs(function (module) {
+var isObjectLike = require$$0$1;
+
+/** `Object#toString` result references. */
+var symbolTag = '[object Symbol]';
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/**
+ * Used to resolve the
+ * [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
+ * of values.
+ */
+var objectToString = objectProto.toString;
+
+/**
+ * Checks if `value` is classified as a `Symbol` primitive or object.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is correctly classified,
+ *  else `false`.
+ * @example
+ *
+ * _.isSymbol(Symbol.iterator);
+ * // => true
+ *
+ * _.isSymbol('abc');
+ * // => false
+ */
+function isSymbol(value) {
+  return typeof value == 'symbol' ||
+    (isObjectLike(value) && objectToString.call(value) == symbolTag);
+}
+
+module.exports = isSymbol;
+});
+
+var require$$0$11 = (isSymbol && typeof isSymbol === 'object' && 'default' in isSymbol ? isSymbol['default'] : isSymbol);
+
+var _checkGlobal = __commonjs(function (module) {
+/**
+ * Checks if `value` is a global object.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {null|Object} Returns `value` if it's a global object, else `null`.
+ */
+function checkGlobal(value) {
+  return (value && value.Object === Object) ? value : null;
+}
+
+module.exports = checkGlobal;
+});
+
+var require$$0$13 = (_checkGlobal && typeof _checkGlobal === 'object' && 'default' in _checkGlobal ? _checkGlobal['default'] : _checkGlobal);
+
+var _root = __commonjs(function (module, exports, global) {
+var checkGlobal = require$$0$13;
+
+/** Detect free variable `global` from Node.js. */
+var freeGlobal = checkGlobal(typeof global == 'object' && global);
+
+/** Detect free variable `self`. */
+var freeSelf = checkGlobal(typeof self == 'object' && self);
+
+/** Detect `this` as the global object. */
+var thisGlobal = checkGlobal(typeof __commonjs_global == 'object' && __commonjs_global);
+
+/** Used as a reference to the global object. */
+var root = freeGlobal || freeSelf || thisGlobal || Function('return this')();
+
+module.exports = root;
+});
+
+var require$$0$12 = (_root && typeof _root === 'object' && 'default' in _root ? _root['default'] : _root);
+
+var _Symbol = __commonjs(function (module) {
+var root = require$$0$12;
+
+/** Built-in value references. */
+var Symbol = root.Symbol;
+
+module.exports = Symbol;
+});
+
+var require$$1$4 = (_Symbol && typeof _Symbol === 'object' && 'default' in _Symbol ? _Symbol['default'] : _Symbol);
+
+var _baseToString = __commonjs(function (module) {
+var Symbol = require$$1$4,
+    isSymbol = require$$0$11;
+
+/** Used as references for various `Number` constants. */
+var INFINITY = 1 / 0;
+
+/** Used to convert symbols to primitives and strings. */
+var symbolProto = Symbol ? Symbol.prototype : undefined,
+    symbolToString = symbolProto ? symbolProto.toString : undefined;
+
+/**
+ * The base implementation of `_.toString` which doesn't convert nullish
+ * values to empty strings.
+ *
+ * @private
+ * @param {*} value The value to process.
+ * @returns {string} Returns the string.
+ */
+function baseToString(value) {
+  // Exit early for strings to avoid a performance hit in some environments.
+  if (typeof value == 'string') {
+    return value;
+  }
+  if (isSymbol(value)) {
+    return symbolToString ? symbolToString.call(value) : '';
+  }
+  var result = (value + '');
+  return (result == '0' && (1 / value) == -INFINITY) ? '-0' : result;
+}
+
+module.exports = baseToString;
+});
+
+var require$$0$10 = (_baseToString && typeof _baseToString === 'object' && 'default' in _baseToString ? _baseToString['default'] : _baseToString);
+
+var toString$1 = __commonjs(function (module) {
+var baseToString = require$$0$10;
+
+/**
+ * Converts `value` to a string. An empty string is returned for `null`
+ * and `undefined` values. The sign of `-0` is preserved.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to process.
+ * @returns {string} Returns the string.
+ * @example
+ *
+ * _.toString(null);
+ * // => ''
+ *
+ * _.toString(-0);
+ * // => '-0'
+ *
+ * _.toString([1, 2, 3]);
+ * // => '1,2,3'
+ */
+function toString(value) {
+  return value == null ? '' : baseToString(value);
+}
+
+module.exports = toString;
+});
+
+var require$$0$9 = (toString$1 && typeof toString$1 === 'object' && 'default' in toString$1 ? toString$1['default'] : toString$1);
+
+var _stringToArray = __commonjs(function (module) {
+/** Used to compose unicode character classes. */
+var rsAstralRange = '\\ud800-\\udfff',
+    rsComboMarksRange = '\\u0300-\\u036f\\ufe20-\\ufe23',
+    rsComboSymbolsRange = '\\u20d0-\\u20f0',
+    rsVarRange = '\\ufe0e\\ufe0f';
+
+/** Used to compose unicode capture groups. */
+var rsAstral = '[' + rsAstralRange + ']',
+    rsCombo = '[' + rsComboMarksRange + rsComboSymbolsRange + ']',
+    rsFitz = '\\ud83c[\\udffb-\\udfff]',
+    rsModifier = '(?:' + rsCombo + '|' + rsFitz + ')',
+    rsNonAstral = '[^' + rsAstralRange + ']',
+    rsRegional = '(?:\\ud83c[\\udde6-\\uddff]){2}',
+    rsSurrPair = '[\\ud800-\\udbff][\\udc00-\\udfff]',
+    rsZWJ = '\\u200d';
+
+/** Used to compose unicode regexes. */
+var reOptMod = rsModifier + '?',
+    rsOptVar = '[' + rsVarRange + ']?',
+    rsOptJoin = '(?:' + rsZWJ + '(?:' + [rsNonAstral, rsRegional, rsSurrPair].join('|') + ')' + rsOptVar + reOptMod + ')*',
+    rsSeq = rsOptVar + reOptMod + rsOptJoin,
+    rsSymbol = '(?:' + [rsNonAstral + rsCombo + '?', rsCombo, rsRegional, rsSurrPair, rsAstral].join('|') + ')';
+
+/** Used to match [string symbols](https://mathiasbynens.be/notes/javascript-unicode). */
+var reComplexSymbol = RegExp(rsFitz + '(?=' + rsFitz + ')|' + rsSymbol + rsSeq, 'g');
+
+/**
+ * Converts `string` to an array.
+ *
+ * @private
+ * @param {string} string The string to convert.
+ * @returns {Array} Returns the converted array.
+ */
+function stringToArray(string) {
+  return string.match(reComplexSymbol);
+}
+
+module.exports = stringToArray;
+});
+
+var require$$1$5 = (_stringToArray && typeof _stringToArray === 'object' && 'default' in _stringToArray ? _stringToArray['default'] : _stringToArray);
+
+var _reHasComplexSymbol = __commonjs(function (module) {
+/** Used to compose unicode character classes. */
+var rsAstralRange = '\\ud800-\\udfff',
+    rsComboMarksRange = '\\u0300-\\u036f\\ufe20-\\ufe23',
+    rsComboSymbolsRange = '\\u20d0-\\u20f0',
+    rsVarRange = '\\ufe0e\\ufe0f';
+
+/** Used to compose unicode capture groups. */
+var rsZWJ = '\\u200d';
+
+/** Used to detect strings with [zero-width joiners or code points from the astral planes](http://eev.ee/blog/2015/09/12/dark-corners-of-unicode/). */
+var reHasComplexSymbol = RegExp('[' + rsZWJ + rsAstralRange  + rsComboMarksRange + rsComboSymbolsRange + rsVarRange + ']');
+
+module.exports = reHasComplexSymbol;
+});
+
+var require$$2$2 = (_reHasComplexSymbol && typeof _reHasComplexSymbol === 'object' && 'default' in _reHasComplexSymbol ? _reHasComplexSymbol['default'] : _reHasComplexSymbol);
+
+var _baseSlice = __commonjs(function (module) {
+/**
+ * The base implementation of `_.slice` without an iteratee call guard.
+ *
+ * @private
+ * @param {Array} array The array to slice.
+ * @param {number} [start=0] The start position.
+ * @param {number} [end=array.length] The end position.
+ * @returns {Array} Returns the slice of `array`.
+ */
+function baseSlice(array, start, end) {
+  var index = -1,
+      length = array.length;
+
+  if (start < 0) {
+    start = -start > length ? 0 : (length + start);
+  }
+  end = end > length ? length : end;
+  if (end < 0) {
+    end += length;
+  }
+  length = start > end ? 0 : ((end - start) >>> 0);
+  start >>>= 0;
+
+  var result = Array(length);
+  while (++index < length) {
+    result[index] = array[index + start];
+  }
+  return result;
+}
+
+module.exports = baseSlice;
+});
+
+var require$$0$14 = (_baseSlice && typeof _baseSlice === 'object' && 'default' in _baseSlice ? _baseSlice['default'] : _baseSlice);
+
+var _castSlice = __commonjs(function (module) {
+var baseSlice = require$$0$14;
+
+/**
+ * Casts `array` to a slice if it's needed.
+ *
+ * @private
+ * @param {Array} array The array to inspect.
+ * @param {number} start The start position.
+ * @param {number} [end=array.length] The end position.
+ * @returns {Array} Returns the cast slice.
+ */
+function castSlice(array, start, end) {
+  var length = array.length;
+  end = end === undefined ? length : end;
+  return (!start && end >= length) ? array : baseSlice(array, start, end);
+}
+
+module.exports = castSlice;
+});
+
+var require$$3$2 = (_castSlice && typeof _castSlice === 'object' && 'default' in _castSlice ? _castSlice['default'] : _castSlice);
+
+var _createCaseFirst = __commonjs(function (module) {
+var castSlice = require$$3$2,
+    reHasComplexSymbol = require$$2$2,
+    stringToArray = require$$1$5,
+    toString = require$$0$9;
+
+/**
+ * Creates a function like `_.lowerFirst`.
+ *
+ * @private
+ * @param {string} methodName The name of the `String` case method to use.
+ * @returns {Function} Returns the new case function.
+ */
+function createCaseFirst(methodName) {
+  return function(string) {
+    string = toString(string);
+
+    var strSymbols = reHasComplexSymbol.test(string)
+      ? stringToArray(string)
+      : undefined;
+
+    var chr = strSymbols
+      ? strSymbols[0]
+      : string.charAt(0);
+
+    var trailing = strSymbols
+      ? castSlice(strSymbols, 1).join('')
+      : string.slice(1);
+
+    return chr[methodName]() + trailing;
+  };
+}
+
+module.exports = createCaseFirst;
+});
+
+var require$$0$8 = (_createCaseFirst && typeof _createCaseFirst === 'object' && 'default' in _createCaseFirst ? _createCaseFirst['default'] : _createCaseFirst);
+
+var upperFirst = __commonjs(function (module) {
+var createCaseFirst = require$$0$8;
+
+/**
+ * Converts the first character of `string` to upper case.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category String
+ * @param {string} [string=''] The string to convert.
+ * @returns {string} Returns the converted string.
+ * @example
+ *
+ * _.upperFirst('fred');
+ * // => 'Fred'
+ *
+ * _.upperFirst('FRED');
+ * // => 'FRED'
+ */
+var upperFirst = createCaseFirst('toUpperCase');
+
+module.exports = upperFirst;
+});
+
+var _upperFirst = (upperFirst && typeof upperFirst === 'object' && 'default' in upperFirst ? upperFirst['default'] : upperFirst);
+
+var ModelPrivate = Private.methods({
+	getProperty: function getProperty(owner, propertyName) {
 		return this.get(owner, 'props')[propertyName];
 	},
-	setProperty(owner, propertyName, propertyValue) {
-		const props = this.get(owner, 'props');
+	setProperty: function setProperty(owner, propertyName, propertyValue) {
+		var props = this.get(owner, 'props');
 		props[propertyName] = propertyValue;
 	}
 });
 
 function Model(modelName) {
-	let privates = arguments.length <= 1 || arguments[1] === undefined ? ModelPrivate.create() : arguments[1];
+	var privates = arguments.length <= 1 || arguments[1] === undefined ? ModelPrivate.create() : arguments[1];
 
 
 	function initializeModelPrivateArea() {
@@ -2051,21 +3112,21 @@ function Model(modelName) {
 		privates.set(this, 'props', {});
 	}
 
-	const getter = setupPropertyAccessor(privates, true);
-	const property = setupPropertyAccessor(privates);
+	var getter = setupPropertyAccessor(privates, true);
+	var property = setupPropertyAccessor(privates);
 
 	function valueOf() {
 		return Object.assign({}, privates.get(this, 'props'));
 	}
 
-	const properties = {
-		get() {
+	var properties = {
+		get: function get() {
 			return Object.keys(privates.get(this, 'props'));
 		}
 	};
 
 	function toString() {
-		return `model of ${ modelName }`;
+		return 'model of ' + modelName;
 	}
 
 	function getModelName() {
@@ -2074,108 +3135,108 @@ function Model(modelName) {
 
 	return stampit.compose(EventEmittable, {
 		initializers: [initializeModelPrivateArea],
-		methods: { getModelName, toString, valueOf },
-		staticProperties: { getter, property },
-		staticPropertyDescriptors: { properties }
+		methods: { getModelName: getModelName, toString: toString, valueOf: valueOf },
+		staticProperties: { getter: getter, property: property },
+		staticPropertyDescriptors: { properties: properties }
 	});
 }
 
 function setupPropertyAccessor(privates) {
-	let readonly = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
+	var readonly = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
 
 	return function accessProperty(propertyName) {
-		let defaultValue = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+		var defaultValue = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
 
 
-		const methodSuffix = _upperFirst(propertyName);
-		const methods = {};
+		var methodSuffix = _upperFirst(propertyName);
+		var methods = {};
 
-		methods[`get${ methodSuffix }`] = function getPropertyValue() {
+		methods['get' + methodSuffix] = function getPropertyValue() {
 			return privates.getProperty(this, propertyName);
 		};
 
 		function setPropertyValue(newValue) {
-			const oldValue = privates.getProperty(this, propertyName);
+			var oldValue = privates.getProperty(this, propertyName);
 			privates.setProperty(this, propertyName, newValue);
 			this.emit('change', propertyName, newValue, oldValue);
 		}
 
 		if (readonly !== true) {
-			methods[`set${ methodSuffix }`] = setPropertyValue;
+			methods['set' + methodSuffix] = setPropertyValue;
 		}
 
 		function initializePropertyValue(data) {
 			if (data && data.hasOwnProperty(propertyName)) {
 				privates.setProperty(this, propertyName, data[propertyName]);
 			} else if (_isFunction(defaultValue)) {
-				const obtainedValue = Reflect.apply(defaultValue, this, [data]);
+				var obtainedValue = Reflect.apply(defaultValue, this, [data]);
 				privates.setProperty(this, propertyName, obtainedValue);
 			}
 		}
 
 		return this.compose({
 			deepConfiguration: { properties: [propertyName] },
-			methods, initializers: [initializePropertyValue]
+			methods: methods, initializers: [initializePropertyValue]
 		});
 	};
 }
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+var privates$3 = ModelPrivate.create();
 
-const privates$3 = ModelPrivate.create();
-
-const NodeModel = Model('Node', privates$3).getter('id').getter('treeId').getter('name').getter('title').getter('description').getter('behaviorNode').methods({ getProperties }).init(initializeNodeModel);
+var NodeModel = Model('Node', privates$3).getter('id').getter('treeId').getter('name').getter('title').getter('description').getter('behaviorNode').methods({ getProperties: getProperties }).init(initializeNodeModel);
 
 function initializeNodeModel(_ref) {
-	let behaviorNode = _ref.behaviorNode;
+	var behaviorNode = _ref.behaviorNode;
 
 	privates$3.setProperty(this, 'behaviorNode', behaviorNode);
 }
 
 function getProperties() {
-	return _extends({}, this.getBehaviorNode().properties);
+	return babelHelpers.extends({}, this.getBehaviorNode().properties);
 }
 
-const privates$2 = ModelPrivate.create();
+var privates$2 = ModelPrivate.create();
 
-const TreeModel = Model('Tree', privates$2).getter('id').getter('rootNode').getter('behaviorTree').property('name', 'New tree').property('description').methods({
-	addNode, changeRootNode,
-	listNodes, toString
+var TreeModel = Model('Tree', privates$2).getter('id').getter('rootNode').getter('behaviorTree').property('name', 'New tree').property('description').methods({
+	addNode: addNode, changeRootNode: changeRootNode,
+	listNodes: listNodes, toString: toString
 }).init(initializeTreeModel, initializeRootNode);
 
 function initializeTreeModel(_ref) {
-	let createNode = _ref.createNode;
+	var createNode = _ref.createNode;
 
 	privates$2.set(this, 'createNode', createNode);
 	privates$2.set(this, 'nodes', new Set());
 }
 
 function initializeRootNode(_ref2) {
-	let rootNodeName = _ref2.rootNodeName;
-	let rootNodeProperties = _ref2.rootNodeProperties;
+	var rootNodeName = _ref2.rootNodeName;
+	var rootNodeProperties = _ref2.rootNodeProperties;
 
-	this.changeRootNode(rootNodeName, rootNodeProperties);
+	if (rootNodeName) {
+		this.changeRootNode(rootNodeName, rootNodeProperties);
+	}
 }
 
 function addNode(nodeName, nodeProperties) {
-	const createNode = privates$2.get(this, 'createNode');
-	const behaviorNode = createNode(nodeName, nodeProperties);
-	const nodeModel = buildNodeModel(behaviorNode, this.getId());
+	var createNode = privates$2.get(this, 'createNode');
+	var behaviorNode = createNode(nodeName, nodeProperties);
+	var nodeModel = buildNodeModel(behaviorNode, this.getId());
 	privates$2.get(this, 'nodes').add(nodeModel);
 	return nodeModel;
 }
 
 function changeRootNode(nodeName, nodeProperties) {
-	const nodes = privates$2.get(this, 'nodes');
-	const createNode = privates$2.get(this, 'createNode');
+	var nodes = privates$2.get(this, 'nodes');
+	var createNode = privates$2.get(this, 'createNode');
 
-	const currentRootNode = this.getRootNode();
+	var currentRootNode = this.getRootNode();
 	nodes.delete(currentRootNode);
 
-	const behaviorRootNode = createNode(nodeName, nodeProperties);
+	var behaviorRootNode = createNode(nodeName, nodeProperties);
 	this.getBehaviorTree().root = behaviorRootNode;
 
-	const newRootNode = buildNodeModel(behaviorRootNode, this.getId());
+	var newRootNode = buildNodeModel(behaviorRootNode, this.getId());
 	nodes.add(newRootNode);
 	privates$2.setProperty(this, 'rootNode', newRootNode);
 
@@ -2188,7 +3249,7 @@ function listNodes() {
 
 function buildNodeModel(behaviorNode, treeId) {
 	return NodeModel.create({
-		behaviorNode, treeId,
+		behaviorNode: behaviorNode, treeId: treeId,
 		id: behaviorNode.id,
 		name: behaviorNode.name,
 		title: behaviorNode.title,
@@ -2197,18 +3258,18 @@ function buildNodeModel(behaviorNode, treeId) {
 }
 
 function toString() {
-	return `${ this.getName() || 'Tree' } [${ this.getId() }]`;
+	return (this.getName() || 'Tree') + ' [' + this.getId() + ']';
 }
 
-const TreeList = stampit({
+var TreeList = stampit({
 	initializers: [initializeTreeMap],
 	methods: {
-		createTree, removeTree,
-		getTree, listTrees
+		createTree: createTree, removeTree: removeTree,
+		getTree: getTree, listTrees: listTrees
 	}
 }).compose(Behavior, Uid, EventEmittable, Persist);
 
-const privates = Private.create();
+var privates = Private.create();
 
 function initializeTreeMap() {
 	var _this = this;
@@ -2216,18 +3277,18 @@ function initializeTreeMap() {
 	privates.init(this);
 	privates.set(this, 'trees', new Map());
 	privates.set(this, 'createNode', function () {
-		return _this.createBehaviorNode(...arguments);
+		return _this.createBehaviorNode.apply(_this, arguments);
 	});
 }
 
 function createTree(rootNodeName, rootNodeProperties) {
 
-	const treeId = `tree-${ rootNodeName }-${ this.createUid() }`;
-	const behaviorTree = this.createBehaviorTree(treeId);
+	var treeId = 'tree-' + rootNodeName + '-' + this.createUid();
+	var behaviorTree = this.createBehaviorTree(treeId);
 
-	const tree = TreeModel({
-		id: treeId, behaviorTree,
-		rootNodeName, rootNodeProperties,
+	var tree = TreeModel({
+		id: treeId, behaviorTree: behaviorTree,
+		rootNodeName: rootNodeName, rootNodeProperties: rootNodeProperties,
 		createNode: privates.get(this, 'createNode')
 	});
 
@@ -2242,7 +3303,7 @@ function getTree(treeId) {
 }
 
 function removeTree(treeId) {
-	const tree = privates.get(this, 'trees').get(treeId);
+	var tree = privates.get(this, 'trees').get(treeId);
 	warning(tree, 'Trying to remove tree with ID `%s` that no longer exists.', treeId);
 
 	this.destroy(PersistType.TREE, treeId);
@@ -2260,17 +3321,17 @@ function listTrees() {
 	return Array.from(privates.get(this, 'trees').values());
 }
 
-const SubjectModel = Model('Subject').getter('id').property('treeId');
+var SubjectModel = Model('Subject').getter('id').property('treeId');
 
-const SubjectList = stampit({
+var SubjectList = stampit({
 	initializers: initializeData,
 	methods: {
-		addSubject, removeSubject,
-		getSubject, listSubjects
+		addSubject: addSubject, removeSubject: removeSubject,
+		getSubject: getSubject, listSubjects: listSubjects
 	}
 }).compose(Uid, EventEmittable, Persist);
 
-const privates$4 = Private.create();
+var privates$4 = Private.create();
 
 function initializeData() {
 	privates$4.init(this);
@@ -2280,8 +3341,8 @@ function initializeData() {
 function addSubject(tree) {
 	invariant(tree, 'The tree model expected for addSubject call for assigning tree to subject.');
 
-	const subjectId = this.createUid();
-	const subject = SubjectModel({
+	var subjectId = this.createUid();
+	var subject = SubjectModel({
 		id: subjectId,
 		treeId: tree.getId()
 	});
@@ -2297,7 +3358,7 @@ function getSubject(subjectId) {
 }
 
 function removeSubject(subjectId) {
-	const subject = privates$4.get(this, 'subjects').get(subjectId);
+	var subject = privates$4.get(this, 'subjects').get(subjectId);
 	warning(subject, 'Trying to remove subject with ID `%s` that no longer exists.', subjectId);
 
 	this.destroy(PersistType.SUBJECT, subjectId);
@@ -2307,23 +3368,45 @@ function removeSubject(subjectId) {
 }
 
 function listSubjects() {
-	let tree = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
+	var tree = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
 
-	const subjects = privates$4.get(this, 'subjects');
+	var subjects = privates$4.get(this, 'subjects');
 	if (tree === null) {
 		return Array.from(subjects.values());
 	}
-	const treeId = tree.getId();
-	const result = [];
-	for (const subject of subjects.values()) {
-		if (subject.getTreeId() === treeId) {
-			result.push(subject);
+	var treeId = tree.getId();
+	var result = [];
+	var _iteratorNormalCompletion = true;
+	var _didIteratorError = false;
+	var _iteratorError = undefined;
+
+	try {
+		for (var _iterator = subjects.values()[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+			var subject = _step.value;
+
+			if (subject.getTreeId() === treeId) {
+				result.push(subject);
+			}
+		}
+	} catch (err) {
+		_didIteratorError = true;
+		_iteratorError = err;
+	} finally {
+		try {
+			if (!_iteratorNormalCompletion && _iterator.return) {
+				_iterator.return();
+			}
+		} finally {
+			if (_didIteratorError) {
+				throw _iteratorError;
+			}
 		}
 	}
+
 	return result;
 }
 
-const Chief = stampit.compose(TreeList, SubjectList);
+var Chief = stampit.compose(TreeList, SubjectList);
 
 module.exports = Chief;
-//# sourceMappingURL=main.js.map
+//# sourceMappingURL=main.browser.js.map

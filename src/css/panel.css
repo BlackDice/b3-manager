@@ -56,6 +56,8 @@
 	display: block;
 }
 
+/* Right link */
+
 .rightLink {
 	position: relative;
 	color: #363636;
@@ -77,6 +79,8 @@
 	bottom: -5px;
 }
 
+/* Input in panel */
+
 .panelInput {
 	display: inline-flex;
 	margin-top: 40px;
@@ -90,4 +94,69 @@
 
 .panelInput button {
 	flex: 0;
+}
+
+/* List */
+
+#treeList, #nodeList, #subjectList {
+	margin-top: 25px;
+}
+
+#panel li {
+	cursor: pointer;
+}
+
+#panel li:hover {
+	color: #c5c5c5;
+}
+
+#treeList li.active {
+	background: #3f4853;
+	padding: 20px;
+	margin: -20px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	font-weight: 500;
+	color: #181818;
+	border-radius: 4px;
+}
+
+#treeList li.active:hover {
+	color: #181818;
+}
+
+#treeList li.active .material-icons {
+	color: #181818;
+}
+
+#treeList li.active .material-icons:hover {
+	color: #c5c5c5;
+}
+
+#treeList li .material-icons {
+	float: right;
+	color: #363636;
+	display: none;
+}
+
+#treeList li:hover .material-icons {
+	display: inline;
+}
+
+#treeList .material-icons:hover {
+	color: #c5c5c5;
+}
+
+.nodeIcon {
+	display: inline-block;
+	width: 40px;
+	height: 40px;
+	opacity: 0.2;
+	margin-top: -10px;
+	margin-bottom: -10px;
+	margin-right: 10px;
+}
+
+#panel li:hover .nodeIcon {
+	opacity: 0.5;
 }

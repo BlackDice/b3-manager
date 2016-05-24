@@ -49,7 +49,15 @@ parseChildren = (children) ->
 		# need get deeper into children? run parseParent on them
 	return childNodes
 
-treeData = parseParent data.relations
-treeConfig.nodeStructure = treeData
+exports.loadTree = (tree) ->
+	console.log 'loading tree', tree.getName()
+	###
+	nodes = tree.listNodes()
+	treeData = parseParent nodes
+	treeConfig.nodeStructure = treeData
 
-new Treant treeConfig
+	new Treant treeConfig
+	###
+
+exports.closeTree = (treeId) ->
+	console.log 'closing tree', treeId
