@@ -1399,8 +1399,11 @@
 
 		this.tree_id = newTree.id;
 
+		panel = document.getElementById('panel')
 		UTIL.addEvent(window, 'resize', function(e){
-			// redraw
+			panelSize = panel.clientWidth;
+			if(! panelSize){console.log('dont use this treant build without the left panel');}
+			newTree._R.setSize(window.innerWidth - panelSize, window.innerHeight);
 			newTree.positionTree();
 		});
 

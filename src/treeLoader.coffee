@@ -3,7 +3,7 @@ data = require './trees/tree.json'
 
 treeConfig = {
 	chart: {
-		container: '#chart',
+		container: '#treant',
 		quantize: 50,
 		rootOrientation: 'NORTH',
 		nodeAlign: 'BOTTOM',
@@ -25,6 +25,8 @@ treeConfig = {
 		}
 	}
 }
+
+activeTreeGraph = null
 
 setTreantAttributes = (node) ->
 	node.text = {name: node.type, desc: ' ', contact: ' '}
@@ -54,10 +56,16 @@ exports.loadTree = (tree) ->
 	###
 	nodes = tree.listNodes()
 	treeData = parseParent nodes
-	treeConfig.nodeStructure = treeData
-
-	new Treant treeConfig
 	###
+	root = {
+		text: { name: "Root" }
+		image: './assets/root.png'
+	}
+	treeConfig.nodeStructure = root
+
+	activeTreeGraph = new Treant treeConfig
 
 exports.closeTree = (treeId) ->
+	activeTreeGraph.destroy()
+	activeTreeGraph = null
 	console.log 'closing tree', treeId

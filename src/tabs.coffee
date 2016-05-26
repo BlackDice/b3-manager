@@ -7,10 +7,14 @@ trees = $('#trees')
 nodes = $('#nodes')
 subjects = $('#nodes')
 
+activeTab = nodes
+
 toggle = ->
+	if activeTab.attr('id') == $(this).attr('id') then return
+	activeTab = $(this)
 	$(this).toggleClass 'active'
 	$(this).siblings().removeClass 'active'
-	tab = $(this).attr 'href'
+	tab = $(this).attr 'data'
 	$('.panelContent').not(tab).css 'display', 'none'
 	$(tab).show()
 

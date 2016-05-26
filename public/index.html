@@ -15,9 +15,9 @@
 	<body>
 		<div id='panel'>
 			<div id='tabs'>
-				<a href='#trees' id='tab-trees' class='tab active'></a>
-				<a href='#nodes' id='tab-nodes' class='tab'></a>
-				<a href='#subjects' id='tab-subjects' class='tab'></a>
+				<div data='#trees' id='tab-trees' class='tab active'></div>
+				<div data='#nodes' id='tab-nodes' class='tab'></div>
+				<div data='#subjects' id='tab-subjects' class='tab'></div>
 			</div>
 			<div id='trees' class='panelContent active'>
 				<a href='#' id='addTree' class='rightLink'>Add<i class='material-icons md-36'>add</i></a>
@@ -38,7 +38,10 @@
 				<ul id='subjectList'></ul>
 			</div>
 		</div>
-		<div id='chart'></div>
+		<div id='chart'>
+			<h1 id='activeTreeName'></h1>
+			<div id='treant'></div>
+		</div>
 		<script src='bundle.js'></script>
 	</body>
 </html>

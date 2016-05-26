@@ -102,9 +102,6 @@
   "no_throwing_strings": {
     "level": "error"
   },
-  "no_trailing_semicolons": {
-    "level": "error"
-  },
   "no_trailing_whitespace": {
     "level": "error",
     "allowed_in_comments": false,

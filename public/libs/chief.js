@@ -9,6 +9,25 @@ var uid = _interopDefault(require('uid'));
 var _debug = _interopDefault(require('debug'));
 var events = require('events');
 
+var babelHelpers = {};
+
+babelHelpers.extends = Object.assign || function (target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i];
+
+    for (var key in source) {
+      if (Object.prototype.hasOwnProperty.call(source, key)) {
+        target[key] = source[key];
+      }
+    }
+  }
+
+  return target;
+};
+
+babelHelpers;
+
+
 var __commonjs_global = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : this;
 function __commonjs(fn, module) { return module = { exports: {} }, fn(module, module.exports, __commonjs_global), module.exports; }
 
@@ -2632,7 +2651,7 @@ var Private = stampit().init(function (options, _ref) {
 var Behavior = stampit({
 	initializers: [initializeNodeMap],
 	methods: {
-		registerBehaviorNode: registerBehaviorNode, createBehaviorNode: createBehaviorNode,
+		registerBehaviorNode: registerBehaviorNode, createBehaviorNode: createBehaviorNode, listBehaviorNodes: listBehaviorNodes,
 		createBehaviorTree: createBehaviorTree
 	}
 }).compose(Uid);
@@ -2683,6 +2702,16 @@ function createBehaviorNode(nodeName) {
 	}
 
 	return behaviorNode;
+}
+
+function listBehaviorNodes() {
+	return Array.from(privates$1.get(this, 'nodes').values()).map(function (behaviorNode) {
+		return {
+			name: behaviorNode.prototype.name,
+			category: behaviorNode.prototype.category,
+			parameters: behaviorNode.prototype.parameters
+		};
+	});
 }
 
 function createBehaviorTree(id) {
@@ -3183,7 +3212,7 @@ function setupPropertyAccessor(privates) {
 
 var privates$3 = ModelPrivate.create();
 
-var NodeModel = Model('Node', privates$3).getter('id').getter('treeId').getter('name').getter('title').getter('description').getter('behaviorNode').methods({ getProperties: getProperties }).init(initializeNodeModel);
+var NodeModel = Model('Node', privates$3).getter('id').getter('treeId').getter('name').getter('title').getter('description').getter('children').getter('parent').getter('behaviorNode').methods({ getProperties: getProperties }).init(initializeNodeModel);
 
 function initializeNodeModel(_ref) {
 	var behaviorNode = _ref.behaviorNode;
@@ -3406,7 +3435,27 @@ function listSubjects() {
 	return result;
 }
 
-var Chief = stampit.compose(TreeList, SubjectList);
+
+
+var models = Object.freeze({
+	NodeModel: NodeModel,
+	SubjectModel: SubjectModel,
+	TreeModel: TreeModel
+});
+
+
+
+var core = Object.freeze({
+	EventEmittable: EventEmittable,
+	Uid: Uid,
+	Model: Uid
+});
+
+var stamps = babelHelpers.extends({
+	TreeList: TreeList, SubjectList: SubjectList, Behavior: Behavior, Persist: Persist
+}, models, core);
+
+var Chief = stampit.compose(TreeList, SubjectList).staticProperties({ stamps: stamps });
 
 module.exports = Chief;
 //# sourceMappingURL=main.browser.js.map

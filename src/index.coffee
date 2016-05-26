@@ -19,6 +19,8 @@ $treeForm = $('#trees .panelInput')
 $treeInput = $('#trees input')
 $treeList = $('#treeList')
 $nodeList = $('#nodeList')
+activeTreeName  = document.getElementById 'activeTreeName'
+treantContainer = document.getElementById 'treant'
 
 $treeInput.on 'keyup', (evt) ->
 	if evt.keyCode is 13
@@ -44,6 +46,21 @@ loadTrees = ->
 		$li.attr 'data', tree.getId()
 		$li.on 'click', toggleTree tree, $li
 
+updateActiveTreeName = ->
+	activeTree = chiefAPI.getTree activeTreeId
+	activeTreeName.innerHTML = activeTree.getName()
+	centerHeadline()
+
+centerHeadline = ->
+	tileSize = 50
+	center = (treantContainer.clientWidth / 2) - (tileSize / 2)
+	quantized = Math.floor(center / tileSize) * tileSize
+	textCenter = quantized - (activeTreeName.clientWidth / 2) + (tileSize / 2)
+	activeTreeName.style.left = textCenter + 'px'
+
+window.addEventListener 'resize', ->
+	centerHeadline()
+
 toggleTree = (tree, $li) ->
 	return ->
 		loadingId = tree.getId()
@@ -66,6 +83,8 @@ toggleTree = (tree, $li) ->
 			activeTreeId = loadingId
 			$li.addClass 'active'
 
+		updateActiveTreeName()
+
 addTree = (name) ->
 	newTree = chiefAPI.createTree()
 	newTree.setName name
@@ -73,17 +92,9 @@ addTree = (name) ->
 
 # Node list
 
-list = [ # temporary
-	{name: 'Sequence',	category: 'Composites'}
-	{name: 'Priority',	category: 'Composites'}
-	{name: 'Action',	category: 'Actions'}
-	{name: 'Condition',	category: 'Conditions'}
-]
-
 loadNodes = ->
-	#list = chiefAPI.listBehaviorNodes()
+	list = chiefAPI.listBehaviorNodes()
 	sortedList = _.groupBy list, 'category'
-	console.log sortedList
 
 	for key, categoryData of sortedList
 		$('<h5>' + key + '</h5>').appendTo $nodeList
@@ -100,7 +111,6 @@ loadNodes = ->
 loadNodes()
 
 
-
 #loadTrees()
 # Mock list
 addTree 'Rat'
@@ -114,3 +124,7 @@ addTree 'Rest'
 addTree 'Combat'
 addTree 'Chase'
 addTree 'Flight'
+
+$('#panel').get(0).scrollTop = 0
+$('#panel').scrollTop 0
+$('body, html, #panel').scrollTop 0

@@ -1,8 +1,11 @@
 
 #panel {
-	min-width: 400px;
+	width: 350px;
+	min-width: 350px;
 	height: 100%;
 	background-color: #202020;
+	overflow: scroll;
+	overflow-x: hidden;
 }
 
 #tabs {
@@ -12,35 +15,36 @@
 }
 
 .tab {
-	cursor: pointer;
 	flex: 1;
+	display: inline;
+	cursor: pointer;
 	background-image: url('/assets/tabs.png');
 	background-repeat: no-repeat;
 	background-color: #181818;
 }
 
 #tab-trees {
-	background-position: bottom left;
+	background-position: -10px bottom;
 }
 
 #tab-nodes {
-	background-position: bottom center;
+	background-position: center bottom;
 }
 
 #tab-subjects {
-	background-position: bottom right;
+	background-position: -275px bottom;
 }
 
 #tab-trees.active {
-	background-position: top left;
+	background-position: -10px top;
 }
 
 #tab-nodes.active {
-	background-position: top center;
+	background-position: center top;
 }
 
 #tab-subjects.active {
-	background-position: top right;
+	background-position: -275px top;
 }
 
 .tab.active {
