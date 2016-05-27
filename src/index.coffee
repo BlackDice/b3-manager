@@ -10,7 +10,6 @@ require './tabs'
 treeLoader = require './treeLoader'
 chief = require '../public/libs/chief'
 chiefAPI = chief.create()
-window.chiefAPI = chiefAPI
 
 
 # Panel input
@@ -36,6 +35,7 @@ $('#addTree').on 'click', ->
 # Tree list
 
 activeTreeId = null
+activeTree = null
 
 loadTrees = ->
 	list = chiefAPI.listTrees()
@@ -44,7 +44,7 @@ loadTrees = ->
 		$li = $('<li>' + tree.getName() + '</li>').appendTo $treeList
 		$("<i>border_color</i>").addClass('material-icons').appendTo $li
 		$li.attr 'data', tree.getId()
-		$li.on 'click', toggleTree tree, $li
+		$li.on 'click', toggleTree(tree, $li)
 
 updateActiveTreeName = ->
 	activeTree = chiefAPI.getTree activeTreeId
@@ -60,6 +60,17 @@ centerHeadline = ->
 
 window.addEventListener 'resize', ->
 	centerHeadline()
+
+handleTreeChange = (change) ->
+	switch change.action
+		when 'createRoot'
+			activeTree.changeRootNode change.nodeName
+		when 'addNode'
+			node = activeTree.addNode change.nodeName
+			parent = activeTree.getNode change.parentId
+			parent.addChild node
+
+	# REDRAW TREE
 
 toggleTree = (tree, $li) ->
 	return ->
@@ -79,7 +90,7 @@ toggleTree = (tree, $li) ->
 
 		# load if new
 		if activeTreeId != loadingId
-			treeLoader.loadTree tree
+			treeLoader.loadTree tree, handleTreeChange
 			activeTreeId = loadingId
 			$li.addClass 'active'
 
@@ -92,21 +103,26 @@ addTree = (name) ->
 
 # Node list
 
+dragNode = (evt) ->
+	evt.dataTransfer.setData 'text/plain', evt.target.getAttribute 'data'
+
 loadNodes = ->
 	list = chiefAPI.listBehaviorNodes()
 	sortedList = _.groupBy list, 'category'
+	order = ['composite', 'decorator', 'action']
 
-	for key, categoryData of sortedList
-		$('<h5>' + key + '</h5>').appendTo $nodeList
+	for key in order
+		category = sortedList[key]
+		$('<h5>' + key + 's' + '</h5>').appendTo $nodeList
 		$ul = $('<ul></ul>').appendTo $nodeList
 
-		for key, node of categoryData
-			$li = $('<li></li>').appendTo $ul
+		for key, node of category
+			$li = $('<li></li>').attr('draggable', 'true').appendTo $ul
 			$img = $('<span></span>').addClass('nodeIcon').appendTo $li
-			$img.css('background-image', "url('./assets/" + node.name.toLowerCase() + ".png'");
+			$img.css('background-image', "url('./assets/nodes/" + node.name.toLowerCase() + ".png'");
 			$label = $('<span>' + node.name + '</span>').appendTo $li
 			$li.attr 'data', node.name
-			#$li.on 'click'
+			$li.on 'dragstart', (evt) -> dragNode(evt)
 
 loadNodes()
 

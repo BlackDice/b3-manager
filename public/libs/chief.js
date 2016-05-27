@@ -31,6 +31,33 @@ babelHelpers;
 var __commonjs_global = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : this;
 function __commonjs(fn, module) { return module = { exports: {} }, fn(module, module.exports, __commonjs_global), module.exports; }
 
+var babelpolyfill = __commonjs(function (module) {
+/* eslint-disable */
+
+var nodePolyfills = {
+	// '<= 0.x': [
+	// 	'babel-polyfill',
+	// ],
+	'<= 5.x': ['core-js/fn/reflect/apply', 'core-js/fn/reflect/construct', 'core-js/fn/reflect/delete-property'],
+	'<= 6.x': ['core-js/fn/object/values']
+};
+
+// var semver = require('semver');
+
+function loadPolyfillForVersion(version) {
+	if (version === undefined) {
+		version = '0';
+	}
+	for (var nodeVersion in nodePolyfills) {
+		// if (semver.satisfies(version, nodeVersion)) {
+		nodePolyfills[nodeVersion].forEach(require);
+		// }
+	}
+}
+
+module.exports = loadPolyfillForVersion;
+});
+
 var isObjectLike = __commonjs(function (module) {
 /**
  * Checks if `value` is object-like. A value is object-like if it's not `null`
@@ -3195,12 +3222,14 @@ function setupPropertyAccessor(privates) {
 		}
 
 		function initializePropertyValue(data) {
+			var initValue = defaultValue;
 			if (data && data.hasOwnProperty(propertyName)) {
-				privates.setProperty(this, propertyName, data[propertyName]);
+				initValue = data[propertyName];
 			} else if (_isFunction(defaultValue)) {
 				var obtainedValue = Reflect.apply(defaultValue, this, [data]);
-				privates.setProperty(this, propertyName, obtainedValue);
+				initValue = obtainedValue;
 			}
+			privates.setProperty(this, propertyName, initValue);
 		}
 
 		return this.compose({
@@ -3212,7 +3241,10 @@ function setupPropertyAccessor(privates) {
 
 var privates$3 = ModelPrivate.create();
 
-var NodeModel = Model('Node', privates$3).getter('id').getter('treeId').getter('name').getter('title').getter('description').getter('children').getter('parent').getter('behaviorNode').methods({ getProperties: getProperties }).init(initializeNodeModel);
+var NodeModel = Model('Node', privates$3).getter('id').getter('treeId').getter('name').getter('title').getter('description').getter('children').getter('parent').getter('behaviorNode').methods({
+	addChild: addChild, removeChild: removeChild, getChildren: getChildren,
+	ensureChildren: ensureChildren, getProperties: getProperties
+}).init(initializeNodeModel);
 
 function initializeNodeModel(_ref) {
 	var behaviorNode = _ref.behaviorNode;
@@ -3224,11 +3256,42 @@ function getProperties() {
 	return babelHelpers.extends({}, this.getBehaviorNode().properties);
 }
 
+function getChildren() {
+	var children = privates$3.getProperty(this, 'children');
+	if (children === null) {
+		return [];
+	}
+	return Array.from(children);
+}
+
+function addChild(childNode) {
+	var children = this.ensureChildren();
+	children.add(childNode);
+	privates$3.setProperty(childNode, 'parent', this);
+}
+
+function removeChild(childNode) {
+	var children = privates$3.getProperty(this, 'children');
+	if (children !== null) {
+		children.delete(childNode);
+		privates$3.setProperty(childNode, 'parent', null);
+	}
+}
+
+function ensureChildren() {
+	var children = privates$3.getProperty(this, 'children');
+	if (children === null) {
+		children = new Set();
+		privates$3.setProperty(this, 'children', children);
+	}
+	return children;
+}
+
 var privates$2 = ModelPrivate.create();
 
 var TreeModel = Model('Tree', privates$2).getter('id').getter('rootNode').getter('behaviorTree').property('name', 'New tree').property('description').methods({
-	addNode: addNode, changeRootNode: changeRootNode,
-	listNodes: listNodes, toString: toString
+	addNode: addNode, removeNode: removeNode, getNode: getNode, listNodes: listNodes,
+	changeRootNode: changeRootNode, toString: toString
 }).init(initializeTreeModel, initializeRootNode);
 
 function initializeTreeModel(_ref) {
@@ -3253,6 +3316,46 @@ function addNode(nodeName, nodeProperties) {
 	var nodeModel = buildNodeModel(behaviorNode, this.getId());
 	privates$2.get(this, 'nodes').add(nodeModel);
 	return nodeModel;
+}
+
+function removeNode(nodeModel) {
+	privates$2.get(this, 'nodes').delete(nodeModel);
+	var parent = nodeModel.getParent();
+	if (parent !== null) {
+		parent.removeChild(nodeModel);
+	}
+}
+
+function getNode(nodeId) {
+	var nodes = privates$2.get(this, 'nodes');
+	var _iteratorNormalCompletion = true;
+	var _didIteratorError = false;
+	var _iteratorError = undefined;
+
+	try {
+		for (var _iterator = nodes[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+			var node = _step.value;
+
+			if (node.getId() === nodeId) {
+				return node;
+			}
+		}
+	} catch (err) {
+		_didIteratorError = true;
+		_iteratorError = err;
+	} finally {
+		try {
+			if (!_iteratorNormalCompletion && _iterator.return) {
+				_iterator.return();
+			}
+		} finally {
+			if (_didIteratorError) {
+				throw _iteratorError;
+			}
+		}
+	}
+
+	return null;
 }
 
 function changeRootNode(nodeName, nodeProperties) {
@@ -3435,27 +3538,7 @@ function listSubjects() {
 	return result;
 }
 
-
-
-var models = Object.freeze({
-	NodeModel: NodeModel,
-	SubjectModel: SubjectModel,
-	TreeModel: TreeModel
-});
-
-
-
-var core = Object.freeze({
-	EventEmittable: EventEmittable,
-	Uid: Uid,
-	Model: Uid
-});
-
-var stamps = babelHelpers.extends({
-	TreeList: TreeList, SubjectList: SubjectList, Behavior: Behavior, Persist: Persist
-}, models, core);
-
-var Chief = stampit.compose(TreeList, SubjectList).staticProperties({ stamps: stamps });
+var Chief = stampit.compose(TreeList, SubjectList);
 
 module.exports = Chief;
 //# sourceMappingURL=main.browser.js.map

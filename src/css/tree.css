@@ -21,6 +21,15 @@
 	box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.3);
 }
 
+.node * {
+	pointer-events: none;
+}
+
+.node.dragover {
+	background: #484848;
+	border: 2px #545454 solid;
+}
+
 .node .node-name {
 	font-weight: bold;
 	font-size: 12pt;
