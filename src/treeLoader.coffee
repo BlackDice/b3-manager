@@ -6,8 +6,8 @@ treeConfig = {
 	quantize: 50,
 	rootOrientation: 'NORTH',
 	nodeAlign: 'BOTTOM',
-	levelSeparation: 60,
-	siblingSeparation: 60,
+	levelSeparation: 50,
+	siblingSeparation: 50,
 	node: {
 		collapsable: true
 	}
@@ -26,6 +26,31 @@ treeConfig = {
 
 activeTreeGraph = null
 
+registerRightClick = (treantConfig, callback) ->
+
+	$contextmenu = $('#contextmenu')
+	$container = $(treantConfig.container)
+	highlightedEl = null
+
+	clearHighlight = ->
+		if highlightedEl
+			highlightedEl.classList.remove 'highlight'
+
+	$container.on 'contextmenu', (evt) ->
+		if evt.target.classList.contains 'node'
+			evt.preventDefault()
+			$contextmenu.show().css({
+				top: evt.clientY - 20,
+				left: evt.clientX - 20
+			})
+		evt.target.classList.add 'highlight'
+		clearHighlight()
+		highlightedEl = evt.target
+
+	document.addEventListener 'click', ->
+		$contextmenu.hide()
+		clearHighlight()
+		#callback {action: 'removeNode', nodeId: }
 
 registerDragAndDrop = (treantConfig, callback) ->
 
@@ -33,46 +58,53 @@ registerDragAndDrop = (treantConfig, callback) ->
 	$container.on 'dragover', (evt) ->
 		if evt.target.classList.contains 'node'
 			evt.preventDefault()
-			evt.target.classList.add 'dragover'
+			evt.target.classList.add 'highlight'
 
 	$container.on 'dragleave', (evt) ->
 		if evt.target.classList.contains 'node'
-			evt.target.classList.remove 'dragover'
+			evt.target.classList.remove 'highlight'
 
 	$container.on 'drop', (evt) ->
 		if evt.target.classList.contains 'node'
 			evt.preventDefault()
-			evt.target.classList.remove 'dragover'
+			evt.target.classList.remove 'highlight'
 
 			childName = evt.dataTransfer.getData 'text'
-			parentId = evt.target.id
+			parentCId = evt.target.getAttribute 'cnodeid'
+			parentTId = parseInt evt.target.getAttribute 'tnodeid'
 
 			# createRoot, addNode, changeParent
-			if parentId == 'home'
+			if parentCId == 'home'
 				callback {action: 'createRoot', nodeName: childName}
 			else
-				callback {action: 'addNode', nodeName: childName, parentId: parentId}
+				callback {action: 'addNode', nodeName: childName, parentCId: parentCId, parentTId: parentTId}
 
-mapNode = (node) ->
+createTNode = (cNode) ->
 	tNode = {
-		text: {name: node.getName(), desc: ' ', contact: ' '}
-		image: './assets/nodes/' + node.getName().toLowerCase() + '.png'
+		text: {name: cNode.getName(), desc: ' ', contact: ' '}
+		image: './assets/nodes/' + cNode.getName().toLowerCase() + '.png'
 		collapsed: false
 		HTMLclass: 'none'			# running, failure, error, success
-		HTMLid: node.getId()
+		cNodeId: cNode.getId()
 	}
 	# node.getDescription()
-	return tNode
 
-exports.loadTree = (tree, callback) ->
-	console.log 'loading tree', tree.getName()
+exports.redrawTree = ->
+	activeTreeGraph.redraw()
 
-	tree.changeRootNode 'Sequence'
-	rootNode = tree.getRootNode()
-	rootNode.addChild tree.addNode('Failer')
-	rootNode.addChild tree.addNode('Succeeder')
+exports.addNodeToTree = (cNode, parentTId) ->
+	tNode = createTNode cNode
+	activeTreeGraph.addNode tNode, parentTId
 
-	cNodes = tree.listNodes()
+exports.loadTree = (cTree, callback) ->
+	console.log 'loading tree', cTree.getName()
+
+	cTree.changeRootNode 'Sequence'
+	rootNode = cTree.getRootNode()
+	rootNode.addChild cTree.addNode('Failer')
+	rootNode.addChild cTree.addNode('Succeeder')
+
+	cNodes = cTree.listNodes()
 
 	home = {
 		text: { name: 'Home' }
@@ -82,7 +114,7 @@ exports.loadTree = (tree, callback) ->
 
 	nodeMap = {}
 	for cNode in cNodes
-		nodeMap[cNode.getId()] = mapNode cNode
+		nodeMap[cNode.getId()] = createTNode cNode
 
 	for cNode in cNodes
 		cParentNode = cNode.getParent()
@@ -93,16 +125,13 @@ exports.loadTree = (tree, callback) ->
 		else
 			tNode.parent = home
 
-	console.log nodeMap
-
 	nodeStructure = _.values nodeMap
 	nodeStructure.unshift home
 	nodeStructure.unshift treeConfig
 
-	console.log nodeStructure
-
 	activeTreeGraph = new Treant nodeStructure
 	registerDragAndDrop treeConfig, callback
+	registerRightClick treeConfig, callback
 
 
 exports.closeTree = (treeId) ->

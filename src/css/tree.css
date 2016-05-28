@@ -25,9 +25,9 @@
 	pointer-events: none;
 }
 
-.node.dragover {
-	background: #484848;
-	border: 2px #545454 solid;
+.node.highlight {
+	background: #4C5C70;
+	border: 2px #516C8C solid;
 }
 
 .node .node-name {

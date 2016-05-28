@@ -37,7 +37,7 @@ $('#addTree').on 'click', ->
 activeTreeId = null
 activeTree = null
 
-loadTrees = ->
+loadTreeList = ->
 	list = chiefAPI.listTrees()
 	$treeList.empty()
 	for tree in list
@@ -64,13 +64,15 @@ window.addEventListener 'resize', ->
 handleTreeChange = (change) ->
 	switch change.action
 		when 'createRoot'
-			activeTree.changeRootNode change.nodeName
+			cNode = activeTree.changeRootNode change.nodeName
+			treeLoader.addNodeToTree cNode, 0
 		when 'addNode'
-			node = activeTree.addNode change.nodeName
-			parent = activeTree.getNode change.parentId
-			parent.addChild node
+			cNode = activeTree.addNode change.nodeName
+			cParent = activeTree.getNode change.parentCId
+			cParent.addChild cNode
+			treeLoader.addNodeToTree cNode, change.parentTId
 
-	# REDRAW TREE
+	treeLoader.redrawTree()
 
 toggleTree = (tree, $li) ->
 	return ->
@@ -99,7 +101,7 @@ toggleTree = (tree, $li) ->
 addTree = (name) ->
 	newTree = chiefAPI.createTree()
 	newTree.setName name
-	loadTrees()
+	loadTreeList()
 
 # Node list
 
@@ -127,7 +129,7 @@ loadNodes = ->
 loadNodes()
 
 
-#loadTrees()
+#loadTreeList()
 # Mock list
 addTree 'Rat'
 addTree 'Human'

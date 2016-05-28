@@ -466,10 +466,10 @@
 					node.hide(hidePoint);
 
 				} else if(node.positioned) {
-					// node is allready positioned,
+					// node is already positioned
 					node.show();
-				} else { // inicijalno stvaranje nodeova, postavi lokaciju
-
+				} else {
+					// initial position
 					node.nodeDOM.style.left = node.X + 'px';
 					node.nodeDOM.style.top = node.Y + 'px';
 
@@ -575,7 +575,6 @@
 		},
 
 		animatePath: function(path, pathString) {
-
 
 			if (path.hidden && pathString.charAt(0) !== "_") { // path will be shown, so show it
 				path.show();
@@ -743,13 +742,13 @@
 
 		var self = this;
 
-		function itterateChildren(node, parentId) {
+		function iterateChildren(node, parentId) {
 
 			var newNode = self.createNode(node, parentId, tree, null);
 
-			if(node.children) {
+			newNode.children = [];
 
-				newNode.children = [];
+			if(node.children) {
 
 				// pseudo node is used for descending children to the next level
 				if(node.childrenDropLevel && node.childrenDropLevel > 0) {
@@ -764,7 +763,7 @@
 
 				var stack = (node.stackChildren && !self.hasGrandChildren(node)) ? newNode.id : null;
 
-				// svildren are position on separate leves, one beneeth the other
+				// children are position on separate leves, one beneeth the other
 				if (stack !== null) { newNode.stackChildren = []; }
 
 				for (var i = 0, len = node.children.length; i < len ; i++) {
@@ -773,7 +772,7 @@
 						newNode =  self.createNode(node.children[i], newNode.id, tree, stack);
 						if((i + 1) < len) newNode.children = []; // last node cant have children
 					} else {
-						itterateChildren(node.children[i], newNode.id);
+						iterateChildren(node.children[i], newNode.id);
 					}
 				}
 			}
@@ -781,7 +780,7 @@
 
 		if (tree.CONFIG.animateOnInit) nodeStructure.collapsed = true;
 
-		itterateChildren( nodeStructure, -1); // root node
+		iterateChildren( nodeStructure, -1); // root node
 
 		this.createGeometries(tree);
 	};
@@ -869,6 +868,8 @@
 		this.pseudo = nodeStructure === 'pseudo' || nodeStructure['pseudo'];
 
 		this.image = nodeStructure.image;
+
+		this.cNodeId = nodeStructure.cNodeId;
 
 		this.link = UTIL.createMerge( tree.CONFIG.node.link,  nodeStructure.link);
 
@@ -1156,12 +1157,18 @@
 		node.className = (!this.pseudo) ? TreeNode.CONFIG.nodeHTMLclass : 'pseudo';
 		if(this.nodeHTMLclass && !this.pseudo) node.className += ' ' + this.nodeHTMLclass;
 
-		if(this.nodeHTMLid) node.id = this.nodeHTMLid;
-
 		if(this.link.href) {
 			node.href = this.link.href;
 			node.target = this.link.target;
 		}
+
+		if(this.cNodeId) {
+			node.setAttribute('cnodeid', this.cNodeId);
+		}
+
+		node.setAttribute('tnodeid', this.id);
+
+		if(this.nodeHTMLid) node.id = this.nodeHTMLid;
 
 		/////////// CREATE innerHTML //////////////
 		if (!this.pseudo) {
@@ -1259,7 +1266,7 @@
 		animateOnInit: false,
 		animateOnInitDelay: 500,
 
-		padding: 15, // the difference is seen only when the scrollbar is shown
+		padding: 50, // the difference is seen only when the scrollbar is shown
 		scrollbar: 'native', // "native" || "fancy" || "None" (PS: "fancy" requires jquery and perfect-scrollbar)
 
 		connectors: {
@@ -1398,6 +1405,7 @@
 		newTree.positionTree(callback);
 
 		this.tree_id = newTree.id;
+		this.tree = newTree
 
 		panel = document.getElementById('panel')
 		UTIL.addEvent(window, 'resize', function(e){
@@ -1407,6 +1415,18 @@
 			newTree.positionTree();
 		});
 
+	};
+
+	Treant.prototype.addNode = function(node, parentId) {
+		console.log('addnode fired');
+		tNode = this.tree.nodeDB.createNode(node, parentId, this.tree, null);
+		console.log(this.tree.nodeDB)
+		tNode.createGeometry(this.tree);
+	};
+
+	Treant.prototype.redraw = function(node) {
+		console.log('redraw fired');
+		this.tree.positionTree();
 	};
 
 	Treant.prototype.destroy = function() {
