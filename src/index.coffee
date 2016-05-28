@@ -71,6 +71,9 @@ handleTreeChange = (change) ->
 			cParent = activeTree.getNode change.parentCId
 			cParent.addChild cNode
 			treeLoader.addNodeToTree cNode, change.parentTId
+		when 'removeNode'
+			cNode = activeTree.removeNode change.cNodeId
+			# 2do: remove children as well
 
 	treeLoader.redrawTree()
 

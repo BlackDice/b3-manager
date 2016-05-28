@@ -703,7 +703,7 @@
 		// algorithm works from left to right, so previous processed node will be left neigbor of the next node
 		setNeighbors: function(node, level) {
 
-			node.leftNeighborId = this.lastNodeOnLevel[level];
+			if(this.lastNodeOnLevel[level])	node.leftNeighborId = this.lastNodeOnLevel[level];
 			if(node.leftNeighborId) node.leftNeighbor().rightNeighborId = node.id;
 			this.lastNodeOnLevel[level] = node.id;
 		},
@@ -811,6 +811,32 @@
 			}
 
 			return node;
+		},
+
+		removeNode: function(nodeId, tree) {
+
+			if(nodeId > 0){
+				// remove from DB and DOM
+				node = this.db[nodeId];
+				index = this.db.indexOf(nodeId);
+				this.db.splice(index, 1);
+				node.nodeDOM.parentElement.removeChild(node.nodeDOM);
+
+				// remove connection
+				connection = tree.connectionStore[nodeId]
+				if(connection){
+					connection.remove();
+					delete connection;
+				}
+
+				// remove from parent
+				parent = this.get( node.parentId );
+				if(parent){
+					parentChildren = parent.children;
+					childIndex = parentChildren.indexOf(nodeId);
+					parentChildren.splice(childIndex, 1);
+				}
+			}
 		},
 
 		getMinMaxCoord: function( dim, parent, MinMax ) { // used for getting the dimensions of the tree, dim = 'X' || 'Y'
@@ -1418,10 +1444,18 @@
 	};
 
 	Treant.prototype.addNode = function(node, parentId) {
-		console.log('addnode fired');
 		tNode = this.tree.nodeDB.createNode(node, parentId, this.tree, null);
-		console.log(this.tree.nodeDB)
 		tNode.createGeometry(this.tree);
+	};
+
+	Treant.prototype.removeNode = function(nodeId) {
+		tNode = this.tree.nodeDB.removeNode(nodeId, this.tree);
+		this.tree.positionTree();
+	};
+
+	Treant.prototype.getNodeParameter = function(nodeId, attr) {
+		tNode = this.tree.nodeDB.get(nodeId);
+		return tNode[attr];
 	};
 
 	Treant.prototype.redraw = function(node) {

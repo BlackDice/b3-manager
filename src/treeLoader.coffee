@@ -28,9 +28,17 @@ activeTreeGraph = null
 
 registerRightClick = (treantConfig, callback) ->
 
-	$contextmenu = $('#contextmenu')
 	$container = $(treantConfig.container)
+	$contextmenu = $('#contextmenu')
+	$left = $('#commandMoveLeft')
+	$right = $('#commandMoveRight')
+	$erase = $('#commandErase')
 	highlightedEl = null
+
+	clearDisables = ->
+		$left.removeClass 'disabled'
+		$right.removeClass 'disabled'
+		$erase.removeClass 'disabled'
 
 	clearHighlight = ->
 		if highlightedEl
@@ -38,19 +46,44 @@ registerRightClick = (treantConfig, callback) ->
 
 	$container.on 'contextmenu', (evt) ->
 		if evt.target.classList.contains 'node'
+			# visual changes
+			clearDisables()
 			evt.preventDefault()
+			clearHighlight()
+			evt.target.classList.add 'highlight'
+			highlightedEl = evt.target
+
+			# id's and positions
+			cNodeId = evt.target.getAttribute 'cnodeid'
+			tNodeId = parseInt evt.target.getAttribute 'tnodeid'
+			$contextmenu.attr 'cnodeid', cNodeId
+			$contextmenu.attr 'tnodeid', tNodeId
 			$contextmenu.show().css({
 				top: evt.clientY - 20,
 				left: evt.clientX - 20
 			})
-		evt.target.classList.add 'highlight'
-		clearHighlight()
-		highlightedEl = evt.target
+
+			# disable those not applicable
+			leftNeighborCId = parseInt activeTreeGraph.getNodeParameter tNodeId, 'leftNeighborId'
+			rightNeighborCId = parseInt activeTreeGraph.getNodeParameter tNodeId, 'rightNeighborId'
+			unless leftNeighborCId
+				$left.addClass 'disabled'
+			unless rightNeighborCId
+				$right.addClass 'disabled'
+			if tNodeId == 0
+				$erase.addClass 'disabled'
+
+	$erase.on 'click', (evt) ->
+		cNodeId = $(this).parent().attr 'cnodeid'
+		tNodeId = $(this).parent().attr 'tnodeid'
+
+		removeTNode tNodeId
+		callback {action: 'removeNode', cNodeId: cNodeId}
 
 	document.addEventListener 'click', ->
 		$contextmenu.hide()
 		clearHighlight()
-		#callback {action: 'removeNode', nodeId: }
+		clearDisables()
 
 registerDragAndDrop = (treantConfig, callback) ->
 
@@ -89,12 +122,15 @@ createTNode = (cNode) ->
 	}
 	# node.getDescription()
 
-exports.redrawTree = ->
-	activeTreeGraph.redraw()
+removeTNode = (tNodeId) ->
+	activeTreeGraph.removeNode tNodeId
 
 exports.addNodeToTree = (cNode, parentTId) ->
 	tNode = createTNode cNode
 	activeTreeGraph.addNode tNode, parentTId
+
+exports.redrawTree = ->
+	activeTreeGraph.redraw()
 
 exports.loadTree = (cTree, callback) ->
 	console.log 'loading tree', cTree.getName()

@@ -144,7 +144,11 @@ button:hover {
 }
 
 #contextmenu div:hover {
-	background: #4C5C70;
+	background: #577499;
+}
+
+#contextmenu #commandErase:hover {
+	background: #AD4640;
 }
 
 #contextmenu span {
@@ -153,5 +157,11 @@ button:hover {
 	left: 45px;
 }
 
-#contextmenu i {
+#contextmenu .disabled {
+	opacity: 0.2;
+	cursor: default;
+}
+
+#contextmenu .disabled:hover {
+	background: none !important;
 }
