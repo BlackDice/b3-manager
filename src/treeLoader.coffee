@@ -5,7 +5,7 @@ treeConfig = {
 	container: '#treant',
 	quantize: 50,
 	rootOrientation: 'NORTH',
-	nodeAlign: 'BOTTOM',
+	nodeAlign: 'TOP',
 	levelSeparation: 50,
 	siblingSeparation: 50,
 	node: {
@@ -75,9 +75,9 @@ registerRightClick = (treantConfig, callback) ->
 
 	$erase.on 'click', (evt) ->
 		cNodeId = $(this).parent().attr 'cnodeid'
-		tNodeId = $(this).parent().attr 'tnodeid'
+		tNodeId = parseInt $(this).parent().attr 'tnodeid'
 
-		removeTNode tNodeId
+		activeTreeGraph.removeNode tNodeId
 		callback {action: 'removeNode', cNodeId: cNodeId}
 
 	document.addEventListener 'click', ->
@@ -107,7 +107,7 @@ registerDragAndDrop = (treantConfig, callback) ->
 			parentTId = parseInt evt.target.getAttribute 'tnodeid'
 
 			# createRoot, addNode, changeParent
-			if parentCId == 'home'
+			if parentCId == 'start'
 				callback {action: 'createRoot', nodeName: childName}
 			else
 				callback {action: 'addNode', nodeName: childName, parentCId: parentCId, parentTId: parentTId}
@@ -122,19 +122,15 @@ createTNode = (cNode) ->
 	}
 	# node.getDescription()
 
-removeTNode = (tNodeId) ->
-	activeTreeGraph.removeNode tNodeId
-
 exports.addNodeToTree = (cNode, parentTId) ->
 	tNode = createTNode cNode
 	activeTreeGraph.addNode tNode, parentTId
+	#console.log activeTreeGraph.tree.nodeDB
 
 exports.redrawTree = ->
 	activeTreeGraph.redraw()
 
 exports.loadTree = (cTree, callback) ->
-	console.log 'loading tree', cTree.getName()
-
 	cTree.changeRootNode 'Sequence'
 	rootNode = cTree.getRootNode()
 	rootNode.addChild cTree.addNode('Failer')
@@ -142,10 +138,10 @@ exports.loadTree = (cTree, callback) ->
 
 	cNodes = cTree.listNodes()
 
-	home = {
-		text: { name: 'Home' }
-		image: './assets/nodes/home.png'
-		HTMLid: 'home'
+	start = {
+		text: { name: 'Start' }
+		image: './assets/nodes/start.png'
+		cNodeId: 'start'
 	}
 
 	nodeMap = {}
@@ -159,10 +155,10 @@ exports.loadTree = (cTree, callback) ->
 			tParentNode = nodeMap[cParentNode.getId()]
 			tNode.parent = tParentNode
 		else
-			tNode.parent = home
+			tNode.parent = start
 
 	nodeStructure = _.values nodeMap
-	nodeStructure.unshift home
+	nodeStructure.unshift start
 	nodeStructure.unshift treeConfig
 
 	activeTreeGraph = new Treant nodeStructure

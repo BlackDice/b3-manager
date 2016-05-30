@@ -231,7 +231,9 @@
 			} else {
 				//node is not a leaf,  firstWalk for each child
 				for(var i = 0, n = node.childrenCount(); i < n; i++) {
-					this.firstWalk(node.childAt(i), level + 1);
+					child = node.childAt(i)
+					if(child == null) continue;
+					this.firstWalk(child, level + 1);
 				}
 
 				var midPoint = node.childrenCenter() - node.size() / 2;
@@ -438,6 +440,7 @@
 				negOffsetY = ((treeSize.y.min + deltaY) <= 0) ? Math.abs(treeSize.y.min) : 0,
 				i, len, node;
 
+			this.treeSize = treeSize
 			this.handleOverflow(treeWidth, treeHeight);
 
 			// position all the nodes
@@ -445,46 +448,48 @@
 
 				node = this.nodeDB.get(i);
 
-				if(node.id === 0 && this.CONFIG.hideRootNode) continue;
+				if(node != null){
 
-				// if the tree is smaller than the draw area, then center the tree within drawing area
-				node.X += negOffsetX + ((treeWidth < this.drawArea.clientWidth) ? deltaX : this.CONFIG.padding);
-				node.Y += negOffsetY + ((treeHeight < this.drawArea.clientHeight) ? deltaY : this.CONFIG.padding);
+					if(node.id === 0 && this.CONFIG.hideRootNode) continue;
 
-				gridSize = this.CONFIG.quantize
-				if (gridSize) {
-					node.X = Math.floor(node.X / gridSize) * gridSize
-					node.Y = Math.floor(node.Y / gridSize) * gridSize
-				}
+					// if the tree is smaller than the draw area, then center the tree within drawing area
+					node.X += negOffsetX + ((treeWidth < this.drawArea.clientWidth) ? deltaX : this.CONFIG.padding);
+					node.Y += negOffsetY + ((treeHeight < this.drawArea.clientHeight) ? deltaY : this.CONFIG.padding);
 
-				var collapsedParent = node.collapsedParent(),
-					hidePoint = null;
+					gridSize = this.CONFIG.quantize
+					if (gridSize) {
+						node.X = Math.round(node.X / gridSize) * gridSize
+						node.Y = Math.round(node.Y / gridSize) * gridSize
+					}
 
-				if(collapsedParent) {
-					// position the node behind the connector point of the parent, so future animations can be visible
-					hidePoint = collapsedParent.connectorPoint( true );
-					node.hide(hidePoint);
+					var collapsedParent = node.collapsedParent(),
+						hidePoint = null;
 
-				} else if(node.positioned) {
-					// node is already positioned
-					node.show();
-				} else {
-					// initial position
-					node.nodeDOM.style.left = node.X + 'px';
-					node.nodeDOM.style.top = node.Y + 'px';
+					if(collapsedParent) {
+						// position the node behind the connector point of the parent, so future animations can be visible
+						hidePoint = collapsedParent.connectorPoint( true );
+						node.hide(hidePoint);
 
-					node.positioned = true;
-				}
+					} else if(node.positioned) {
+						// node is already positioned
+						node.show();
+					} else {
+						// initial position
+						node.nodeDOM.style.left = node.X + 'px';
+						node.nodeDOM.style.top = node.Y + 'px';
 
-				if (node.id !== 0 && !(node.parent().id === 0 && this.CONFIG.hideRootNode)) {
-					this.setConnectionToParent(node, hidePoint); // skip the root node
-				}
-				else if (!this.CONFIG.hideRootNode && node.drawLineThrough) {
-					// drawlinethrough is performed for for the root node also
-					node.drawLineThroughMe();
+						node.positioned = true;
+					}
+
+					if (node.id != 0) {
+						this.setConnectionToParent(node, hidePoint); // skip the root node
+					}
+					else if (!this.CONFIG.hideRootNode && node.drawLineThrough) {
+						// drawlinethrough is performed for for the root node also
+						node.drawLineThroughMe();
+					}
 				}
 			}
-
 		},
 
 		// create Raphael instance, set scrollbars if necessary
@@ -549,7 +554,7 @@
 
 
 			if (this.connectionStore[node.id]) {
-				// connector allready exists, update the connector geometry
+				// connector already exists, update the connector geometry
 				connLine = this.connectionStore[node.id];
 				this.animatePath(connLine, pathString);
 
@@ -702,7 +707,6 @@
 
 		// algorithm works from left to right, so previous processed node will be left neigbor of the next node
 		setNeighbors: function(node, level) {
-
 			if(this.lastNodeOnLevel[level])	node.leftNeighborId = this.lastNodeOnLevel[level];
 			if(node.leftNeighborId) node.leftNeighbor().rightNeighborId = node.id;
 			this.lastNodeOnLevel[level] = node.id;
@@ -767,7 +771,6 @@
 				if (stack !== null) { newNode.stackChildren = []; }
 
 				for (var i = 0, len = node.children.length; i < len ; i++) {
-
 					if (stack !== null) {
 						newNode =  self.createNode(node.children[i], newNode.id, tree, stack);
 						if((i + 1) < len) newNode.children = []; // last node cant have children
@@ -798,10 +801,20 @@
 			return this.db[nodeId]; // get node by ID
 		},
 
+		getAllChildrenIDs: function(nodeId, flatContainer) {
+			node = this.get(nodeId);
+			for (var key in node.children) {
+				if (node.children.hasOwnProperty(key)) {
+					// check if it's not already in?
+					id = node.children[key];
+					flatContainer.push(id);
+				}
+			}
+		},
+
 		createNode: function(nodeStructure, parentId, tree, stackParentId) {
-
 			var node = new TreeNode( nodeStructure, this.db.length, parentId, tree, stackParentId );
-
+			node.children = [];
 			this.db.push( node );
 			if( parentId >= 0 ) this.get( parentId ).children.push( node.id ); //skip root node
 
@@ -813,30 +826,54 @@
 			return node;
 		},
 
-		removeNode: function(nodeId, tree) {
-
-			if(nodeId > 0){
-				// remove from DB and DOM
-				node = this.db[nodeId];
-				index = this.db.indexOf(nodeId);
-				this.db.splice(index, 1);
-				node.nodeDOM.parentElement.removeChild(node.nodeDOM);
-
-				// remove connection
-				connection = tree.connectionStore[nodeId]
-				if(connection){
-					connection.remove();
-					delete connection;
-				}
-
-				// remove from parent
-				parent = this.get( node.parentId );
-				if(parent){
-					parentChildren = parent.children;
-					childIndex = parentChildren.indexOf(nodeId);
-					parentChildren.splice(childIndex, 1);
+		resetNeighbors: function() {
+			for (var child of this.db) {
+				if (child) {
+					delete child.rightNeighborId;
+					delete child.leftNeighborId;
 				}
 			}
+		},
+
+		removeNodeWithChildren: function(nodeId, tree) {
+			// Reset neighbor data
+			this.resetNeighbors()
+
+			// remove children
+			flatChildIdList = [];
+			this.getAllChildrenIDs(nodeId, flatChildIdList);
+			for(var id of flatChildIdList){
+				this.removeNode(id, tree);
+			}
+
+			// remove node from parent
+			node = this.get(nodeId);
+			parent = this.get( node.parentId );
+			if(parent){
+				parentChildren = parent.children;
+				childIndex = parentChildren.indexOf(nodeId);
+				parentChildren.splice(childIndex, 1);
+			}
+
+			// remove node itself
+			this.removeNode(nodeId, tree);
+		},
+
+		removeNode: function(nodeId, tree) {
+			node = this.get(nodeId);
+
+			// remove connection
+			connection = tree.connectionStore[nodeId]
+			if(connection){
+				connection.remove();
+				delete connection;
+			}
+
+			// remove dom and from db
+			node.nodeDOM.parentElement.removeChild(node.nodeDOM);
+			//delete this.db[nodeId];
+			//this.db.splice(nodeId, 1);
+			this.db[nodeId] = null;
 		},
 
 		getMinMaxCoord: function( dim, parent, MinMax ) { // used for getting the dimensions of the tree, dim = 'X' || 'Y'
@@ -849,20 +886,21 @@
 				};
 
 			while(i--) {
+				var node = parent.childAt(i);
+				if(node != null){
+					var maxTest = node[dim] + ((dim == 'X') ? node.width : node.height),
+						minTest = node[dim];
 
-				var node = parent.childAt(i),
-					maxTest = node[dim] + ((dim == 'X') ? node.width : node.height),
-					minTest = node[dim];
+					if (maxTest > MinMax.max) {
+						MinMax.max = maxTest;
 
-				if (maxTest > MinMax.max) {
-					MinMax.max = maxTest;
+					}
+					if (minTest < MinMax.min) {
+						MinMax.min = minTest;
+					}
 
+					this.getMinMaxCoord(dim, node, MinMax);
 				}
-				if (minTest < MinMax.min) {
-					MinMax.min = minTest;
-				}
-
-				this.getMinMaxCoord(dim, node, MinMax);
 			}
 			return MinMax;
 		},
@@ -951,7 +989,8 @@
 		},
 
 		lastChild: function() {
-			return this.childAt( this.children.length - 1 );
+			lastChild = this.childAt( this.children.length - 1 );
+			return lastChild;
 		},
 
 		parent: function() {
@@ -998,8 +1037,9 @@
 			if( this.childrenCount() === 0 ) return;
 
 			for(var i = 0, n = this.childrenCount(); i < n; i++) {
-
-				var leftmostDescendant = this.childAt(i).leftMost( level + 1, depth );
+				child = this.childAt(i);
+				if(child == null) continue;
+				var leftmostDescendant = child.leftMost( level + 1, depth );
 				if(leftmostDescendant)
 					return leftmostDescendant;
 			}
@@ -1283,16 +1323,16 @@
 		maxDepth: 100,
 		rootOrientation: 'NORTH', // NORTH || EAST || WEST || SOUTH
 		nodeAlign: 'CENTER', // CENTER || TOP || BOTTOM
-		levelSeparation: 30,
-		siblingSeparation: 30,
-		subTeeSeparation: 30,
+		levelSeparation: 50,
+		siblingSeparation: 50,
+		subTeeSeparation: 50,
 
 		hideRootNode: false,
 
 		animateOnInit: false,
 		animateOnInitDelay: 500,
 
-		padding: 50, // the difference is seen only when the scrollbar is shown
+		padding: 0, // the difference is seen only when the scrollbar is shown
 		scrollbar: 'native', // "native" || "fancy" || "None" (PS: "fancy" requires jquery and perfect-scrollbar)
 
 		connectors: {
@@ -1423,20 +1463,22 @@
 	*/
 	var Treant = function(jsonConfig, callback) {
 
+		panel = document.getElementById('panel')
+		panelSize = panel.clientWidth;
+		if(! panelSize){console.log('Dont use this treant build without the left panel');}
+
 		if (jsonConfig instanceof Array) {
 			jsonConfig = JSONconfig.make(jsonConfig);
 		}
 
 		var newTree = TreeStore.createTree(jsonConfig);
+
 		newTree.positionTree(callback);
 
 		this.tree_id = newTree.id;
 		this.tree = newTree
 
-		panel = document.getElementById('panel')
 		UTIL.addEvent(window, 'resize', function(e){
-			panelSize = panel.clientWidth;
-			if(! panelSize){console.log('dont use this treant build without the left panel');}
 			newTree._R.setSize(window.innerWidth - panelSize, window.innerHeight);
 			newTree.positionTree();
 		});
@@ -1449,7 +1491,7 @@
 	};
 
 	Treant.prototype.removeNode = function(nodeId) {
-		tNode = this.tree.nodeDB.removeNode(nodeId, this.tree);
+		tNode = this.tree.nodeDB.removeNodeWithChildren(nodeId, this.tree);
 		this.tree.positionTree();
 	};
 

@@ -62,6 +62,13 @@ window.addEventListener 'resize', ->
 	centerHeadline()
 
 handleTreeChange = (change) ->
+
+	eraseChildren = (cNode) ->
+		children = cNode.getChildren()
+		for child in children
+			eraseChildren child
+		activeTree.removeNode cNode
+
 	switch change.action
 		when 'createRoot'
 			cNode = activeTree.changeRootNode change.nodeName
@@ -72,8 +79,8 @@ handleTreeChange = (change) ->
 			cParent.addChild cNode
 			treeLoader.addNodeToTree cNode, change.parentTId
 		when 'removeNode'
-			cNode = activeTree.removeNode change.cNodeId
-			# 2do: remove children as well
+			cNode = activeTree.getNode change.cNodeId
+			eraseChildren cNode
 
 	treeLoader.redrawTree()
 
