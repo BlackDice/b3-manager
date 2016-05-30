@@ -220,6 +220,7 @@
 
 			var leftSibling = node.leftSibling();
 
+			console.log(node.childrenCount());
 			if(node.childrenCount() === 0 || level == this.CONFIG.maxDepth) {
 				// set preliminary x-coordinate
 				if(leftSibling) {
@@ -801,13 +802,13 @@
 			return this.db[nodeId]; // get node by ID
 		},
 
-		getAllChildrenIDs: function(nodeId, flatContainer) {
-			node = this.get(nodeId);
+		getAllChildrenIDs: function(node, flatContainer) {
 			for (var key in node.children) {
 				if (node.children.hasOwnProperty(key)) {
 					// check if it's not already in?
-					id = node.children[key];
+					var id = node.children[key];
 					flatContainer.push(id);
+					this.getAllChildrenIDs(this.get(id), flatContainer)
 				}
 			}
 		},
@@ -837,18 +838,18 @@
 
 		removeNodeWithChildren: function(nodeId, tree) {
 			// Reset neighbor data
-			this.resetNeighbors()
+			this.resetNeighbors();
 
 			// remove children
 			flatChildIdList = [];
-			this.getAllChildrenIDs(nodeId, flatChildIdList);
+			var node = this.get(nodeId);
+			this.getAllChildrenIDs(node, flatChildIdList);
 			for(var id of flatChildIdList){
 				this.removeNode(id, tree);
 			}
 
 			// remove node from parent
-			node = this.get(nodeId);
-			parent = this.get( node.parentId );
+			var parent = this.get(node.parentId);
 			if(parent){
 				parentChildren = parent.children;
 				childIndex = parentChildren.indexOf(nodeId);
@@ -860,7 +861,7 @@
 		},
 
 		removeNode: function(nodeId, tree) {
-			node = this.get(nodeId);
+			var node = this.get(nodeId);
 
 			// remove connection
 			connection = tree.connectionStore[nodeId]
@@ -1240,6 +1241,10 @@
 		if (!this.pseudo) {
 			if (!this.nodeInnerHTML) {
 
+				debug = document.createElement('span');
+				debug.innerHTML = this.id;
+				node.appendChild(debug);
+
 				// IMAGE
 				if(this.image) {
 					image = document.createElement('img');
@@ -1501,7 +1506,6 @@
 	};
 
 	Treant.prototype.redraw = function(node) {
-		console.log('redraw fired');
 		this.tree.positionTree();
 	};
 
