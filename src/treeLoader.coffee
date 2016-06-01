@@ -3,7 +3,6 @@ data = require './trees/tree.json'
 
 treeConfig = {
 	container: '#treant',
-	quantize: 50,
 	rootOrientation: 'NORTH',
 	nodeAlign: 'TOP',
 	levelSeparation: 50,
@@ -64,11 +63,11 @@ registerRightClick = (treantConfig, callback) ->
 			})
 
 			# disable those not applicable
-			leftNeighborCId = parseInt activeTreeGraph.getNodeParameter tNodeId, 'leftNeighborId'
-			rightNeighborCId = parseInt activeTreeGraph.getNodeParameter tNodeId, 'rightNeighborId'
-			unless leftNeighborCId
+			leftNeighborTId = parseInt activeTreeGraph.getNodeParameter tNodeId, 'leftNeighborId'
+			rightNeighborTId = parseInt activeTreeGraph.getNodeParameter tNodeId, 'rightNeighborId'
+			unless leftNeighborTId
 				$left.addClass 'disabled'
-			unless rightNeighborCId
+			unless rightNeighborTId
 				$right.addClass 'disabled'
 			if tNodeId == 0
 				$erase.addClass 'disabled'
@@ -76,9 +75,24 @@ registerRightClick = (treantConfig, callback) ->
 	$erase.on 'click', (evt) ->
 		cNodeId = $(this).parent().attr 'cnodeid'
 		tNodeId = parseInt $(this).parent().attr 'tnodeid'
-
 		activeTreeGraph.removeNode tNodeId
 		callback {action: 'removeNode', cNodeId: cNodeId}
+
+	$left.on 'click', (evt) ->
+		cNodeIdA = $(this).parent().attr 'cnodeid'
+		tNodeId = parseInt $(this).parent().attr 'tnodeid'
+		leftNeighborTId = parseInt activeTreeGraph.getNodeParameter tNodeId, 'leftNeighborId'
+		cNodeIdB = activeTreeGraph.getNodeParameter leftNeighborTId, 'cNodeId'
+		activeTreeGraph.switchIndexes tNodeId, leftNeighborTId
+		callback {action: 'switchNodes', cNodeIdA: cNodeIdA, cNodeIdB: cNodeIdB}
+
+	$right.on 'click', (evt) ->
+		cNodeIdA = $(this).parent().attr 'cnodeid'
+		tNodeId = parseInt $(this).parent().attr 'tnodeid'
+		rightNeighborTId = parseInt activeTreeGraph.getNodeParameter tNodeId, 'rightNeighborId'
+		cNodeIdB = activeTreeGraph.getNodeParameter rightNeighborTId, 'cNodeId'
+		activeTreeGraph.switchIndexes tNodeId, rightNeighborTId
+		callback {action: 'switchNodes', cNodeIdA: cNodeIdA, cNodeIdB: cNodeIdB}
 
 	document.addEventListener 'click', ->
 		$contextmenu.hide()
@@ -130,7 +144,8 @@ exports.addNodeToTree = (cNode, parentTId) ->
 exports.redrawTree = ->
 	activeTreeGraph.redraw()
 
-exports.loadTree = (cTree, callback) ->
+exports.loadTree = (cTree, gridSize, callback) ->
+	treeConfig.quantize = gridSize
 	cTree.changeRootNode 'Sequence'
 	rootNode = cTree.getRootNode()
 	rootNode.addChild cTree.addNode('Failer')
@@ -138,11 +153,11 @@ exports.loadTree = (cTree, callback) ->
 
 	cNodes = cTree.listNodes()
 
-	start = {
-		text: { name: 'Start' }
-		image: './assets/nodes/start.png'
-		cNodeId: 'start'
-	}
+	start =
+		text: { name: 'Start' },
+		image: './assets/nodes/start.png',
+		cNodeId: 'start',
+		HTMLid: 'start'
 
 	nodeMap = {}
 	for cNode in cNodes
@@ -161,7 +176,7 @@ exports.loadTree = (cTree, callback) ->
 	nodeStructure.unshift start
 	nodeStructure.unshift treeConfig
 
-	activeTreeGraph = new Treant nodeStructure
+	activeTreeGraph = new Treant nodeStructure, callback
 	registerDragAndDrop treeConfig, callback
 	registerRightClick treeConfig, callback
 

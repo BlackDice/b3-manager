@@ -85,6 +85,7 @@ li {
 #activeTreeName {
 	position: absolute;
 	top: 16px;
+	left: 50px;
 	z-index: 50;
 }
 

@@ -194,7 +194,9 @@
 
 				if(!this.loaded) {
 					this.drawArea.className += " Treant-loaded"; // nodes are hidden until .loaded class is add
-					if (Object.prototype.toString.call(callback) === "[object Function]") { callback(self); }
+					if (Object.prototype.toString.call(callback) === "[object Function]") {
+						callback({action: 'treeLoaded'});
+					}
 					this.loaded = true;
 				}
 
@@ -220,7 +222,6 @@
 
 			var leftSibling = node.leftSibling();
 
-			console.log(node.childrenCount());
 			if(node.childrenCount() === 0 || level == this.CONFIG.maxDepth) {
 				// set preliminary x-coordinate
 				if(leftSibling) {
@@ -877,6 +878,23 @@
 			this.db[nodeId] = null;
 		},
 
+		switchIndexes: function( a, b ) {
+			var nodeA = this.get(a);
+			var nodeB = this.get(b);
+			idA = nodeA.id;
+			idB = nodeB.id;
+			parentA = nodeA.parent();
+			parentB = nodeB.parent();
+
+			if(parentA.id == parentB.id) {
+				indexA = parentA.children.indexOf(idA);
+				indexB = parentA.children.indexOf(idB);
+				parentA.children[indexA] = idB;
+				parentA.children[indexB] = idA;
+				this.resetNeighbors();
+			}
+		},
+
 		getMinMaxCoord: function( dim, parent, MinMax ) { // used for getting the dimensions of the tree, dim = 'X' || 'Y'
 			// looks for min and max (X and Y) within the set of nodes
 			var parent = parent || this.get(0),
@@ -1241,9 +1259,9 @@
 		if (!this.pseudo) {
 			if (!this.nodeInnerHTML) {
 
-				debug = document.createElement('span');
-				debug.innerHTML = this.id;
-				node.appendChild(debug);
+				//debug = document.createElement('span');
+				//debug.innerHTML = this.id;
+				//node.appendChild(debug);
 
 				// IMAGE
 				if(this.image) {
@@ -1478,10 +1496,10 @@
 
 		var newTree = TreeStore.createTree(jsonConfig);
 
-		newTree.positionTree(callback);
-
 		this.tree_id = newTree.id;
 		this.tree = newTree
+
+		newTree.positionTree(callback);
 
 		UTIL.addEvent(window, 'resize', function(e){
 			newTree._R.setSize(window.innerWidth - panelSize, window.innerHeight);
@@ -1497,7 +1515,12 @@
 
 	Treant.prototype.removeNode = function(nodeId) {
 		tNode = this.tree.nodeDB.removeNodeWithChildren(nodeId, this.tree);
-		this.tree.positionTree();
+		this.redraw();
+	};
+
+	Treant.prototype.switchIndexes = function(a, b) {
+		this.tree.nodeDB.switchIndexes(a, b);
+		this.redraw();
 	};
 
 	Treant.prototype.getNodeParameter = function(nodeId, attr) {

@@ -11,6 +11,8 @@ treeLoader = require './treeLoader'
 chief = require '../public/libs/chief'
 chiefAPI = chief.create()
 
+gridSize = 50
+
 
 # Panel input
 
@@ -18,7 +20,7 @@ $treeForm = $('#trees .panelInput')
 $treeInput = $('#trees input')
 $treeList = $('#treeList')
 $nodeList = $('#nodeList')
-activeTreeName  = document.getElementById 'activeTreeName'
+$activeTreeName  = $('#activeTreeName')
 treantContainer = document.getElementById 'treant'
 
 $treeInput.on 'keyup', (evt) ->
@@ -48,15 +50,15 @@ loadTreeList = ->
 
 updateActiveTreeName = ->
 	activeTree = chiefAPI.getTree activeTreeId
-	activeTreeName.innerHTML = activeTree.getName()
+	$activeTreeName.html activeTree.getName()
 	centerHeadline()
 
 centerHeadline = ->
-	tileSize = 50
-	center = (treantContainer.clientWidth / 2) - (tileSize / 2)
-	quantized = Math.floor(center / tileSize) * tileSize
-	textCenter = quantized - (activeTreeName.clientWidth / 2) + (tileSize / 2)
-	activeTreeName.style.left = textCenter + 'px'
+	startX = $('#start').position().left
+	startW = $('#start').width()
+	midPoint = startX + startW / 2
+	textCenter = $activeTreeName.width() / 2
+	$activeTreeName.css 'left', midPoint - textCenter
 
 window.addEventListener 'resize', ->
 	centerHeadline()
@@ -66,21 +68,44 @@ handleTreeChange = (change) ->
 	eraseChildren = (cNode) ->
 		children = cNode.getChildren()
 		for child in children
+			activeTree.removeNode child
 			eraseChildren child
 		activeTree.removeNode cNode
 
 	switch change.action
+		when 'treeLoaded'
+			updateActiveTreeName()
+
 		when 'createRoot'
 			cNode = activeTree.changeRootNode change.nodeName
 			treeLoader.addNodeToTree cNode, 0
+
 		when 'addNode'
 			cNode = activeTree.addNode change.nodeName
 			cParent = activeTree.getNode change.parentCId
 			cParent.addChild cNode
 			treeLoader.addNodeToTree cNode, change.parentTId
+
 		when 'removeNode'
 			cNode = activeTree.getNode change.cNodeId
 			eraseChildren cNode
+
+		when 'switchNodes'
+			cNodeA = activeTree.getNode change.cNodeIdA
+			cNodeB = activeTree.getNode change.cNodeIdB
+			cParent = cNodeA.getParent()
+			children = cParent.getChildren()
+			indexA = children.indexOf cNodeA
+			indexB = children.indexOf cNodeB
+
+			for child in children
+				cParent.removeChild child
+
+			children.splice indexA, 1, cNodeB
+			children.splice indexB, 1, cNodeA
+
+			for child in children
+				cParent.addChild child
 
 	treeLoader.redrawTree()
 
@@ -102,11 +127,9 @@ toggleTree = (tree, $li) ->
 
 		# load if new
 		if activeTreeId != loadingId
-			treeLoader.loadTree tree, handleTreeChange
+			treeLoader.loadTree tree, gridSize, handleTreeChange
 			activeTreeId = loadingId
 			$li.addClass 'active'
-
-		updateActiveTreeName()
 
 addTree = (name) ->
 	newTree = chiefAPI.createTree()
