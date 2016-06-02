@@ -20,6 +20,7 @@ $treeForm = $('#trees .panelInput')
 $treeInput = $('#trees input')
 $treeList = $('#treeList')
 $nodeList = $('#nodeList')
+$subjectList = $('#subjectList')
 $activeTreeName  = $('#activeTreeName')
 treantContainer = document.getElementById 'treant'
 
@@ -38,11 +39,12 @@ $('#addTree').on 'click', ->
 
 activeTreeId = null
 activeTree = null
+timer = null
 
 loadTreeList = ->
-	list = chiefAPI.listTrees()
+	cTreeList = chiefAPI.listTrees()
 	$treeList.empty()
-	for tree in list
+	for tree in cTreeList
 		$li = $('<li>' + tree.getName() + '</li>').appendTo $treeList
 		$("<i>border_color</i>").addClass('material-icons').appendTo $li
 		$li.attr 'data', tree.getId()
@@ -51,17 +53,6 @@ loadTreeList = ->
 updateActiveTreeName = ->
 	activeTree = chiefAPI.getTree activeTreeId
 	$activeTreeName.html activeTree.getName()
-	centerHeadline()
-
-centerHeadline = ->
-	startX = $('#start').position().left
-	startW = $('#start').width()
-	midPoint = startX + startW / 2
-	textCenter = $activeTreeName.width() / 2
-	$activeTreeName.css 'left', midPoint - textCenter
-
-window.addEventListener 'resize', ->
-	centerHeadline()
 
 handleTreeChange = (change) ->
 
@@ -73,22 +64,24 @@ handleTreeChange = (change) ->
 		activeTree.removeNode cNode
 
 	switch change.action
-		when 'treeLoaded'
-			updateActiveTreeName()
-
+		#when 'treeLoaded'
+		#when 'treeMoved'
 		when 'createRoot'
 			cNode = activeTree.changeRootNode change.nodeName
 			treeLoader.addNodeToTree cNode, 0
+			treeLoader.redrawTree()
 
 		when 'addNode'
 			cNode = activeTree.addNode change.nodeName
 			cParent = activeTree.getNode change.parentCId
 			cParent.addChild cNode
 			treeLoader.addNodeToTree cNode, change.parentTId
+			treeLoader.redrawTree()
 
 		when 'removeNode'
 			cNode = activeTree.getNode change.cNodeId
 			eraseChildren cNode
+			treeLoader.redrawTree()
 
 		when 'switchNodes'
 			cNodeA = activeTree.getNode change.cNodeIdA
@@ -106,8 +99,12 @@ handleTreeChange = (change) ->
 
 			for child in children
 				cParent.addChild child
+			treeLoader.redrawTree()
 
-	treeLoader.redrawTree()
+		when 'changeParent'
+			treeLoader.changeParent change.tNodeId, change.parentTId
+			treeLoader.redrawTree()
+
 
 toggleTree = (tree, $li) ->
 	return ->
@@ -131,19 +128,38 @@ toggleTree = (tree, $li) ->
 			activeTreeId = loadingId
 			$li.addClass 'active'
 
+		updateActiveTreeName()
+
 addTree = (name) ->
 	newTree = chiefAPI.createTree()
 	newTree.setName name
 	loadTreeList()
 
+#loadTreeList()
+# Remporary list mock
+addTree 'Rat'
+addTree 'Human'
+addTree 'Bull'
+addTree 'Beatle'
+addTree 'Bat'
+addTree 'Snail'
+addTree 'Stroll'
+addTree 'Rest'
+addTree 'Combat'
+addTree 'Chase'
+addTree 'Flight'
+
+
+
 # Node list
 
 dragNode = (evt) ->
-	evt.dataTransfer.setData 'text/plain', evt.target.getAttribute 'data'
+	transfer = JSON.stringify {type: 'add', name: evt.target.getAttribute 'data'}
+	evt.dataTransfer.setData 'text/plain', transfer
 
 loadNodes = ->
-	list = chiefAPI.listBehaviorNodes()
-	sortedList = _.groupBy list, 'category'
+	cNodeList = chiefAPI.listBehaviorNodes()
+	sortedList = _.groupBy cNodeList, 'category'
 	order = ['composite', 'decorator', 'action']
 
 	for key in order
@@ -162,20 +178,16 @@ loadNodes = ->
 loadNodes()
 
 
-#loadTreeList()
-# Mock list
-addTree 'Rat'
-addTree 'Human'
-addTree 'Bull'
-addTree 'Beatle'
-addTree 'Bat'
-addTree 'Snail'
-addTree 'Stroll'
-addTree 'Rest'
-addTree 'Combat'
-addTree 'Chase'
-addTree 'Flight'
+# Subject list
 
-$('#panel').get(0).scrollTop = 0
-$('#panel').scrollTop 0
-$('body, html, #panel').scrollTop 0
+loadSubjects = ->
+	cSubjectList = chiefAPI.listSubjects()
+	$subjectList.empty()
+	for subject in cSubjectList
+		$li = $('<li>' + subject.getName() + '</li>').appendTo $subjectList
+		$li.attr 'data', subject.getId()
+		$li.on 'click', toggleSubject(subject, $li)
+
+loadSubjects()
+
+

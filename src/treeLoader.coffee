@@ -11,8 +11,8 @@ treeConfig = {
 		collapsable: true
 	}
 	animation: {
-		nodeSpeed: 200,
-		connectorsSpeed: 200
+		nodeSpeed: 100,
+		connectorsSpeed: 100
 	}
 	connectors: {
 		type: 'stepRounded',
@@ -99,8 +99,11 @@ registerRightClick = (treantConfig, callback) ->
 		clearHighlight()
 		clearDisables()
 
-registerDragAndDrop = (treantConfig, callback) ->
+dragNode = (evt) ->
+	transfer = JSON.stringify {type: 'change', tid: evt.target.getAttribute('tnodeid'), cid: evt.target.getAttribute('cnodeid')}
+	evt.dataTransfer.setData 'text/plain', transfer
 
+registerDragAndDrop = (treantConfig, callback) ->
 	$container = $(treantConfig.container)
 	$container.on 'dragover', (evt) ->
 		if evt.target.classList.contains 'node'
@@ -116,15 +119,23 @@ registerDragAndDrop = (treantConfig, callback) ->
 			evt.preventDefault()
 			evt.target.classList.remove 'highlight'
 
-			childName = evt.dataTransfer.getData 'text'
+			obj = JSON.parse evt.dataTransfer.getData 'text'
+
 			parentCId = evt.target.getAttribute 'cnodeid'
 			parentTId = parseInt evt.target.getAttribute 'tnodeid'
 
-			# createRoot, addNode, changeParent
-			if parentCId == 'start'
-				callback {action: 'createRoot', nodeName: childName}
-			else
-				callback {action: 'addNode', nodeName: childName, parentCId: parentCId, parentTId: parentTId}
+			switch obj.type
+				when 'add'
+					# createRoot, addNode, changeParent
+					if parentCId == 'start'
+						callback {action: 'createRoot', nodeName: obj.name}
+					else
+						callback {action: 'addNode', nodeName: obj.name, parentCId: parentCId, parentTId: parentTId}
+				when 'change'
+					unless parentCId == 'start'
+						callback {action: 'changeParent', tNodeId: obj.tid, cNodeId: obj.cid, parentTId: parentTId}
+
+	$('.node').on 'dragstart', (evt) -> dragNode(evt)
 
 createTNode = (cNode) ->
 	tNode = {
@@ -137,9 +148,12 @@ createTNode = (cNode) ->
 	# node.getDescription()
 
 exports.addNodeToTree = (cNode, parentTId) ->
-	tNode = createTNode cNode
-	activeTreeGraph.addNode tNode, parentTId
-	#console.log activeTreeGraph.tree.nodeDB
+	tNodeDefinition = createTNode cNode
+	tNode = activeTreeGraph.addNode tNodeDefinition, parentTId
+	$(tNode.nodeDOM).on 'dragstart', (evt) -> dragNode(evt)
+
+exports.changeParent = (tNodeId, parentTId) ->
+	activeTreeGraph.changeParent tNodeId, parentTId
 
 exports.redrawTree = ->
 	activeTreeGraph.redraw()

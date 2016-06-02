@@ -192,7 +192,12 @@
 					setTimeout(function() { root.toggleCollapse(); }, this.CONFIG.animateOnInitDelay);
 				}
 
-				if(!this.loaded) {
+				if(this.loaded) {
+					if (Object.prototype.toString.call(callback) === "[object Function]") {
+						callback({action: 'treeMoved'});
+					}
+				}
+				else{
 					this.drawArea.className += " Treant-loaded"; // nodes are hidden until .loaded class is add
 					if (Object.prototype.toString.call(callback) === "[object Function]") {
 						callback({action: 'treeLoaded'});
@@ -1239,6 +1244,7 @@
 		/////////// CREATE NODE //////////////
 		node = this.link.href ? document.createElement('a') : document.createElement('div');
 
+		node.setAttribute('draggable', true);
 		node.className = (!this.pseudo) ? TreeNode.CONFIG.nodeHTMLclass : 'pseudo';
 		if(this.nodeHTMLclass && !this.pseudo) node.className += ' ' + this.nodeHTMLclass;
 
@@ -1498,12 +1504,13 @@
 
 		this.tree_id = newTree.id;
 		this.tree = newTree
+		this.callback = callback
 
 		newTree.positionTree(callback);
 
 		UTIL.addEvent(window, 'resize', function(e){
 			newTree._R.setSize(window.innerWidth - panelSize, window.innerHeight);
-			newTree.positionTree();
+			newTree.positionTree(callback);
 		});
 
 	};
@@ -1511,16 +1518,31 @@
 	Treant.prototype.addNode = function(node, parentId) {
 		tNode = this.tree.nodeDB.createNode(node, parentId, this.tree, null);
 		tNode.createGeometry(this.tree);
+		return tNode;
 	};
 
 	Treant.prototype.removeNode = function(nodeId) {
 		tNode = this.tree.nodeDB.removeNodeWithChildren(nodeId, this.tree);
-		this.redraw();
+	};
+
+	Treant.prototype.changeParent = function(nodeId, parentId) {
+		node = this.tree.nodeDB.get(nodeId);
+		originalParent = this.tree.nodeDB.get(node.parentId);
+		newParent = this.tree.nodeDB.get(parentId);
+
+		// change node's parent
+		node.parentId = parentId;
+
+		// remove parent's child
+		index = originalParent.children.indexOf(nodeId);
+		originalParent.children.splice(index, 1);
+
+		// add new parent's child
+		newParent.children.push(nodeId);
 	};
 
 	Treant.prototype.switchIndexes = function(a, b) {
 		this.tree.nodeDB.switchIndexes(a, b);
-		this.redraw();
 	};
 
 	Treant.prototype.getNodeParameter = function(nodeId, attr) {
@@ -1529,7 +1551,7 @@
 	};
 
 	Treant.prototype.redraw = function(node) {
-		this.tree.positionTree();
+		this.tree.positionTree(this.callback);
 	};
 
 	Treant.prototype.destroy = function() {

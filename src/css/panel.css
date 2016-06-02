@@ -1,13 +1,4 @@
 
-#panel {
-	width: 350px;
-	min-width: 350px;
-	height: 100%;
-	background-color: #202020;
-	overflow: scroll;
-	overflow-x: hidden;
-}
-
 #tabs {
 	display: flex;
 	height: 80px;
