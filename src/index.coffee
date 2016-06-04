@@ -5,10 +5,10 @@ require './css/panel.css'
 
 _ = require 'lodash'
 b3 = require 'b3'
+chief = require 'behavior3-chief'
 
 require './tabs'
 treeLoader = require './treeLoader'
-chief = require '../public/libs/chief'
 chiefAPI = chief.create()
 
 gridSize = 50
@@ -102,6 +102,14 @@ handleTreeChange = (change) ->
 			treeLoader.redrawTree()
 
 		when 'changeParent'
+			cNode = activeTree.getNode change.cNodeId
+
+			cParent = cNode.getParent()
+			cParent.removeChild cNode
+
+			cNewParent = activeTree.getNode change.parentCId
+			cNewParent.addChild cNode
+
 			treeLoader.changeParent change.tNodeId, change.parentTId
 			treeLoader.redrawTree()
 

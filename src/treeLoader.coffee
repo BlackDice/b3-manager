@@ -100,7 +100,11 @@ registerRightClick = (treantConfig, callback) ->
 		clearDisables()
 
 dragNode = (evt) ->
-	transfer = JSON.stringify {type: 'change', tid: evt.target.getAttribute('tnodeid'), cid: evt.target.getAttribute('cnodeid')}
+	transfer = JSON.stringify
+		type: 'change',
+		tid: evt.target.getAttribute('tnodeid'),
+		cid: evt.target.getAttribute('cnodeid')
+
 	evt.dataTransfer.setData 'text/plain', transfer
 
 registerDragAndDrop = (treantConfig, callback) ->
@@ -133,7 +137,7 @@ registerDragAndDrop = (treantConfig, callback) ->
 						callback {action: 'addNode', nodeName: obj.name, parentCId: parentCId, parentTId: parentTId}
 				when 'change'
 					unless parentCId == 'start'
-						callback {action: 'changeParent', tNodeId: obj.tid, cNodeId: obj.cid, parentTId: parentTId}
+						callback {action: 'changeParent', tNodeId: obj.tid, cNodeId: obj.cid, parentTId: parentTId, parentCId: parentCId}
 
 	$('.node').on 'dragstart', (evt) -> dragNode(evt)
 
