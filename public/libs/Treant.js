@@ -469,14 +469,10 @@
 						node.Y = Math.round(node.Y / gridSize) * gridSize
 					}
 
-					var collapsedParent = node.collapsedParent(),
-						hidePoint = null;
-
+					var collapsedParent = node.collapsedParent()
 					if(collapsedParent) {
 						// position the node behind the connector point of the parent, so future animations can be visible
-						hidePoint = collapsedParent.connectorPoint( true );
 						node.hide(hidePoint);
-
 					} else if(node.positioned) {
 						// node is already positioned
 						node.show();
@@ -484,10 +480,28 @@
 						// initial position
 						node.nodeDOM.style.left = node.X + 'px';
 						node.nodeDOM.style.top = node.Y + 'px';
-
 						node.positioned = true;
 					}
+				}
+			}
 
+			that = this;
+			setTimeout(function() {
+				that.setConnections();
+			}, this.CONFIG.animation.nodeSpeed);
+		},
+
+		// set all canvas connections
+		setConnections: function() {
+			for(i =0, len = this.nodeDB.db.length; i < len; i++) {
+				node = this.nodeDB.get(i);
+				var collapsedParent = node.collapsedParent(),
+						hidePoint = null;
+				if(collapsedParent) {
+					// position the node behind the connector point of the parent, so future animations can be visible
+					hidePoint = collapsedParent.connectorPoint( true );
+				}
+				if(node != null){
 					if (node.id != 0) {
 						this.setConnectionToParent(node, hidePoint); // skip the root node
 					}
@@ -859,7 +873,8 @@
 			if(parent){
 				parentChildren = parent.children;
 				childIndex = parentChildren.indexOf(nodeId);
-				parentChildren.splice(childIndex, 1);
+				parentChildren[childIndex] = null;
+				//parentChildren.splice(childIndex, 1);
 			}
 
 			// remove node itself
@@ -1009,12 +1024,19 @@
 		},
 
 		firstChild: function() {
-			return this.childAt(0);
+			for(var i = 0, n = this.childrenCount(); i < n; i++) {
+				if( this.childAt(i) != null ) {
+					return this.childAt(i);
+				}
+			}
 		},
 
 		lastChild: function() {
-			lastChild = this.childAt( this.children.length - 1 );
-			return lastChild;
+			for(var n = this.childrenCount(); n > 0; n--) {
+				if( this.childAt(n  - 1) != null ) {
+					return this.childAt(n - 1);
+				}
+			}
 		},
 
 		parent: function() {
@@ -1525,20 +1547,34 @@
 		tNode = this.tree.nodeDB.removeNodeWithChildren(nodeId, this.tree);
 	};
 
-	Treant.prototype.changeParent = function(nodeId, parentId) {
+	Treant.prototype.changeParent = function(nodeId, newParentId) {
+		nodeId = parseInt(nodeId);
 		node = this.tree.nodeDB.get(nodeId);
 		originalParent = this.tree.nodeDB.get(node.parentId);
-		newParent = this.tree.nodeDB.get(parentId);
+		newParent = this.tree.nodeDB.get(newParentId);
+
+		// reset neighbors
+		this.tree.nodeDB.resetNeighbors();
 
 		// change node's parent
-		node.parentId = parentId;
+		node.parentId = newParentId;
 
 		// remove parent's child
 		index = originalParent.children.indexOf(nodeId);
-		originalParent.children.splice(index, 1);
+		originalParent.children[index] = null;
 
 		// add new parent's child
 		newParent.children.push(nodeId);
+
+		// remove connection
+		//connection = this.tree.connectionStore[nodeId]
+		//if(connection){
+		//	connection.remove();
+		//	delete connection;
+		//}
+
+		// add new connection
+		//this.tree.setConnectionToParent(node);
 	};
 
 	Treant.prototype.switchIndexes = function(a, b) {

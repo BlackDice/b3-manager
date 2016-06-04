@@ -12,7 +12,7 @@ treeConfig = {
 	}
 	animation: {
 		nodeSpeed: 100,
-		connectorsSpeed: 100
+		connectorsSpeed: 0
 	}
 	connectors: {
 		type: 'stepRounded',

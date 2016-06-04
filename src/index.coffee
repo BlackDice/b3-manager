@@ -5,7 +5,7 @@ require './css/panel.css'
 
 _ = require 'lodash'
 b3 = require 'b3'
-chief = require 'behavior3-chief'
+chief = require '../public/libs/Chief'
 
 require './tabs'
 treeLoader = require './treeLoader'
@@ -74,9 +74,12 @@ handleTreeChange = (change) ->
 		when 'addNode'
 			cNode = activeTree.addNode change.nodeName
 			cParent = activeTree.getNode change.parentCId
-			cParent.addChild cNode
-			treeLoader.addNodeToTree cNode, change.parentTId
-			treeLoader.redrawTree()
+			if cParent.acceptsChildren()
+				cParent.addChild cNode
+				treeLoader.addNodeToTree cNode, change.parentTId
+				treeLoader.redrawTree()
+			else
+				console.log 'Node does not accept children'
 
 		when 'removeNode'
 			cNode = activeTree.getNode change.cNodeId
@@ -103,15 +106,15 @@ handleTreeChange = (change) ->
 
 		when 'changeParent'
 			cNode = activeTree.getNode change.cNodeId
-
 			cParent = cNode.getParent()
-			cParent.removeChild cNode
-
 			cNewParent = activeTree.getNode change.parentCId
-			cNewParent.addChild cNode
-
-			treeLoader.changeParent change.tNodeId, change.parentTId
-			treeLoader.redrawTree()
+			if cNewParent.acceptsChildren()
+				cParent.removeChild cNode
+				cNewParent.addChild cNode
+				treeLoader.changeParent change.tNodeId, change.parentTId
+				treeLoader.redrawTree()
+			else
+				console.log 'Node does not accept children'
 
 
 toggleTree = (tree, $li) ->
