@@ -172,7 +172,7 @@
 
 	Tree.prototype = {
 
-		positionTree: function(callback) {
+		positionTree: function(cbIndex, cbLoader) {
 
 			var self = this;
 
@@ -186,27 +186,27 @@
 				this.firstWalk(root, 0);
 				this.secondWalk( root, 0, 0, 0 );
 
-				this.positionNodes();
+				this.positionNodes(cbLoader);
 
 				if (this.CONFIG.animateOnInit) {
 					setTimeout(function() { root.toggleCollapse(); }, this.CONFIG.animateOnInitDelay);
 				}
 
 				if(this.loaded) {
-					if (Object.prototype.toString.call(callback) === "[object Function]") {
-						callback({action: 'treeMoved'});
+					if (Object.prototype.toString.call(cbIndex) === "[object Function]") {
+						cbIndex({action: 'treeMoved'});
 					}
 				}
 				else{
 					this.drawArea.className += " Treant-loaded"; // nodes are hidden until .loaded class is add
-					if (Object.prototype.toString.call(callback) === "[object Function]") {
-						callback({action: 'treeLoaded'});
+					if (Object.prototype.toString.call(cbIndex) === "[object Function]") {
+						cbIndex({action: 'treeLoaded'});
 					}
 					this.loaded = true;
 				}
 
 			} else {
-				setTimeout(function() { self.positionTree(callback); }, 10);
+				setTimeout(function() { self.positionTree(cbIndex, cbLoader); }, 10);
 			}
 		},
 
@@ -418,7 +418,7 @@
 
 		// position all the nodes, center the tree in center of its container
 		// 0,0 coordinate is in the upper left corner
-		positionNodes: function() {
+		positionNodes: function(cbLoader) {
 
 			var self = this,
 				treeSize = {
@@ -488,6 +488,9 @@
 			that = this;
 			setTimeout(function() {
 				that.setConnections();
+				if (Object.prototype.toString.call(cbLoader) === "[object Function]") {
+					cbLoader();
+				}
 			}, this.CONFIG.animation.nodeSpeed);
 		},
 
@@ -495,13 +498,13 @@
 		setConnections: function() {
 			for(i =0, len = this.nodeDB.db.length; i < len; i++) {
 				node = this.nodeDB.get(i);
-				var collapsedParent = node.collapsedParent(),
-						hidePoint = null;
-				if(collapsedParent) {
-					// position the node behind the connector point of the parent, so future animations can be visible
-					hidePoint = collapsedParent.connectorPoint( true );
-				}
 				if(node != null){
+					var collapsedParent = node.collapsedParent();
+					var hidePoint = null;
+					if(collapsedParent) {
+						// position the node behind the connector point of the parent, so future animations can be visible
+						hidePoint = collapsedParent.connectorPoint( true );
+					}
 					if (node.id != 0) {
 						this.setConnectionToParent(node, hidePoint); // skip the root node
 					}
@@ -580,7 +583,6 @@
 				this.animatePath(connLine, pathString);
 
 			} else {
-
 				connLine = this._R.path( pathString );
 				this.connectionStore[node.id] = connLine;
 
@@ -1512,7 +1514,7 @@
 	/**
 	* Chart constructor.
 	*/
-	var Treant = function(jsonConfig, callback) {
+	var Treant = function(jsonConfig, cbIndex, cbLoader) {
 
 		panel = document.getElementById('panel')
 		panelSize = panel.clientWidth;
@@ -1526,13 +1528,13 @@
 
 		this.tree_id = newTree.id;
 		this.tree = newTree
-		this.callback = callback
+		this.cbIndex = cbIndex
 
-		newTree.positionTree(callback);
+		newTree.positionTree(cbIndex, cbLoader);
 
 		UTIL.addEvent(window, 'resize', function(e){
 			newTree._R.setSize(window.innerWidth - panelSize, window.innerHeight);
-			newTree.positionTree(callback);
+			newTree.positionTree(cbIndex);
 		});
 
 	};
@@ -1565,29 +1567,23 @@
 
 		// add new parent's child
 		newParent.children.push(nodeId);
-
-		// remove connection
-		//connection = this.tree.connectionStore[nodeId]
-		//if(connection){
-		//	connection.remove();
-		//	delete connection;
-		//}
-
-		// add new connection
-		//this.tree.setConnectionToParent(node);
 	};
 
 	Treant.prototype.switchIndexes = function(a, b) {
 		this.tree.nodeDB.switchIndexes(a, b);
 	};
 
-	Treant.prototype.getNodeParameter = function(nodeId, attr) {
+	Treant.prototype.getNode = function(nodeId) {
+		return this.tree.nodeDB.get(nodeId);
+	};
+
+	Treant.prototype.getNodeAttribute = function(nodeId, attr) {
 		tNode = this.tree.nodeDB.get(nodeId);
 		return tNode[attr];
 	};
 
-	Treant.prototype.redraw = function(node) {
-		this.tree.positionTree(this.callback);
+	Treant.prototype.redraw = function(cbLoader) {
+		this.tree.positionTree(this.cbIndex, cbLoader);
 	};
 
 	Treant.prototype.destroy = function() {

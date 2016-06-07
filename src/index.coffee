@@ -2,10 +2,13 @@
 require './css/main.css'
 require './css/tree.css'
 require './css/panel.css'
+require './css/controls.css'
 
 _ = require 'lodash'
 b3 = require 'b3'
-chief = require '../public/libs/Chief'
+chief = require 'behavior3-chief'
+alertify = require 'alertify.js'
+alertify.logPosition 'bottom right'
 
 require './tabs'
 treeLoader = require './treeLoader'
@@ -21,7 +24,7 @@ $treeInput = $('#trees input')
 $treeList = $('#treeList')
 $nodeList = $('#nodeList')
 $subjectList = $('#subjectList')
-$activeTreeName  = $('#activeTreeName')
+$activeTreeName = $('#activeTreeName')
 treantContainer = document.getElementById 'treant'
 
 $treeInput.on 'keyup', (evt) ->
@@ -50,10 +53,6 @@ loadTreeList = ->
 		$li.attr 'data', tree.getId()
 		$li.on 'click', toggleTree(tree, $li)
 
-updateActiveTreeName = ->
-	activeTree = chiefAPI.getTree activeTreeId
-	$activeTreeName.html activeTree.getName()
-
 handleTreeChange = (change) ->
 
 	eraseChildren = (cNode) ->
@@ -69,7 +68,6 @@ handleTreeChange = (change) ->
 		when 'createRoot'
 			cNode = activeTree.changeRootNode change.nodeName
 			treeLoader.addNodeToTree cNode, 0
-			treeLoader.redrawTree()
 
 		when 'addNode'
 			cNode = activeTree.addNode change.nodeName
@@ -77,9 +75,8 @@ handleTreeChange = (change) ->
 			if cParent.acceptsChildren()
 				cParent.addChild cNode
 				treeLoader.addNodeToTree cNode, change.parentTId
-				treeLoader.redrawTree()
 			else
-				console.log 'Node does not accept children'
+				alertify.error 'Node does not accept children'
 
 		when 'removeNode'
 			cNode = activeTree.getNode change.cNodeId
@@ -114,7 +111,7 @@ handleTreeChange = (change) ->
 				treeLoader.changeParent change.tNodeId, change.parentTId
 				treeLoader.redrawTree()
 			else
-				console.log 'Node does not accept children'
+				alertify.error 'Node does not accept children'
 
 
 toggleTree = (tree, $li) ->
@@ -126,6 +123,7 @@ toggleTree = (tree, $li) ->
 		if activeTreeId == loadingId
 			treeLoader.closeTree activeTreeId
 			activeTreeId = null
+			$activeTreeName.html ''
 			return
 
 		# close any currently opened
@@ -138,8 +136,16 @@ toggleTree = (tree, $li) ->
 			treeLoader.loadTree tree, gridSize, handleTreeChange
 			activeTreeId = loadingId
 			$li.addClass 'active'
+			activeTree = chiefAPI.getTree activeTreeId
+			$activeTreeName.html activeTree.getName()
 
-		updateActiveTreeName()
+		# temporary
+		if activeTree
+			activeSubject = chiefAPI.addSubject activeTree
+			loadSubjects()
+		else
+			activeSubject = null
+			loadSubjects()
 
 addTree = (name) ->
 	newTree = chiefAPI.createTree()
@@ -191,14 +197,62 @@ loadNodes()
 
 # Subject list
 
+activeSubject = null
+activeSubjectId = null
+
 loadSubjects = ->
 	cSubjectList = chiefAPI.listSubjects()
 	$subjectList.empty()
 	for subject in cSubjectList
-		$li = $('<li>' + subject.getName() + '</li>').appendTo $subjectList
+		$li = $('<li>' + subject.getId() + '</li>').appendTo $subjectList
 		$li.attr 'data', subject.getId()
 		$li.on 'click', toggleSubject(subject, $li)
+
+toggleSubject = (subject, $li) ->
+	return ->
+		loadingId = subject.getId()
+		$subjectList.find('li').removeClass 'active' # clear all
+
+		# clicking the same item
+		if activeSubjectId == loadingId
+			# stop displaying subject
+			activeSubjectId = null
+			$activeTreeName.html activeTree.getName()
+			$('#controls').hide()
+			return
+
+		# close any currently opened
+		if activeSubjectId
+			# stop displaying subject
+			$('#controls').hide()
+			activeSubjectId = null
+
+		# load if new
+		if activeSubjectId != loadingId
+			# start displaying subject
+			activeSubjectId = loadingId
+			$li.addClass 'active'
+			$('#controls').show()
+			$activeTreeName.html activeTree.getName() + ': ' + activeSubjectId
+
+		activeSubject = subject
 
 loadSubjects()
 
 
+# Controls
+
+playing = false
+
+$('#play').on 'click', ->
+	if playing is false
+		playing = true
+		$(this).removeClass('play').addClass('stop')
+		chiefAPI.start 100 # 0.1s
+	else
+		playing = false
+		$(this).removeClass('stop').addClass('play')
+		chiefAPI.stop()
+
+$('#step').on 'click', ->
+	chiefAPI.tick()

@@ -1,5 +1,6 @@
 
 data = require './trees/tree.json'
+chief = require 'behavior3-chief'
 
 treeConfig = {
 	container: '#treant',
@@ -24,6 +25,7 @@ treeConfig = {
 }
 
 activeTreeGraph = null
+nodeMap = {}
 
 registerRightClick = (treantConfig, callback) ->
 
@@ -63,8 +65,8 @@ registerRightClick = (treantConfig, callback) ->
 			})
 
 			# disable those not applicable
-			leftNeighborTId = parseInt activeTreeGraph.getNodeParameter tNodeId, 'leftNeighborId'
-			rightNeighborTId = parseInt activeTreeGraph.getNodeParameter tNodeId, 'rightNeighborId'
+			leftNeighborTId = parseInt activeTreeGraph.getNodeAttribute tNodeId, 'leftNeighborId'
+			rightNeighborTId = parseInt activeTreeGraph.getNodeAttribute tNodeId, 'rightNeighborId'
 			unless leftNeighborTId
 				$left.addClass 'disabled'
 			unless rightNeighborTId
@@ -81,16 +83,16 @@ registerRightClick = (treantConfig, callback) ->
 	$left.on 'click', (evt) ->
 		cNodeIdA = $(this).parent().attr 'cnodeid'
 		tNodeId = parseInt $(this).parent().attr 'tnodeid'
-		leftNeighborTId = parseInt activeTreeGraph.getNodeParameter tNodeId, 'leftNeighborId'
-		cNodeIdB = activeTreeGraph.getNodeParameter leftNeighborTId, 'cNodeId'
+		leftNeighborTId = parseInt activeTreeGraph.getNodeAttribute tNodeId, 'leftNeighborId'
+		cNodeIdB = activeTreeGraph.getNodeAttribute leftNeighborTId, 'cNodeId'
 		activeTreeGraph.switchIndexes tNodeId, leftNeighborTId
 		callback {action: 'switchNodes', cNodeIdA: cNodeIdA, cNodeIdB: cNodeIdB}
 
 	$right.on 'click', (evt) ->
 		cNodeIdA = $(this).parent().attr 'cnodeid'
 		tNodeId = parseInt $(this).parent().attr 'tnodeid'
-		rightNeighborTId = parseInt activeTreeGraph.getNodeParameter tNodeId, 'rightNeighborId'
-		cNodeIdB = activeTreeGraph.getNodeParameter rightNeighborTId, 'cNodeId'
+		rightNeighborTId = parseInt activeTreeGraph.getNodeAttribute tNodeId, 'rightNeighborId'
+		cNodeIdB = activeTreeGraph.getNodeAttribute rightNeighborTId, 'cNodeId'
 		activeTreeGraph.switchIndexes tNodeId, rightNeighborTId
 		callback {action: 'switchNodes', cNodeIdA: cNodeIdA, cNodeIdB: cNodeIdB}
 
@@ -151,10 +153,59 @@ createTNode = (cNode) ->
 	}
 	# node.getDescription()
 
+updateNode = (status) ->
+	cNode = this
+	tNode = nodeMap[cNode.getId()].tNode
+	tConn = nodeMap[cNode.getId()].connection
+
+	clearClasses tNode.nodeDOM
+	clearConnection tConn
+
+	switch status
+		when chief.status.SUCCESS
+			tNode.nodeDOM.classList.add 'success'
+			tConn.attr 'stroke', '#299b44'
+		when chief.status.RUNNING
+			tNode.nodeDOM.classList.add 'running'
+			tConn.attr 'stroke', '#9c7500'
+		when chief.status.FAILURE
+			tNode.nodeDOM.classList.add 'failure'
+			tConn.attr 'stroke', '#d2521a'
+		when chief.status.ERROR
+			tNode.nodeDOM.classList.add 'error'
+			tConn.attr 'stroke', '#d21a1a'
+
+clearClasses = (el) ->
+	el.classList.remove 'success'
+	el.classList.remove 'failure'
+	el.classList.remove 'running'
+	el.classList.remove 'error'
+
+clearConnection = (el) ->
+	el.attr 'stroke', '#414141'
+
+treantLoaded = ->
+	tNodes = activeTreeGraph.tree.nodeDB.db
+	for tNode in tNodes
+		id = tNode.cNodeId
+		if id and id != 'start'
+			nodeMap[id].tNode = tNode
+			nodeMap[id].connection = activeTreeGraph.tree.connectionStore[tNode.id]
+
+nodeAdded = (cNode, tNode, tNodeDefinition) ->
+	# register events
+	$(tNode.nodeDOM).on 'dragstart', (evt) -> dragNode(evt)
+	cNode.on 'status.change', updateNode.bind(cNode)
+	# add to nodeMap
+	id = cNode.getId()
+	nodeMap[id] = tNodeDefinition
+	nodeMap[id].tNode = tNode
+	nodeMap[id].connection = activeTreeGraph.tree.connectionStore[tNode.id]
+
 exports.addNodeToTree = (cNode, parentTId) ->
 	tNodeDefinition = createTNode cNode
 	tNode = activeTreeGraph.addNode tNodeDefinition, parentTId
-	$(tNode.nodeDOM).on 'dragstart', (evt) -> dragNode(evt)
+	activeTreeGraph.redraw -> nodeAdded(cNode, tNode, tNodeDefinition)
 
 exports.changeParent = (tNodeId, parentTId) ->
 	activeTreeGraph.changeParent tNodeId, parentTId
@@ -162,7 +213,7 @@ exports.changeParent = (tNodeId, parentTId) ->
 exports.redrawTree = ->
 	activeTreeGraph.redraw()
 
-exports.loadTree = (cTree, gridSize, callback) ->
+exports.loadTree = (cTree, gridSize, cbIndex) ->
 	treeConfig.quantize = gridSize
 	cTree.changeRootNode 'Sequence'
 	rootNode = cTree.getRootNode()
@@ -177,7 +228,6 @@ exports.loadTree = (cTree, gridSize, callback) ->
 		cNodeId: 'start',
 		HTMLid: 'start'
 
-	nodeMap = {}
 	for cNode in cNodes
 		nodeMap[cNode.getId()] = createTNode cNode
 
@@ -190,14 +240,16 @@ exports.loadTree = (cTree, gridSize, callback) ->
 		else
 			tNode.parent = start
 
+		# register events
+		cNode.on 'status.change', updateNode.bind(cNode)
+
 	nodeStructure = _.values nodeMap
 	nodeStructure.unshift start
 	nodeStructure.unshift treeConfig
 
-	activeTreeGraph = new Treant nodeStructure, callback
-	registerDragAndDrop treeConfig, callback
-	registerRightClick treeConfig, callback
-
+	activeTreeGraph = new Treant nodeStructure, cbIndex, treantLoaded
+	registerDragAndDrop treeConfig, cbIndex
+	registerRightClick treeConfig, cbIndex
 
 exports.closeTree = (treeId) ->
 	activeTreeGraph.destroy()

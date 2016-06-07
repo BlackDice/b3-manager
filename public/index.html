@@ -26,7 +26,7 @@
 					<input type='text'>
 					<button type='submit' class='material-icons md-36'>done</button>
 				</div>
-				<ul id='treeList'></ul>
+				<ul id='treeList' class='listOfToggles'></ul>
 			</div>
 			<div id='nodes' class='panelContent'>
 				<h2>Nodes</h2>
@@ -35,12 +35,15 @@
 			<div id='subjects' class='panelContent'>
 				<a href='#' id='filter' class='rightLink'>Filter<i class='material-icons md-36'>search</i></a>
 				<h2>Subjects</h2>
-				<ul id='subjectList'></ul>
+				<ul id='subjectList' class='listOfToggles'></ul>
 			</div>
 		</div>
 		<div id='chart'>
 			<h1 id='activeTreeName'></h1>
 			<div id='treant'></div>
+			<div id='controls'>
+				<div id='play' class='play'></div><div id='step' class='step'></div>
+			</div>
 		</div>
 		<div id='contextmenu'>
 			<div id='commandMoveLeft'><i class='material-icons'>arrow_back</i><span>Left</span></div>

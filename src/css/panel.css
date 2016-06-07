@@ -105,7 +105,7 @@
 	color: #c5c5c5;
 }
 
-#treeList li.active {
+.listOfToggles li.active {
 	background: #3f4853;
 	padding: 20px;
 	margin: -20px;
@@ -116,33 +116,33 @@
 	border-radius: 4px;
 }
 
-#treeList li.active:hover {
+.listOfToggles li.active:hover {
 	color: #181818;
 }
 
-#treeList li.active .material-icons {
+.listOfToggles li.active .material-icons {
 	color: #181818;
 }
 
-#treeList li.active .material-icons:hover {
+.listOfToggles li.active .material-icons:hover {
 	color: #c5c5c5;
 }
 
-#treeList li .material-icons {
+.listOfToggles li .material-icons {
 	float: right;
 	color: #363636;
 	display: none;
 }
 
-#treeList li:hover .material-icons {
+.listOfToggles li:hover .material-icons {
 	display: inline;
 }
 
-#treeList .material-icons:hover {
+.listOfToggles .material-icons:hover {
 	color: #c5c5c5;
 }
 
-#nodeList h5:first-letter {
+.listOfToggles h5:first-letter {
 	text-transform: capitalize;
 }
 
