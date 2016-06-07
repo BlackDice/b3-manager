@@ -113,7 +113,6 @@ handleTreeChange = (change) ->
 			else
 				alertify.error 'Node does not accept children'
 
-
 toggleTree = (tree, $li) ->
 	return ->
 		loadingId = tree.getId()
@@ -251,6 +250,7 @@ $('#play').on 'click', ->
 		chiefAPI.start 100 # 0.1s
 	else
 		playing = false
+		treeLoader.clearAllNodes()
 		$(this).removeClass('stop').addClass('play')
 		chiefAPI.stop()
 

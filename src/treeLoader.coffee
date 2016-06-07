@@ -202,6 +202,14 @@ nodeAdded = (cNode, tNode, tNodeDefinition) ->
 	nodeMap[id].tNode = tNode
 	nodeMap[id].connection = activeTreeGraph.tree.connectionStore[tNode.id]
 
+exports.clearAllNodes = ->
+	tNodes = activeTreeGraph.tree.nodeDB.db
+	for tNode in tNodes
+		id = tNode.cNodeId
+		unless id == 'start'
+			clearClasses tNode.nodeDOM
+			clearConnection nodeMap[id].connection
+
 exports.addNodeToTree = (cNode, parentTId) ->
 	tNodeDefinition = createTNode cNode
 	tNode = activeTreeGraph.addNode tNodeDefinition, parentTId

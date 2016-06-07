@@ -1536,7 +1536,6 @@
 			newTree._R.setSize(window.innerWidth - panelSize, window.innerHeight);
 			newTree.positionTree(cbIndex);
 		});
-
 	};
 
 	Treant.prototype.addNode = function(node, parentId) {
