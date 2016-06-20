@@ -25,12 +25,26 @@ treeConfig = {
 }
 
 tActiveTree = null
+tActiveNode = null
 nodeMap = {}
 
-registerLeftClick = ->
+registerClick = (treantConfig, callback) ->
+	$container = $(treantConfig.container)
+	$container.on 'click', (evt) ->
+		if evt.target.classList.contains 'node'
+			evt.preventDefault()
+			if evt.target.id == 'start' then return
+			if tActiveNode != evt.target
+				if tActiveNode then tActiveNode.classList.remove 'highlight'
+				evt.target.classList.add 'highlight'
+				tActiveNode = evt.target
+				cNodeId = evt.target.getAttribute 'cnodeid'
+				console.log cNodeId
+				callback {action: 'showNodeMemory', cNodeId: cNodeId}
+			else
+				evt.target.classList.add 'highlight'
 
 registerRightClick = (treantConfig, callback) ->
-
 	$container = $(treantConfig.container)
 	$contextmenu = $('#contextmenu')
 	$left = $('#commandMoveLeft')
@@ -98,7 +112,7 @@ registerRightClick = (treantConfig, callback) ->
 		tActiveTree.switchIndexes tNodeId, rightNeighborTId
 		callback {action: 'switchNodes', cNodeIdA: cNodeIdA, cNodeIdB: cNodeIdB}
 
-	document.addEventListener 'click', ->
+	document.addEventListener 'click', (evt) ->
 		$contextmenu.hide()
 		clearHighlight()
 		clearDisables()
@@ -267,6 +281,7 @@ exports.loadTree = (cTree, gridSize, cbIndex) ->
 	tActiveTree = new Treant nodeStructure, cbIndex, treantLoaded
 	registerDragAndDrop treeConfig, cbIndex
 	registerRightClick treeConfig, cbIndex
+	registerClick treeConfig, cbIndex
 
 exports.closeTree = (treeId) ->
 	tActiveTree.destroy()

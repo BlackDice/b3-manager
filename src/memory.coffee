@@ -54,6 +54,7 @@ exports.loadNodeMemory = (subj, cNode) ->
 	# when a node is clicked, load memory of the node for the currently active subj and tree
 	nodeMemory = subj.getMemoryForNode cNode
 	nodeEditor = loadMemory nodeEl, nodeEditor, nodeMemory, chiefNodeMemoryChange, handleNodeMemoryChange
+	$('#nodeMemory').removeClass 'collapsed'
 
 exports.loadTreeMemory = (tree, subj) ->
 	# when tree and subj is active, load subset of subjs memory relevant to the tree

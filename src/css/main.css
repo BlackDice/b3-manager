@@ -153,7 +153,10 @@ li {
 
 #nodeMemory, #treeMemory, #subjMemory {
 	width: 100%;
-	flex: 1;
+	flex-grow: 1;
+	flex-shrink: 1;
+	flex-basis: auto;
+	transition: all 0.2s;
 	padding: 20px;
 }
 
@@ -162,12 +165,15 @@ li {
 }
 
 #nodeMemory {
-	display: none;
 	border-bottom: 1px #282828 solid;
 }
 
 #treeMemory {
 	border-bottom: 1px #282828 solid;
+}
+
+.collapsed {
+    flex-grow: 0.001 !important;
 }
 
 .hidden {

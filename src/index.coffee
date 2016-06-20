@@ -78,8 +78,6 @@ handleTreeChange = (change) ->
 		cActiveTree.removeNode cNode
 
 	switch change.action
-		#when 'treeLoaded'
-		#when 'treeMoved'
 		when 'createRoot'
 			cNode = cActiveTree.changeRootNode change.nodeName
 			treeLoader.addNodeToTree cNode, 0
@@ -127,6 +125,11 @@ handleTreeChange = (change) ->
 				treeLoader.redrawTree()
 			else
 				alertify.error 'Node does not accept children'
+
+		when 'showNodeMemory'
+			if activeSubject
+				cNode = cActiveTree.getNode change.cNodeId
+				memory.loadNodeMemory activeSubject, cNode
 
 toggleTree = (tree, $li) ->
 	return ->
