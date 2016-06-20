@@ -3,19 +3,34 @@ require './css/main.css'
 require './css/tree.css'
 require './css/panel.css'
 require './css/controls.css'
+require './css/jsoneditor-dark.css'
 
 _ = require 'lodash'
 b3 = require 'b3'
-chief = require 'behavior3-chief'
+Chief = require 'behavior3-chief'
 alertify = require 'alertify.js'
 alertify.logPosition 'bottom right'
 
 require './tabs'
 treeLoader = require './treeLoader'
-chiefAPI = chief.create()
+memory = require './memory'
+chief = Chief.create()
 
 gridSize = 50
 
+
+document.addEventListener 'keydown', (evt) ->
+	# tab
+	if evt.keyCode is 9 and not document.activeElement.getAttribute('contenteditable')
+		evt.preventDefault()
+		panelWidth  = if $('#panel').width()  == 350 then '0px' else '350px'
+		memoryWidth = if $('#memory').width() == 350 then '0px' else '350px'
+
+		$('#panel').width panelWidth
+		$('#memory').width memoryWidth
+
+		if cActiveTree
+			treeLoader.redrawTree false
 
 # Panel input
 
@@ -28,7 +43,7 @@ $activeTreeName = $('#activeTreeName')
 treantContainer = document.getElementById 'treant'
 
 $treeInput.on 'keyup', (evt) ->
-	if evt.keyCode is 13
+	if evt.keyCode is 13 # enter
 		addTree $treeInput.val()
 
 $treeForm.find('button').on 'click', ->
@@ -40,12 +55,12 @@ $('#addTree').on 'click', ->
 
 # Tree list
 
-activeTreeId = null
-activeTree = null
+cActiveTreeId = null
+cActiveTree = null
 timer = null
 
 loadTreeList = ->
-	cTreeList = chiefAPI.listTrees()
+	cTreeList = chief.listTrees()
 	$treeList.empty()
 	for tree in cTreeList
 		$li = $('<li>' + tree.getName() + '</li>').appendTo $treeList
@@ -58,20 +73,20 @@ handleTreeChange = (change) ->
 	eraseChildren = (cNode) ->
 		children = cNode.getChildren()
 		for child in children
-			activeTree.removeNode child
+			cActiveTree.removeNode child
 			eraseChildren child
-		activeTree.removeNode cNode
+		cActiveTree.removeNode cNode
 
 	switch change.action
 		#when 'treeLoaded'
 		#when 'treeMoved'
 		when 'createRoot'
-			cNode = activeTree.changeRootNode change.nodeName
+			cNode = cActiveTree.changeRootNode change.nodeName
 			treeLoader.addNodeToTree cNode, 0
 
 		when 'addNode'
-			cNode = activeTree.addNode change.nodeName
-			cParent = activeTree.getNode change.parentCId
+			cNode = cActiveTree.addNode change.nodeName
+			cParent = cActiveTree.getNode change.parentCId
 			if cParent.acceptsChildren()
 				cParent.addChild cNode
 				treeLoader.addNodeToTree cNode, change.parentTId
@@ -79,13 +94,13 @@ handleTreeChange = (change) ->
 				alertify.error 'Node does not accept children'
 
 		when 'removeNode'
-			cNode = activeTree.getNode change.cNodeId
+			cNode = cActiveTree.getNode change.cNodeId
 			eraseChildren cNode
 			treeLoader.redrawTree()
 
 		when 'switchNodes'
-			cNodeA = activeTree.getNode change.cNodeIdA
-			cNodeB = activeTree.getNode change.cNodeIdB
+			cNodeA = cActiveTree.getNode change.cNodeIdA
+			cNodeB = cActiveTree.getNode change.cNodeIdB
 			cParent = cNodeA.getParent()
 			children = cParent.getChildren()
 			indexA = children.indexOf cNodeA
@@ -102,9 +117,9 @@ handleTreeChange = (change) ->
 			treeLoader.redrawTree()
 
 		when 'changeParent'
-			cNode = activeTree.getNode change.cNodeId
+			cNode = cActiveTree.getNode change.cNodeId
 			cParent = cNode.getParent()
-			cNewParent = activeTree.getNode change.parentCId
+			cNewParent = cActiveTree.getNode change.parentCId
 			if cNewParent.acceptsChildren()
 				cParent.removeChild cNode
 				cNewParent.addChild cNode
@@ -119,35 +134,41 @@ toggleTree = (tree, $li) ->
 		$treeList.find('li').removeClass 'active' # clear all
 
 		# clicking the same item
-		if activeTreeId == loadingId
-			treeLoader.closeTree activeTreeId
-			activeTreeId = null
-			$activeTreeName.html ''
+		if cActiveTreeId == loadingId
+			closeTree()
 			return
 
 		# close any currently opened
-		if activeTreeId
-			treeLoader.closeTree activeTreeId
-			activeTreeId = null
+		if cActiveTreeId
+			closeTree()
 
 		# load if new
-		if activeTreeId != loadingId
-			treeLoader.loadTree tree, gridSize, handleTreeChange
-			activeTreeId = loadingId
-			$li.addClass 'active'
-			activeTree = chiefAPI.getTree activeTreeId
-			$activeTreeName.html activeTree.getName()
+		if cActiveTreeId != loadingId
+			openTree loadingId, tree, $li
 
 		# temporary
-		if activeTree
-			activeSubject = chiefAPI.addSubject activeTree
+		if cActiveTree
+			activeSubject = chief.addSubject(cActiveTree)
 			loadSubjects()
 		else
 			activeSubject = null
 			loadSubjects()
 
+openTree = (id, tree, $li) ->
+	treeLoader.loadTree tree, gridSize, handleTreeChange
+	cActiveTreeId = id
+	$li.addClass 'active'
+	cActiveTree = chief.getTree cActiveTreeId
+	$activeTreeName.html cActiveTree.getName()
+
+closeTree = ->
+	treeLoader.closeTree cActiveTreeId
+	cActiveTreeId = null
+	$activeTreeName.html ''
+	$('#controls').hide()
+
 addTree = (name) ->
-	newTree = chiefAPI.createTree()
+	newTree = chief.createTree()
 	newTree.setName name
 	loadTreeList()
 
@@ -174,7 +195,7 @@ dragNode = (evt) ->
 	evt.dataTransfer.setData 'text/plain', transfer
 
 loadNodes = ->
-	cNodeList = chiefAPI.listBehaviorNodes()
+	cNodeList = chief.listBehaviorNodes()
 	sortedList = _.groupBy cNodeList, 'category'
 	order = ['composite', 'decorator', 'action']
 
@@ -186,7 +207,7 @@ loadNodes = ->
 		for key, node of category
 			$li = $('<li></li>').attr('draggable', 'true').appendTo $ul
 			$img = $('<span></span>').addClass('nodeIcon').appendTo $li
-			$img.css('background-image', "url('./assets/nodes/" + node.name.toLowerCase() + ".png'");
+			$img.css 'background-image', "url('./assets/nodes/" + node.name.toLowerCase() + ".png'"
 			$label = $('<span>' + node.name + '</span>').appendTo $li
 			$li.attr 'data', node.name
 			$li.on 'dragstart', (evt) -> dragNode(evt)
@@ -200,7 +221,7 @@ activeSubject = null
 activeSubjectId = null
 
 loadSubjects = ->
-	cSubjectList = chiefAPI.listSubjects()
+	cSubjectList = chief.listSubjects()
 	$subjectList.empty()
 	for subject in cSubjectList
 		$li = $('<li>' + subject.getId() + '</li>').appendTo $subjectList
@@ -215,26 +236,44 @@ toggleSubject = (subject, $li) ->
 		# clicking the same item
 		if activeSubjectId == loadingId
 			# stop displaying subject
-			activeSubjectId = null
-			$activeTreeName.html activeTree.getName()
-			$('#controls').hide()
+			$activeTreeName.html cActiveTree.getName()
+			closeSubject()
 			return
 
 		# close any currently opened
 		if activeSubjectId
-			# stop displaying subject
-			$('#controls').hide()
-			activeSubjectId = null
+			closeSubject()
 
 		# load if new
 		if activeSubjectId != loadingId
 			# start displaying subject
-			activeSubjectId = loadingId
-			$li.addClass 'active'
-			$('#controls').show()
-			$activeTreeName.html activeTree.getName() + ': ' + activeSubjectId
+			openSubject loadingId, subject, $li
 
-		activeSubject = subject
+openSubject = (id, subject, $li) ->
+	activeSubjectId = id
+	activeSubject = subject
+	$li.addClass 'active'
+	$('#controls').show()
+	$activeTreeName.html cActiveTree.getName() + ': ' + activeSubjectId
+
+	showMemoryPanel()
+	memory.loadTreeMemory cActiveTree, activeSubject
+	memory.loadSubjectMemory activeSubject
+
+closeSubject = ->
+	$('#controls').hide()
+	activeSubjectId = null
+
+	hideMemoryPanel()
+	memory.clearMemory()
+
+showMemoryPanel = ->
+	$('#memory').removeClass 'hidden'
+	treeLoader.getActiveTree().resize()
+
+hideMemoryPanel = ->
+	$('#memory').addClass 'hidden'
+	treeLoader.getActiveTree().resize()
 
 loadSubjects()
 
@@ -242,17 +281,25 @@ loadSubjects()
 # Controls
 
 playing = false
+tickInterval = 100
+tickIntervalRef = null
 
 $('#play').on 'click', ->
 	if playing is false
 		playing = true
+		memory.disableEditors()
 		$(this).removeClass('play').addClass('stop')
-		chiefAPI.start 100 # 0.1s
+		tickIntervalRef = setInterval((-> chief.tick()), tickInterval)
+
 	else
 		playing = false
+		memory.enableEditors()
 		treeLoader.clearAllNodes()
 		$(this).removeClass('stop').addClass('play')
-		chiefAPI.stop()
+		clearInterval tickIntervalRef
+		activeSubject.getMemory().forget()
+		console.log 'memory cleared'
+
 
 $('#step').on 'click', ->
-	chiefAPI.tick()
+	chief.tick()

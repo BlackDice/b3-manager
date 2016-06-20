@@ -1,6 +1,6 @@
 
 data = require './trees/tree.json'
-chief = require 'behavior3-chief'
+Chief = require 'behavior3-chief'
 
 treeConfig = {
 	container: '#treant',
@@ -24,8 +24,10 @@ treeConfig = {
 	}
 }
 
-activeTreeGraph = null
+tActiveTree = null
 nodeMap = {}
+
+registerLeftClick = ->
 
 registerRightClick = (treantConfig, callback) ->
 
@@ -65,8 +67,8 @@ registerRightClick = (treantConfig, callback) ->
 			})
 
 			# disable those not applicable
-			leftNeighborTId = parseInt activeTreeGraph.getNodeAttribute tNodeId, 'leftNeighborId'
-			rightNeighborTId = parseInt activeTreeGraph.getNodeAttribute tNodeId, 'rightNeighborId'
+			leftNeighborTId = parseInt tActiveTree.getNodeAttribute tNodeId, 'leftNeighborId'
+			rightNeighborTId = parseInt tActiveTree.getNodeAttribute tNodeId, 'rightNeighborId'
 			unless leftNeighborTId
 				$left.addClass 'disabled'
 			unless rightNeighborTId
@@ -77,29 +79,33 @@ registerRightClick = (treantConfig, callback) ->
 	$erase.on 'click', (evt) ->
 		cNodeId = $(this).parent().attr 'cnodeid'
 		tNodeId = parseInt $(this).parent().attr 'tnodeid'
-		activeTreeGraph.removeNode tNodeId
+		tActiveTree.removeNode tNodeId
 		callback {action: 'removeNode', cNodeId: cNodeId}
 
 	$left.on 'click', (evt) ->
 		cNodeIdA = $(this).parent().attr 'cnodeid'
 		tNodeId = parseInt $(this).parent().attr 'tnodeid'
-		leftNeighborTId = parseInt activeTreeGraph.getNodeAttribute tNodeId, 'leftNeighborId'
-		cNodeIdB = activeTreeGraph.getNodeAttribute leftNeighborTId, 'cNodeId'
-		activeTreeGraph.switchIndexes tNodeId, leftNeighborTId
+		leftNeighborTId = parseInt tActiveTree.getNodeAttribute tNodeId, 'leftNeighborId'
+		cNodeIdB = tActiveTree.getNodeAttribute leftNeighborTId, 'cNodeId'
+		tActiveTree.switchIndexes tNodeId, leftNeighborTId
 		callback {action: 'switchNodes', cNodeIdA: cNodeIdA, cNodeIdB: cNodeIdB}
 
 	$right.on 'click', (evt) ->
 		cNodeIdA = $(this).parent().attr 'cnodeid'
 		tNodeId = parseInt $(this).parent().attr 'tnodeid'
-		rightNeighborTId = parseInt activeTreeGraph.getNodeAttribute tNodeId, 'rightNeighborId'
-		cNodeIdB = activeTreeGraph.getNodeAttribute rightNeighborTId, 'cNodeId'
-		activeTreeGraph.switchIndexes tNodeId, rightNeighborTId
+		rightNeighborTId = parseInt tActiveTree.getNodeAttribute tNodeId, 'rightNeighborId'
+		cNodeIdB = tActiveTree.getNodeAttribute rightNeighborTId, 'cNodeId'
+		tActiveTree.switchIndexes tNodeId, rightNeighborTId
 		callback {action: 'switchNodes', cNodeIdA: cNodeIdA, cNodeIdB: cNodeIdB}
 
 	document.addEventListener 'click', ->
 		$contextmenu.hide()
 		clearHighlight()
 		clearDisables()
+
+	window.addEventListener 'resize', (evt) ->
+		tActiveTree.resize()
+
 
 dragNode = (evt) ->
 	transfer = JSON.stringify
@@ -162,16 +168,16 @@ updateNode = (status) ->
 	clearConnection tConn
 
 	switch status
-		when chief.status.SUCCESS
+		when Chief.status.SUCCESS
 			tNode.nodeDOM.classList.add 'success'
 			tConn.attr 'stroke', '#299b44'
-		when chief.status.RUNNING
+		when Chief.status.RUNNING
 			tNode.nodeDOM.classList.add 'running'
 			tConn.attr 'stroke', '#9c7500'
-		when chief.status.FAILURE
+		when Chief.status.FAILURE
 			tNode.nodeDOM.classList.add 'failure'
 			tConn.attr 'stroke', '#d2521a'
-		when chief.status.ERROR
+		when Chief.status.ERROR
 			tNode.nodeDOM.classList.add 'error'
 			tConn.attr 'stroke', '#d21a1a'
 
@@ -185,12 +191,12 @@ clearConnection = (el) ->
 	el.attr 'stroke', '#414141'
 
 treantLoaded = ->
-	tNodes = activeTreeGraph.tree.nodeDB.db
+	tNodes = tActiveTree.tree.nodeDB.db
 	for tNode in tNodes
 		id = tNode.cNodeId
 		if id and id != 'start'
 			nodeMap[id].tNode = tNode
-			nodeMap[id].connection = activeTreeGraph.tree.connectionStore[tNode.id]
+			nodeMap[id].connection = tActiveTree.tree.connectionStore[tNode.id]
 
 nodeAdded = (cNode, tNode, tNodeDefinition) ->
 	# register events
@@ -200,10 +206,10 @@ nodeAdded = (cNode, tNode, tNodeDefinition) ->
 	id = cNode.getId()
 	nodeMap[id] = tNodeDefinition
 	nodeMap[id].tNode = tNode
-	nodeMap[id].connection = activeTreeGraph.tree.connectionStore[tNode.id]
+	nodeMap[id].connection = tActiveTree.tree.connectionStore[tNode.id]
 
 exports.clearAllNodes = ->
-	tNodes = activeTreeGraph.tree.nodeDB.db
+	tNodes = tActiveTree.tree.nodeDB.db
 	for tNode in tNodes
 		id = tNode.cNodeId
 		unless id == 'start'
@@ -212,14 +218,17 @@ exports.clearAllNodes = ->
 
 exports.addNodeToTree = (cNode, parentTId) ->
 	tNodeDefinition = createTNode cNode
-	tNode = activeTreeGraph.addNode tNodeDefinition, parentTId
-	activeTreeGraph.redraw -> nodeAdded(cNode, tNode, tNodeDefinition)
+	tNode = tActiveTree.addNode tNodeDefinition, parentTId
+	tActiveTree.redraw -> nodeAdded(cNode, tNode, tNodeDefinition)
 
 exports.changeParent = (tNodeId, parentTId) ->
-	activeTreeGraph.changeParent tNodeId, parentTId
+	tActiveTree.changeParent tNodeId, parentTId
 
-exports.redrawTree = ->
-	activeTreeGraph.redraw()
+exports.redrawTree = (animate) ->
+	tActiveTree.redraw null, animate
+
+exports.getActiveTree = ->
+	return tActiveTree
 
 exports.loadTree = (cTree, gridSize, cbIndex) ->
 	treeConfig.quantize = gridSize
@@ -249,17 +258,17 @@ exports.loadTree = (cTree, gridSize, cbIndex) ->
 			tNode.parent = start
 
 		# register events
-		cNode.on 'status.change', updateNode.bind(cNode)
+		cNode.on 'status', updateNode.bind(cNode)
 
 	nodeStructure = _.values nodeMap
 	nodeStructure.unshift start
 	nodeStructure.unshift treeConfig
 
-	activeTreeGraph = new Treant nodeStructure, cbIndex, treantLoaded
+	tActiveTree = new Treant nodeStructure, cbIndex, treantLoaded
 	registerDragAndDrop treeConfig, cbIndex
 	registerRightClick treeConfig, cbIndex
 
 exports.closeTree = (treeId) ->
-	activeTreeGraph.destroy()
-	activeTreeGraph = null
+	tActiveTree.destroy()
+	tActiveTree = null
 	console.log 'closing tree', treeId

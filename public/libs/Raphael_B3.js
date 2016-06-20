@@ -7145,8 +7145,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return res;
 	    };
 	    R._engine.setSize = function (width, height) {
-	        this.width = width || this.width;
-	        this.height = height || this.height;
+	        this.width = '100%';
+	        this.height = '100%';
 	        this.canvas.setAttribute("width", this.width);
 	        this.canvas.setAttribute("height", this.height);
 	        if (this._viewBox) {

@@ -172,7 +172,7 @@
 
 	Tree.prototype = {
 
-		positionTree: function(cbIndex, cbLoader) {
+		positionTree: function(cbIndex, cbLoader, animate) {
 
 			var self = this;
 
@@ -186,7 +186,7 @@
 				this.firstWalk(root, 0);
 				this.secondWalk( root, 0, 0, 0 );
 
-				this.positionNodes(cbLoader);
+				this.positionNodes(cbLoader, animate);
 
 				if (this.CONFIG.animateOnInit) {
 					setTimeout(function() { root.toggleCollapse(); }, this.CONFIG.animateOnInitDelay);
@@ -418,7 +418,7 @@
 
 		// position all the nodes, center the tree in center of its container
 		// 0,0 coordinate is in the upper left corner
-		positionNodes: function(cbLoader) {
+		positionNodes: function(cbLoader, animate) {
 
 			var self = this,
 				treeSize = {
@@ -475,7 +475,7 @@
 						node.hide(hidePoint);
 					} else if(node.positioned) {
 						// node is already positioned
-						node.show();
+						node.show(animate);
 					} else {
 						// initial position
 						node.nodeDOM.style.left = node.X + 'px';
@@ -486,16 +486,24 @@
 			}
 
 			that = this;
-			setTimeout(function() {
-				that.setConnections();
+			if(animate != false){
+				setTimeout(function() {
+					that.setConnections(animate);
+					if (Object.prototype.toString.call(cbLoader) === "[object Function]") {
+						cbLoader();
+					}
+				}, this.CONFIG.animation.nodeSpeed);
+			}
+			else {
+				that.setConnections(animate);
 				if (Object.prototype.toString.call(cbLoader) === "[object Function]") {
 					cbLoader();
 				}
-			}, this.CONFIG.animation.nodeSpeed);
+			}
 		},
 
 		// set all canvas connections
-		setConnections: function() {
+		setConnections: function(animate) {
 			for(i =0, len = this.nodeDB.db.length; i < len; i++) {
 				node = this.nodeDB.get(i);
 				if(node != null){
@@ -506,7 +514,7 @@
 						hidePoint = collapsedParent.connectorPoint( true );
 					}
 					if (node.id != 0) {
-						this.setConnectionToParent(node, hidePoint); // skip the root node
+						this.setConnectionToParent(node, hidePoint, animate); // skip the root node
 					}
 					else if (!this.CONFIG.hideRootNode && node.drawLineThrough) {
 						// drawlinethrough is performed for for the root node also
@@ -567,7 +575,7 @@
 
 		},
 
-		setConnectionToParent: function(node, hidePoint) {
+		setConnectionToParent: function(node, hidePoint, animate) {
 
 			var stacked = node.stackParentId,
 				connLine,
@@ -580,13 +588,24 @@
 			if (this.connectionStore[node.id]) {
 				// connector already exists, update the connector geometry
 				connLine = this.connectionStore[node.id];
-				this.animatePath(connLine, pathString);
+
+				if (animate != false) {
+					// update with animations
+					this.animatePath(connLine, pathString);
+				}
+				else {
+					// redraw without animations
+					connLine.remove()
+					connLine = this._R.path( pathString );
+					this.connectionStore[node.id] = connLine;
+					connLine.attr(parent.connStyle.style);
+				}
 
 			} else {
 				connLine = this._R.path( pathString );
 				this.connectionStore[node.id] = connLine;
 
-				// don't show connector arrows por pseudo nodes
+				// don't show connector arrows for pseudo nodes
 				if(node.pseudo) { delete parent.connStyle.style['arrow-end']; }
 				if(parent.pseudo) { delete parent.connStyle.style['arrow-start']; }
 
@@ -1222,7 +1241,7 @@
 			this.hidden = true;
 		},
 
-		show: function() {
+		show: function(animate) {
 			var nodeDOM = this.nodeDOM;
 			nodeDOM.style.visibility = 'visible';
 
@@ -1238,17 +1257,30 @@
 				new_pos.height = this.startH;
 			}
 
-			$(nodeDOM).animate(
-				new_pos,
-				config.animation.nodeSpeed, config.animation.nodeAnimation,
-				function() {
-					// $.animate applys "overflow:hidden" to the node, remove it to avoid visual problems
-					nodeDOM.style.overflow = "";
-				}
-			);
+			if (animate != false){
+				$(nodeDOM).animate(
+					new_pos,
+					config.animation.nodeSpeed, config.animation.nodeAnimation,
+					function() {
+						// $.animate applys "overflow:hidden" to the node, remove it to avoid visual problems
+						nodeDOM.style.overflow = "";
+					}
+				);
+			}
+			else {
+				nodeDOM.style.left = new_pos.left + 'px';
+				nodeDOM.style.top = new_pos.top + 'px';				
+			}
 
 			if(this.lineThroughMe) {
-				tree.animatePath(this.lineThroughMe, this.pathStringThrough());
+				if (animate != false) {
+					// update with animations
+					tree.animatePath(this.lineThroughMe, this.pathStringThrough());
+				}
+				else {
+					// update without animations
+					this.lineThroughMe.attr({path: new_path});					
+				}
 			}
 
 			this.hidden = false;
@@ -1516,10 +1548,6 @@
 	*/
 	var Treant = function(jsonConfig, cbIndex, cbLoader) {
 
-		panel = document.getElementById('panel')
-		panelSize = panel.clientWidth;
-		if(! panelSize){console.log('Dont use this treant build without the left panel');}
-
 		if (jsonConfig instanceof Array) {
 			jsonConfig = JSONconfig.make(jsonConfig);
 		}
@@ -1532,11 +1560,18 @@
 
 		newTree.positionTree(cbIndex, cbLoader);
 
+		/*
 		UTIL.addEvent(window, 'resize', function(e){
-			newTree._R.setSize(window.innerWidth - panelSize, window.innerHeight);
+			newTree._R.setSize($('#treant').width(), window.innerHeight);
 			newTree.positionTree(cbIndex);
 		});
+		*/
 	};
+
+	Treant.prototype.resize = function() {
+		this.tree._R.setSize($('#treant').width(), window.innerHeight);
+		this.tree.positionTree(this.cbIndex);
+	}
 
 	Treant.prototype.addNode = function(node, parentId) {
 		tNode = this.tree.nodeDB.createNode(node, parentId, this.tree, null);
@@ -1581,8 +1616,8 @@
 		return tNode[attr];
 	};
 
-	Treant.prototype.redraw = function(cbLoader) {
-		this.tree.positionTree(this.cbIndex, cbLoader);
+	Treant.prototype.redraw = function(cbLoader, animate) {
+		this.tree.positionTree(this.cbIndex, cbLoader, animate);
 	};
 
 	Treant.prototype.destroy = function() {

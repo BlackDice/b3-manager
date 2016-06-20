@@ -6,43 +6,61 @@
 		<script src='/libs/zepto.js'></script>
 		<script src='/libs/zepto.fx.js'></script>
 		<script src='/libs/zepto.fx_methods.js'></script>
-		<script src='/libs/Raphael.js'></script>
-		<script src='/libs/Treant.js'></script>
+		<script src='/libs/Raphael_B3.js'></script>
+		<script src='/libs/Treant_B3.js'></script>
+		<script src="/libs/jsoneditor_B3.js"></script>
 		<script src='/libs/behavior3-0.2.0dev.js'></script>
+
 		<link rel='icon' type='image/png' href='/assets/favicon.png'>
 		<link href='https://fonts.googleapis.com/icon?family=Material+Icons' rel='stylesheet'>
 	</head>
 	<body>
-		<div id='panel'>
-			<div id='tabs'>
-				<div data='#trees' id='tab-trees' class='tab active'></div>
-				<div data='#nodes' id='tab-nodes' class='tab'></div>
-				<div data='#subjects' id='tab-subjects' class='tab'></div>
-			</div>
-			<div id='trees' class='panelContent active'>
-				<a href='#' id='addTree' class='rightLink'>Add<i class='material-icons md-36'>add</i></a>
-				<h2>Trees</h2>
-				<div class='panelInput hidden' name='addTree'>
-					<input type='text'>
-					<button type='submit' class='material-icons md-36'>done</button>
+		<div id='container'>
+			<div id='panel'>
+				<div id='tabs'>
+					<div data='#trees' id='tab-trees' class='tab active'></div>
+					<div data='#nodes' id='tab-nodes' class='tab'></div>
+					<div data='#subjects' id='tab-subjects' class='tab'></div>
 				</div>
-				<ul id='treeList' class='listOfToggles'></ul>
+				<div id='trees' class='panelContent active'>
+					<a href='#' id='addTree' class='rightLink'>Add<i class='material-icons md-36'>add</i></a>
+					<h2>Trees</h2>
+					<div class='panelInput hidden' name='addTree'>
+						<input type='text'>
+						<button type='submit' class='material-icons md-36'>done</button>
+					</div>
+					<ul id='treeList' class='listOfToggles'></ul>
+				</div>
+				<div id='nodes' class='panelContent'>
+					<h2>Nodes</h2>
+					<div id='nodeList'></div>
+				</div>
+				<div id='subjects' class='panelContent'>
+					<a href='#' id='filter' class='rightLink'>Filter<i class='material-icons md-36'>search</i></a>
+					<h2>Subjects</h2>
+					<ul id='subjectList' class='listOfToggles'></ul>
+				</div>
 			</div>
-			<div id='nodes' class='panelContent'>
-				<h2>Nodes</h2>
-				<div id='nodeList'></div>
+			<div id='chart'>
+				<h1 id='activeTreeName'></h1>
+				<div id='treant'></div>
+				<div id='controls'>
+					<div id='play' class='play'></div><div id='step' class='step'></div>
+				</div>
 			</div>
-			<div id='subjects' class='panelContent'>
-				<a href='#' id='filter' class='rightLink'>Filter<i class='material-icons md-36'>search</i></a>
-				<h2>Subjects</h2>
-				<ul id='subjectList' class='listOfToggles'></ul>
-			</div>
-		</div>
-		<div id='chart'>
-			<h1 id='activeTreeName'></h1>
-			<div id='treant'></div>
-			<div id='controls'>
-				<div id='play' class='play'></div><div id='step' class='step'></div>
+			<div id='memory' class='hidden'>
+				<div id='nodeMemory'>
+					<h2 id='nodeMemoryName'>Node memory</h2>
+					<div id='nodeEditor'></div>
+				</div>
+				<div id='treeMemory'>
+					<h2 id='treeMemoryName'>Tree memory</h2>
+					<div id='treeEditor'></div>
+				</div>
+				<div id='subjMemory'>
+					<h2 id='subjMemoryName'>Subject memory</h2>
+					<div id='subjEditor'></div>
+				</div>
 			</div>
 		</div>
 		<div id='contextmenu'>
