@@ -40,6 +40,7 @@ $treeList = $('#treeList')
 $nodeList = $('#nodeList')
 $subjectList = $('#subjectList')
 $activeTreeName = $('#activeTreeName')
+$activeTreeDesc = $('#activeTreeDesc')
 treantContainer = document.getElementById 'treant'
 
 $treeInput.on 'keyup', (evt) ->
@@ -163,16 +164,19 @@ openTree = (id, tree, $li) ->
 	$li.addClass 'active'
 	cActiveTree = chief.getTree cActiveTreeId
 	$activeTreeName.html cActiveTree.getName()
+	$activeTreeDesc.html cActiveTree.getDescription()
 
 closeTree = ->
 	treeLoader.closeTree cActiveTreeId
 	cActiveTreeId = null
 	$activeTreeName.html ''
+	$activeTreeDesc.html ''
 	$('#controls').hide()
 
 addTree = (name) ->
 	newTree = chief.createTree()
 	newTree.setName name
+	newTree.setDescription 'Lorem ipsum dolor sit amet' # temp
 	loadTreeList()
 
 #loadTreeList()

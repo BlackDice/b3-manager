@@ -165,13 +165,12 @@ registerDragAndDrop = (treantConfig, callback) ->
 
 createTNode = (cNode) ->
 	tNode = {
-		text: {name: cNode.getName(), desc: ' ', contact: ' '}
+		text: {name: cNode.getName(), status: ' ', contact: ' ', desc: cNode.getDescription() }
 		image: './assets/nodes/' + cNode.getName().toLowerCase() + '.png'
 		collapsed: false
 		HTMLclass: 'none'			# running, failure, error, success
 		cNodeId: cNode.getId()
 	}
-	# node.getDescription()
 
 updateNode = (status) ->
 	cNode = this

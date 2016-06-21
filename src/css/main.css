@@ -136,6 +136,17 @@ li {
 	text-align: center;
 }
 
+#activeTreeDesc {
+	position: absolute;
+	top: 60px;
+	width: 100%;
+	text-align: center;
+	font-style: italic;
+	font-weight: normal;
+	font-size: 10pt;
+	color: #666;
+}
+
 #treant {
 	width: 100%;
 	height: 100%;

@@ -1455,6 +1455,7 @@
 			name:	'node-name',
 			title:	'node-title',
 			desc:	'node-desc',
+			status:	'node-status',
 			contact: 'node-contact'
 		}
 	};
