@@ -134,17 +134,20 @@ li {
 	top: 16px;
 	width: 100%;
 	text-align: center;
+	z-index: 100;
 }
 
 #activeTreeDesc {
 	position: absolute;
-	top: 60px;
+	top: 50px;
+	padding: 10px;
 	width: 100%;
 	text-align: center;
 	font-style: italic;
 	font-weight: normal;
 	font-size: 10pt;
 	color: #666;
+	z-index: 110;
 }
 
 #treant {

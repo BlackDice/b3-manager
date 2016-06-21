@@ -65,7 +65,7 @@ loadTreeList = ->
 	$treeList.empty()
 	for tree in cTreeList
 		$li = $('<li>' + tree.getName() + '</li>').appendTo $treeList
-		$("<i>border_color</i>").addClass('material-icons').appendTo $li
+		#$("<i>border_color</i>").addClass('material-icons').appendTo $li
 		$li.attr 'data', tree.getId()
 		$li.on 'click', toggleTree(tree, $li)
 
@@ -193,7 +193,13 @@ addTree 'Combat'
 addTree 'Chase'
 addTree 'Flight'
 
+# Tree description
 
+$activeTreeDesc.on 'input', ->
+	cActiveTree.setDescription $activeTreeDesc.html()
+
+$activeTreeName.on 'input', ->
+	cActiveTree.setName $activeTreeName.html()
 
 # Node list
 
