@@ -245,11 +245,6 @@ exports.getActiveTree = ->
 
 exports.loadTree = (cTree, gridSize, cbIndex) ->
 	treeConfig.quantize = gridSize
-	cTree.changeRootNode 'Sequence'
-	rootNode = cTree.getRootNode()
-	rootNode.addChild cTree.addNode('Failer')
-	rootNode.addChild cTree.addNode('Succeeder')
-
 	cNodes = cTree.listNodes()
 
 	start =

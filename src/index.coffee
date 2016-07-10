@@ -9,12 +9,23 @@ _ = require 'lodash'
 b3 = require 'b3'
 Chief = require 'behavior3-chief'
 alertify = require 'alertify.js'
+firebase = require 'firebase'
+
 alertify.logPosition 'bottom right'
 
 require './tabs'
 treeLoader = require './treeLoader'
 memory = require './memory'
 chief = Chief.create()
+
+config =
+	apiKey: "AIzaSyCroAZGxn8rsHykeQgcLIOruDrBwvzgLBk"
+	databaseURL: "https://tauros-dev-7685.firebaseio.com"
+firebase.initializeApp config
+
+adapter = Chief.adapter.Firebase
+	chief: chief,
+	firebaseRef: firebase.database().ref()
 
 gridSize = 50
 
@@ -46,13 +57,18 @@ treantContainer = document.getElementById 'treant'
 $treeInput.on 'keyup', (evt) ->
 	if evt.keyCode is 13 # enter
 		addTree $treeInput.val()
+		$treeInput.focus()
+		toggleInput()
 
 $treeForm.find('button').on 'click', ->
 	addTree $treeInput.val()
 
 $('#addTree').on 'click', ->
+	toggleInput()
+
+toggleInput = ->
 	$(this).toggleClass 'active'
-	$treeForm.toggleClass('hidden').find('input').focus()
+	$treeForm.toggleClass 'hidden'
 
 # Tree list
 
@@ -80,11 +96,13 @@ handleTreeChange = (change) ->
 
 	switch change.action
 		when 'createRoot'
-			cNode = cActiveTree.changeRootNode change.nodeName
-			treeLoader.addNodeToTree cNode, 0
+			cRootNode = cActiveTree.createNode change.nodeName
+			cActiveTree.setRootNode cRootNode
+			treeLoader.addNodeToTree cRootNode, 0
 
 		when 'addNode'
-			cNode = cActiveTree.addNode change.nodeName
+			cNode = cActiveTree.createNode change.nodeName
+			cActiveTree.addNode cNode
 			cParent = cActiveTree.getNode change.parentCId
 			if cParent.acceptsChildren()
 				cParent.addChild cNode
@@ -177,21 +195,23 @@ addTree = (name) ->
 	newTree = chief.createTree()
 	newTree.setName name
 	newTree.setDescription 'Lorem ipsum dolor sit amet' # temp
+	chief.addTree newTree
 	loadTreeList()
 
-#loadTreeList()
-# Remporary list mock
-addTree 'Rat'
-addTree 'Human'
-addTree 'Bull'
-addTree 'Beatle'
-addTree 'Bat'
-addTree 'Snail'
-addTree 'Stroll'
-addTree 'Rest'
-addTree 'Combat'
-addTree 'Chase'
-addTree 'Flight'
+adapter.sync().then ->
+	loadTreeList()
+	# Temporary list mock
+	#addTree 'Rat'
+	#addTree 'Human'
+	#addTree 'Bull'
+	#addTree 'Beatle'
+	#addTree 'Bat'
+	#addTree 'Snail'
+	#addTree 'Stroll'
+	#addTree 'Rest'
+	#addTree 'Combat'
+	#addTree 'Chase'
+	#addTree 'Flight'
 
 # Tree description
 
