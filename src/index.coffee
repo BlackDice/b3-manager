@@ -62,6 +62,7 @@ $treeInput.on 'keyup', (evt) ->
 
 $treeForm.find('button').on 'click', ->
 	addTree $treeInput.val()
+	toggleInput()
 
 $('#addTree').on 'click', ->
 	toggleInput()
@@ -81,7 +82,8 @@ loadTreeList = ->
 	$treeList.empty()
 	for cTree in cTreeList
 		$li = $('<li>' + cTree.getName() + '</li>').appendTo $treeList
-		#$("<i>border_color</i>").addClass('material-icons').appendTo $li
+		$erase = $("<i>delete</i>").addClass('material-icons').appendTo($li)
+		$erase.on 'click', removeTree(event, cTree.getId())
 		$li.attr 'data', cTree.getId()
 		$li.on 'click', toggleTree(cTree, $li)
 
@@ -101,9 +103,10 @@ handleTreeChange = (change) ->
 				cActiveTree.setRootNode cRootNode
 				treeLoader.addNodeToTree cRootNode, 0
 			else
-				alertify.error 'Node does not accept children'
+				alertify.error 'Add node that accepts children'
 
 		when 'addNode'
+			console.log 'node added'
 			cNode = cActiveTree.createNode change.nodeName
 			cActiveTree.addNode cNode
 			cParent = cActiveTree.getNode change.parentCId
@@ -200,6 +203,13 @@ addTree = (name) ->
 	newTree.setDescription 'Lorem ipsum dolor sit amet' # temp
 	chief.addTree newTree
 	loadTreeList()
+
+removeTree = (evt, cTreeId) ->
+	evt.stopPropagation()
+	return ->
+		closeTree()
+		chief.removeTree cTreeId
+		loadTreeList()
 
 adapter.sync().then ->
 	loadTreeList()
