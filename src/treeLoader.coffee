@@ -25,6 +25,7 @@ treeConfig = {
 }
 
 tActiveTree = null
+tActiveTreeHasRoot = null
 tActiveNode = null
 nodeMap = {}
 
@@ -33,13 +34,11 @@ registerClick = (treantConfig, callback) ->
 	$container.on 'click', (evt) ->
 		if evt.target.classList.contains 'node'
 			evt.preventDefault()
-			if evt.target.id == 'start' then return
 			if tActiveNode != evt.target
 				if tActiveNode then tActiveNode.classList.remove 'highlight'
 				evt.target.classList.add 'highlight'
 				tActiveNode = evt.target
 				cNodeId = evt.target.getAttribute 'cnodeid'
-				console.log cNodeId
 				callback {action: 'showNodeMemory', cNodeId: cNodeId}
 			else
 				evt.target.classList.add 'highlight'
@@ -87,16 +86,18 @@ registerRightClick = (treantConfig, callback) ->
 				$left.addClass 'disabled'
 			unless rightNeighborTId
 				$right.addClass 'disabled'
-			if tNodeId == 0
-				$erase.addClass 'disabled'
 
 	$erase.on 'click', (evt) ->
+		if $erase.hasClass 'disabled' then return
 		cNodeId = $(this).parent().attr 'cnodeid'
 		tNodeId = parseInt $(this).parent().attr 'tnodeid'
+		parentId = tActiveTree.getNodeAttribute(tNodeId, 'parentId')
 		tActiveTree.removeNode tNodeId
+		if parentId is -1 then tActiveTreeHasRoot = false
 		callback {action: 'removeNode', cNodeId: cNodeId}
 
 	$left.on 'click', (evt) ->
+		if $left.hasClass 'disabled' then return
 		cNodeIdA = $(this).parent().attr 'cnodeid'
 		tNodeId = parseInt $(this).parent().attr 'tnodeid'
 		leftNeighborTId = parseInt tActiveTree.getNodeAttribute tNodeId, 'leftNeighborId'
@@ -105,6 +106,7 @@ registerRightClick = (treantConfig, callback) ->
 		callback {action: 'switchNodes', cNodeIdA: cNodeIdA, cNodeIdB: cNodeIdB}
 
 	$right.on 'click', (evt) ->
+		if $right.hasClass 'disabled' then return
 		cNodeIdA = $(this).parent().attr 'cnodeid'
 		tNodeId = parseInt $(this).parent().attr 'tnodeid'
 		rightNeighborTId = parseInt tActiveTree.getNodeAttribute tNodeId, 'rightNeighborId'
@@ -132,7 +134,9 @@ dragNode = (evt) ->
 registerDragAndDrop = (treantConfig, callback) ->
 	$container = $(treantConfig.container)
 	$container.on 'dragover', (evt) ->
-		if evt.target.classList.contains 'node'
+		if tActiveTreeHasRoot is false
+			evt.preventDefault()
+		else if evt.target.classList.contains 'node'
 			evt.preventDefault()
 			evt.target.classList.add 'highlight'
 
@@ -141,25 +145,24 @@ registerDragAndDrop = (treantConfig, callback) ->
 			evt.target.classList.remove 'highlight'
 
 	$container.on 'drop', (evt) ->
-		if evt.target.classList.contains 'node'
+		if tActiveTreeHasRoot is false
+			evt.preventDefault()
+			obj = JSON.parse evt.dataTransfer.getData 'text'
+			callback {action: 'createRoot', nodeName: obj.name}
+
+		else if evt.target.classList.contains 'node'
 			evt.preventDefault()
 			evt.target.classList.remove 'highlight'
 
 			obj = JSON.parse evt.dataTransfer.getData 'text'
-
 			parentCId = evt.target.getAttribute 'cnodeid'
 			parentTId = parseInt evt.target.getAttribute 'tnodeid'
 
 			switch obj.type
 				when 'add'
-					# createRoot, addNode, changeParent
-					if parentCId == 'start'
-						callback {action: 'createRoot', nodeName: obj.name}
-					else
-						callback {action: 'addNode', nodeName: obj.name, parentCId: parentCId, parentTId: parentTId}
+					callback {action: 'addNode', nodeName: obj.name, parentCId: parentCId, parentTId: parentTId}
 				when 'change'
-					unless parentCId == 'start'
-						callback {action: 'changeParent', tNodeId: obj.tid, cNodeId: obj.cid, parentTId: parentTId, parentCId: parentCId}
+					callback {action: 'changeParent', tNodeId: obj.tid, cNodeId: obj.cid, parentTId: parentTId, parentCId: parentCId}
 
 	$('.node').on 'dragstart', (evt) -> dragNode(evt)
 
@@ -229,6 +232,10 @@ exports.clearAllNodes = ->
 			clearClasses tNode.nodeDOM
 			clearConnection nodeMap[id].connection
 
+exports.addRootNode = (cNode) ->
+	tActiveTreeHasRoot = true
+	this.addNodeToTree cNode, -1
+
 exports.addNodeToTree = (cNode, parentTId) ->
 	tNodeDefinition = createTNode cNode
 	tNode = tActiveTree.addNode tNodeDefinition, parentTId
@@ -244,16 +251,9 @@ exports.getActiveTree = ->
 	return tActiveTree
 
 exports.loadTree = (cTree, gridSize, cbIndex) ->
-
 	config = _.cloneDeep treeConfig
 	config.quantize = gridSize
 	cNodes = cTree.listNodes()
-
-	start =
-		text: { name: 'Start' },
-		image: './assets/nodes/start.png',
-		cNodeId: 'start',
-		HTMLid: 'start'
 
 	for cNode in cNodes
 		nodeMap[cNode.getId()] = createTNode cNode
@@ -264,17 +264,15 @@ exports.loadTree = (cTree, gridSize, cbIndex) ->
 		if cParentNode
 			tParentNode = nodeMap[cParentNode.getId()]
 			tNode.parent = tParentNode
-		else
-			tNode.parent = start
 
 		# register events
 		cNode.on 'status', updateNode.bind(cNode)
 
 	nodeStructure = _.values nodeMap
-	nodeStructure.unshift start
 	nodeStructure.unshift config
 
 	tActiveTree = new Treant nodeStructure, cbIndex, treantLoaded
+	tActiveTreeHasRoot = cTree.getRootNode() isnt null
 
 	registerDragAndDrop config, cbIndex
 	registerRightClick config, cbIndex

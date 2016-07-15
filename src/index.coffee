@@ -99,14 +99,14 @@ handleTreeChange = (change) ->
 	switch change.action
 		when 'createRoot'
 			cRootNode = cActiveTree.createNode change.nodeName
+			#console.log cRootNode.getId()
 			if cRootNode.acceptsChildren()
 				cActiveTree.setRootNode cRootNode
-				treeLoader.addNodeToTree cRootNode, 0
+				treeLoader.addRootNode cRootNode
 			else
 				alertify.error 'Add node that accepts children'
 
 		when 'addNode'
-			console.log 'node added'
 			cNode = cActiveTree.createNode change.nodeName
 			cActiveTree.addNode cNode
 			cParent = cActiveTree.getNode change.parentCId

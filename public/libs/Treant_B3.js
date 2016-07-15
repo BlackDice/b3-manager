@@ -130,23 +130,26 @@
 		destroy: function(tree_id){
 			var tree = this.get(tree_id);
 			if (tree) {
-				tree._R.remove();
-				var draw_area = tree.drawArea;
-				while(draw_area.firstChild) {
-					draw_area.removeChild(draw_area.firstChild);
+				if (tree._R){
+					tree._R.remove();
 				}
-				var classes = draw_area.className.split(' '),
-					classes_to_stay = [];
-				for (var i = 0; i < classes.length; i++) {
-					var cls = classes[i];
-					if (cls != 'Treant' && cls != 'Treant-loaded') {
-						classes_to_stay.push(cls);
+				if (tree.drawArea){
+					var draw_area = tree.drawArea;
+					while(draw_area.firstChild) {
+						draw_area.removeChild(draw_area.firstChild);
 					}
-				};
-				draw_area.style.overflowY = '';
-				draw_area.style.overflowX = '';
-				draw_area.className = classes_to_stay.join(' ');
-
+					var classes = draw_area.className.split(' '),
+						classes_to_stay = [];
+					for (var i = 0; i < classes.length; i++) {
+						var cls = classes[i];
+						if (cls != 'Treant' && cls != 'Treant-loaded') {
+							classes_to_stay.push(cls);
+						}
+					};
+					draw_area.style.overflowY = '';
+					draw_area.style.overflowX = '';
+					draw_area.className = classes_to_stay.join(' ');
+				}
 				this.store[tree_id] = null;
 			}
 		}
@@ -182,12 +185,14 @@
 				var root = this.root(),
 					orient = this.CONFIG.rootOrientation;
 
-				this.resetLevelData();
+				if(root){
+					this.resetLevelData();
 
-				this.firstWalk(root, 0);
-				this.secondWalk( root, 0, 0, 0 );
+					this.firstWalk(root, 0);
+					this.secondWalk( root, 0, 0, 0 );
 
-				this.positionNodes(cbLoader, animate);
+					this.positionNodes(cbLoader, animate);
+				}
 
 				if (this.CONFIG.animateOnInit) {
 					setTimeout(function() { root.toggleCollapse(); }, this.CONFIG.animateOnInitDelay);
@@ -812,9 +817,9 @@
 		}
 
 		if (tree.CONFIG.animateOnInit) nodeStructure.collapsed = true;
-
-		iterateChildren( nodeStructure, -1); // root node
-
+		if (nodeStructure) {
+			iterateChildren( nodeStructure, -1); // root node
+		}
 		this.createGeometries(tree);
 	};
 
@@ -870,24 +875,38 @@
 			this.resetNeighbors();
 
 			// remove children
-			flatChildIdList = [];
 			var node = this.get(nodeId);
-			this.getAllChildrenIDs(node, flatChildIdList);
-			for(var id of flatChildIdList){
-				this.removeNode(id, tree);
-			}
+			if (node) {
+				if (this.hasChildren(node)) {
+					flatChildIdList = [];
+					this.getAllChildrenIDs(node, flatChildIdList);
+					for(var id of flatChildIdList){
+						this.removeNode(id, tree);
+					}
+				}
 
-			// remove node from parent
-			var parent = this.get(node.parentId);
-			if(parent){
-				parentChildren = parent.children;
-				childIndex = parentChildren.indexOf(nodeId);
-				parentChildren[childIndex] = null;
-				//parentChildren.splice(childIndex, 1);
+				// remove node from parent
+				var parent = this.get(node.parentId);
+				if(parent){
+					parentChildren = parent.children;
+					childIndex = parentChildren.indexOf(nodeId);
+					parentChildren[childIndex] = null;
+					//parentChildren.splice(childIndex, 1);
+				}
 			}
 
 			// remove node itself
 			this.removeNode(nodeId, tree);
+		},
+
+		hasChildren: function(node) {
+			var hasChildren = false;
+			for (var key in node.children) {
+				if (node.children[key] != null) {
+					hasChildren = true;
+				}
+			}
+			return hasChildren;
 		},
 
 		removeNode: function(nodeId, tree) {
@@ -1477,13 +1496,14 @@
 					node.myID = this.getID();
 				}
 			}
-
-			this.findChildren(configArray, jsonStructure);
+			if (configArray.length > 1) {
+				this.findChildren(configArray, jsonStructure);
+			}
 			return jsonStructure;
 		},
 
 		findChildren: function(nodes, jsonStructure) {
-			var parents = [0]; // start witha a root node
+			var parents = [0]; // start with a root node
 
 			while(parents.length) {
 				var parentId = parents.pop(),
