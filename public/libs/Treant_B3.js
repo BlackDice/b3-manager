@@ -146,6 +146,7 @@
 				draw_area.style.overflowY = '';
 				draw_area.style.overflowX = '';
 				draw_area.className = classes_to_stay.join(' ');
+
 				this.store[tree_id] = null;
 			}
 		}
@@ -237,27 +238,24 @@
 
 			} else {
 				//node is not a leaf,  firstWalk for each child
+				var realChildrenCount = 0;
 				for(var i = 0, n = node.childrenCount(); i < n; i++) {
 					child = node.childAt(i)
 					if(child == null) continue;
+					realChildrenCount++;
 					this.firstWalk(child, level + 1);
 				}
 
-				var midPoint = node.childrenCenter() - node.size() / 2;
+				if(realChildrenCount > 0) {
+					var midPoint = node.childrenCenter() - node.size() / 2;
 
-				if(leftSibling) {
-					node.prelim		= leftSibling.prelim + leftSibling.size() + this.CONFIG.siblingSeparation;
-					node.modifier	= node.prelim - midPoint;
-					this.apportion( node, level );
-				} else {
-					node.prelim = midPoint;
-				}
-
-				// handle stacked children positioning
-				if(node.stackParent) { // hadle the parent of stacked children
-					node.modifier += this.nodeDB.get( node.stackChildren[0] ).size()/2 + node.connStyle.stackIndent;
-				} else if ( node.stackParentId ) { // handle stacked children
-					node.prelim = 0;
+					if(leftSibling) {
+						node.prelim		= leftSibling.prelim + leftSibling.size() + this.CONFIG.siblingSeparation;
+						node.modifier	= node.prelim - midPoint;
+						this.apportion( node, level );
+					} else {
+						node.prelim = midPoint;
+					}
 				}
 			}
 		},
@@ -376,12 +374,12 @@
 						node.Y = (yTmp + (levelHeight - nodesizeTmp)); // align "TOP"
 					}
 
-				} else {
+				}
+				else {
 					node.Y = ( align == 'CENTER' ) ? (yTmp + (levelHeight - nodesizeTmp) / 2) :
 							( align == 'TOP' )	? (yTmp + (levelHeight - nodesizeTmp)) :
 							yTmp;
 				}
-
 
 				if(orinet == 'WEST' || orinet == 'EAST') {
 					var swapTmp = node.X;
@@ -390,27 +388,17 @@
 				}
 
 				if (orinet == 'SOUTH') {
-
 					node.Y = -node.Y - nodesizeTmp;
 				}
 				else if (orinet == 'EAST') {
-
 					node.X = -node.X - nodesizeTmp;
 				}
 
-				if(node.childrenCount() !== 0) {
-
-					if(node.id === 0 && this.CONFIG.hideRootNode) {
-						// ako je root node Hiden onda nemoj njegovu dijecu pomaknut po Y osi za Level separation, neka ona budu na vrhu
-						this.secondWalk(node.firstChild(), level + 1, X + node.modifier, Y);
-					} else {
-
-						this.secondWalk(node.firstChild(), level + 1, X + node.modifier, Y + levelHeight + this.CONFIG.levelSeparation);
-					}
+				if(node.childrenCount() !== 0 && node.firstChild()) {
+					this.secondWalk(node.firstChild(), level + 1, X + node.modifier, Y + levelHeight + this.CONFIG.levelSeparation);
 				}
 
 				if(node.rightSibling()) {
-
 					this.secondWalk(node.rightSibling(), level, X, Y);
 				}
 			}
@@ -1269,7 +1257,7 @@
 			}
 			else {
 				nodeDOM.style.left = new_pos.left + 'px';
-				nodeDOM.style.top = new_pos.top + 'px';				
+				nodeDOM.style.top = new_pos.top + 'px';
 			}
 
 			if(this.lineThroughMe) {
@@ -1279,7 +1267,7 @@
 				}
 				else {
 					// update without animations
-					this.lineThroughMe.attr({path: new_path});					
+					this.lineThroughMe.attr({path: new_path});
 				}
 			}
 
@@ -1465,11 +1453,14 @@
 	// #############################################
 
 	var JSONconfig = {
+
+		lastId: 0,
+
 		make: function( configArray ) {
 
 			var i = configArray.length, node;
 
-			this.jsonStructure = {
+			jsonStructure = {
 				chart: null,
 				nodeStructure: null
 			};
@@ -1477,27 +1468,26 @@
 			while(i--) {
 				node = configArray[i];
 				if (node.hasOwnProperty('container')) {
-					this.jsonStructure.chart = node;
+					jsonStructure.chart = node;
 					continue;
 				}
 
 				if (!node.hasOwnProperty('parent') && ! node.hasOwnProperty('container')) {
-					this.jsonStructure.nodeStructure = node;
+					jsonStructure.nodeStructure = node;
 					node.myID = this.getID();
 				}
 			}
 
-			this.findChildren(configArray);
-
-			return this.jsonStructure;
+			this.findChildren(configArray, jsonStructure);
+			return jsonStructure;
 		},
 
-		findChildren: function(nodes) {
+		findChildren: function(nodes, jsonStructure) {
 			var parents = [0]; // start witha a root node
 
 			while(parents.length) {
 				var parentId = parents.pop(),
-					parent = this.findNode(this.jsonStructure.nodeStructure, parentId),
+					parent = this.findNode(jsonStructure.nodeStructure, parentId),
 					i = 0, len = nodes.length,
 					children = [];
 
@@ -1536,24 +1526,18 @@
 			}
 		},
 
-		getID: (function() {
-			var i = 0;
-			return function() {
-				return i++;
-			};
-		})()
+		getID: function() {
+			return this.lastId++;
+		}
 	};
 
 	/**
 	* Chart constructor.
 	*/
-	var Treant = function(jsonConfig, cbIndex, cbLoader) {
+	var Treant = function(nodeStructure, cbIndex, cbLoader) {
 
-		if (jsonConfig instanceof Array) {
-			jsonConfig = JSONconfig.make(jsonConfig);
-		}
-
-		var newTree = TreeStore.createTree(jsonConfig);
+		var config = JSONconfig.make(nodeStructure);
+		var newTree = TreeStore.createTree(config);
 
 		this.tree_id = newTree.id;
 		this.tree = newTree
@@ -1622,6 +1606,7 @@
 	};
 
 	Treant.prototype.destroy = function() {
+		JSONconfig.lastId = 0;
 		TreeStore.destroy(this.tree_id);
 	};
 

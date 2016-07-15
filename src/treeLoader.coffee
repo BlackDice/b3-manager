@@ -244,7 +244,9 @@ exports.getActiveTree = ->
 	return tActiveTree
 
 exports.loadTree = (cTree, gridSize, cbIndex) ->
-	treeConfig.quantize = gridSize
+
+	config = _.cloneDeep treeConfig
+	config.quantize = gridSize
 	cNodes = cTree.listNodes()
 
 	start =
@@ -270,14 +272,16 @@ exports.loadTree = (cTree, gridSize, cbIndex) ->
 
 	nodeStructure = _.values nodeMap
 	nodeStructure.unshift start
-	nodeStructure.unshift treeConfig
+	nodeStructure.unshift config
 
 	tActiveTree = new Treant nodeStructure, cbIndex, treantLoaded
-	registerDragAndDrop treeConfig, cbIndex
-	registerRightClick treeConfig, cbIndex
-	registerClick treeConfig, cbIndex
+
+	registerDragAndDrop config, cbIndex
+	registerRightClick config, cbIndex
+	registerClick config, cbIndex
 
 exports.closeTree = (treeId) ->
+	nodeMap = {}
 	tActiveTree.destroy()
 	tActiveTree = null
 	console.log 'closing tree', treeId

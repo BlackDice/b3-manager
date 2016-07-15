@@ -79,11 +79,11 @@ timer = null
 loadTreeList = ->
 	cTreeList = chief.listTrees()
 	$treeList.empty()
-	for tree in cTreeList
-		$li = $('<li>' + tree.getName() + '</li>').appendTo $treeList
+	for cTree in cTreeList
+		$li = $('<li>' + cTree.getName() + '</li>').appendTo $treeList
 		#$("<i>border_color</i>").addClass('material-icons').appendTo $li
-		$li.attr 'data', tree.getId()
-		$li.on 'click', toggleTree(tree, $li)
+		$li.attr 'data', cTree.getId()
+		$li.on 'click', toggleTree(cTree, $li)
 
 handleTreeChange = (change) ->
 
@@ -97,8 +97,11 @@ handleTreeChange = (change) ->
 	switch change.action
 		when 'createRoot'
 			cRootNode = cActiveTree.createNode change.nodeName
-			cActiveTree.setRootNode cRootNode
-			treeLoader.addNodeToTree cRootNode, 0
+			if cRootNode.acceptsChildren()
+				cActiveTree.setRootNode cRootNode
+				treeLoader.addNodeToTree cRootNode, 0
+			else
+				alertify.error 'Node does not accept children'
 
 		when 'addNode'
 			cNode = cActiveTree.createNode change.nodeName
@@ -150,9 +153,9 @@ handleTreeChange = (change) ->
 				cNode = cActiveTree.getNode change.cNodeId
 				memory.loadNodeMemory activeSubject, cNode
 
-toggleTree = (tree, $li) ->
+toggleTree = (cTree, $li) ->
 	return ->
-		loadingId = tree.getId()
+		loadingId = cTree.getId()
 		$treeList.find('li').removeClass 'active' # clear all
 
 		# clicking the same item
@@ -166,7 +169,7 @@ toggleTree = (tree, $li) ->
 
 		# load if new
 		if cActiveTreeId != loadingId
-			openTree loadingId, tree, $li
+			openTree loadingId, cTree, $li
 
 		# temporary
 		if cActiveTree
@@ -176,11 +179,11 @@ toggleTree = (tree, $li) ->
 			activeSubject = null
 			loadSubjects()
 
-openTree = (id, tree, $li) ->
-	treeLoader.loadTree tree, gridSize, handleTreeChange
+openTree = (id, cTree, $li) ->
+	treeLoader.loadTree cTree, gridSize, handleTreeChange
 	cActiveTreeId = id
 	$li.addClass 'active'
-	cActiveTree = chief.getTree cActiveTreeId
+	cActiveTree = chief.getTree id
 	$activeTreeName.html cActiveTree.getName()
 	$activeTreeDesc.html cActiveTree.getDescription()
 
@@ -200,18 +203,6 @@ addTree = (name) ->
 
 adapter.sync().then ->
 	loadTreeList()
-	# Temporary list mock
-	#addTree 'Rat'
-	#addTree 'Human'
-	#addTree 'Bull'
-	#addTree 'Beatle'
-	#addTree 'Bat'
-	#addTree 'Snail'
-	#addTree 'Stroll'
-	#addTree 'Rest'
-	#addTree 'Combat'
-	#addTree 'Chase'
-	#addTree 'Flight'
 
 # Tree description
 
