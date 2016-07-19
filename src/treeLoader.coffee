@@ -27,7 +27,12 @@ treeConfig = {
 tActiveTree = null
 tActiveTreeHasRoot = null
 tActiveNode = null
+$container = null
 nodeMap = {}
+$contextmenu = $('#contextmenu')
+$left = $('#commandMoveLeft')
+$right = $('#commandMoveRight')
+$erase = $('#commandErase')
 
 registerClick = (treantConfig, callback) ->
 	$container = $(treantConfig.container)
@@ -45,10 +50,6 @@ registerClick = (treantConfig, callback) ->
 
 registerRightClick = (treantConfig, callback) ->
 	$container = $(treantConfig.container)
-	$contextmenu = $('#contextmenu')
-	$left = $('#commandMoveLeft')
-	$right = $('#commandMoveRight')
-	$erase = $('#commandErase')
 	highlightedEl = null
 
 	clearDisables = ->
@@ -166,6 +167,16 @@ registerDragAndDrop = (treantConfig, callback) ->
 
 	$('.node').on 'dragstart', (evt) -> dragNode(evt)
 
+unregisterAllEvents = ->
+	$container.unbind 'dragover'
+	$container.unbind 'dragleave'
+	$container.unbind 'drop'
+	$container.unbind 'click'
+	$container.unbind 'contextmenu'
+	$left.unbind 'click'
+	$right.unbind 'click'
+	$erase.unbind 'click'
+
 createTNode = (cNode) ->
 	tNode = {
 		text: {name: cNode.getName(), status: ' ', contact: ' ', desc: cNode.getDescription() }
@@ -282,4 +293,6 @@ exports.closeTree = (treeId) ->
 	nodeMap = {}
 	tActiveTree.destroy()
 	tActiveTree = null
+	unregisterAllEvents()
+	$container = null
 	console.log 'closing tree', treeId

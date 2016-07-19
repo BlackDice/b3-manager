@@ -1635,7 +1635,14 @@
 
 	Treant.prototype.getNodeAttribute = function(nodeId, attr) {
 		tNode = this.tree.nodeDB.get(nodeId);
-		return tNode[attr];
+		if (tNode) {
+			return tNode[attr];
+		}
+		else {
+			console.log('Error: Atribute ´' + attr + '´ on node.DB.nodeId ' + nodeId + ' not found.');
+			console.log('Item: ', tNode);
+			console.log('DB: ', this.tree.nodeDB);
+		}
 	};
 
 	Treant.prototype.redraw = function(cbLoader, animate) {

@@ -106,6 +106,7 @@ handleTreeChange = (change) ->
 				alertify.error 'Add node that accepts children'
 
 		when 'addNode'
+			console.log 'add node'
 			cNode = cActiveTree.createNode change.nodeName
 			cActiveTree.addNode cNode
 			cParent = cActiveTree.getNode change.parentCId
