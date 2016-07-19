@@ -99,7 +99,6 @@ handleTreeChange = (change) ->
 	switch change.action
 		when 'createRoot'
 			cRootNode = cActiveTree.createNode change.nodeName
-			#console.log cRootNode.getId()
 			if cRootNode.acceptsChildren()
 				cActiveTree.setRootNode cRootNode
 				treeLoader.addRootNode cRootNode

@@ -506,7 +506,7 @@
 						// position the node behind the connector point of the parent, so future animations can be visible
 						hidePoint = collapsedParent.connectorPoint( true );
 					}
-					if (node.id != 0) {
+					if (node.parentId != -1) {
 						this.setConnectionToParent(node, hidePoint, animate); // skip the root node
 					}
 					else if (!this.CONFIG.hideRootNode && node.drawLineThrough) {
@@ -767,7 +767,12 @@
 		},
 
 		root: function() {
-			return this.nodeDB.get( 0 );
+			for (var key in this.nodeDB.db) {
+				node = this.nodeDB.db[key]
+				if (node != null) {
+					return node;
+				}
+			}
 		}
 	};
 
@@ -945,7 +950,7 @@
 
 		getMinMaxCoord: function( dim, parent, MinMax ) { // used for getting the dimensions of the tree, dim = 'X' || 'Y'
 			// looks for min and max (X and Y) within the set of nodes
-			var parent = parent || this.get(0),
+			var parent = parent || this.root(),
 			 	i = parent.childrenCount(),
 				MinMax = MinMax || { // start with root node dimensions
 					min: parent[dim],
@@ -977,7 +982,17 @@
 			while(i--) {
 				if(nodeStructure.children[i].children) return true;
 			}
+		},
+
+		root: function() {
+			for (var key in this.db) {
+				node = this.db[key]
+				if (node != null) {
+					return node;
+				}
+			}
 		}
+
 	};
 
 
@@ -1574,7 +1589,9 @@
 	};
 
 	Treant.prototype.resize = function() {
-		this.tree._R.setSize($('#treant').width(), window.innerHeight);
+		if(this.tree._R) {
+			this.tree._R.setSize($('#treant').width(), window.innerHeight);
+		}
 		this.tree.positionTree(this.cbIndex);
 	}
 
