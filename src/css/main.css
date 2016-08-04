@@ -104,6 +104,18 @@ li {
 	padding-bottom: 7px;
 }
 
+select {
+	font-size: 16pt;
+	padding: 10px;
+	color: #636363;
+	background: #181818;
+	border: none;
+	cursor: pointer;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+}
+
 #container {
 	display: flex;
 	flex: 1;

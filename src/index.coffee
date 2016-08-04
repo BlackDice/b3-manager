@@ -8,24 +8,27 @@ require './css/jsoneditor-dark.css'
 _ = require 'lodash'
 b3 = require 'b3'
 Chief = require 'behavior3-chief'
+firebase = require 'tauros-firebase/b3manager'
 alertify = require 'alertify.js'
-firebase = require 'firebase'
-
 alertify.logPosition 'bottom right'
 
 require './tabs'
 treeLoader = require './treeLoader'
 memory = require './memory'
-chief = Chief.create()
 
-config =
-	apiKey: "AIzaSyCroAZGxn8rsHykeQgcLIOruDrBwvzgLBk"
-	databaseURL: "https://tauros-dev-7685.firebaseio.com"
-firebase.initializeApp config
-
-adapter = Chief.adapter.Firebase
-	chief: chief,
-	firebaseRef: firebase.database().ref()
+nodes = [
+	name: 'setDestinationToRandom',
+	base: 'Action',
+	tick: ->,
+,
+	name: 'moveToDestination',
+	base: 'Action',
+	tick: ->,
+,
+	name: 'isAtDestination',
+	base: 'Condition',
+	tick: ->,
+]
 
 gridSize = 50
 
@@ -43,8 +46,15 @@ document.addEventListener 'keydown', (evt) ->
 		if cActiveTree
 			treeLoader.redrawTree false
 
-# Panel input
+# Panel
 
+chiefList = {}
+activeChief = null
+cActiveTreeId = null
+cActiveTree = null
+timer = null
+
+$select = $('#select')
 $treeForm = $('#trees .panelInput')
 $treeInput = $('#trees input')
 $treeList = $('#treeList')
@@ -53,6 +63,41 @@ $subjectList = $('#subjectList')
 $activeTreeName = $('#activeTreeName')
 $activeTreeDesc = $('#activeTreeDesc')
 treantContainer = document.getElementById 'treant'
+
+setupFirebase = (envName) ->
+	if chiefList[envName]
+		activeChief = chiefList[envName]
+		loadData()
+		return
+
+	app = firebase.connect envName
+	firebaseRef = app.database().ref()
+	activeChief = Chief.create({ nodes })
+	chiefList[envName] = activeChief
+
+	adapter = Chief.adapter.Firebase
+		chief: activeChief,
+		firebaseRef: firebaseRef
+
+	adapter.sync().then ->
+		loadData()
+
+loadData = ->
+	loadTreeList()
+	loadNodes()
+	loadSubjects()
+
+enviroments = firebase.listEnvironments()
+for env in enviroments
+	$select.append $('<option>',
+		value: env,
+		text: env
+	)
+	if activeChief is null
+		setupFirebase env
+
+$select.on 'change', (evt) ->
+	setupFirebase evt.target.value
 
 $treeInput.on 'keyup', (evt) ->
 	if evt.keyCode is 13 # enter
@@ -73,12 +118,8 @@ toggleInput = ->
 
 # Tree list
 
-cActiveTreeId = null
-cActiveTree = null
-timer = null
-
 loadTreeList = ->
-	cTreeList = chief.listTrees()
+	cTreeList = activeChief.listTrees()
 	$treeList.empty()
 	for cTree in cTreeList
 		$li = $('<li>' + cTree.getName() + '</li>').appendTo $treeList
@@ -176,7 +217,7 @@ toggleTree = (cTree, $li) ->
 
 		# temporary
 		if cActiveTree
-			activeSubject = chief.addSubject(cActiveTree)
+			activeSubject = activeChief.addSubject(cActiveTree)
 			loadSubjects()
 		else
 			activeSubject = null
@@ -186,7 +227,7 @@ openTree = (id, cTree, $li) ->
 	treeLoader.loadTree cTree, gridSize, handleTreeChange
 	cActiveTreeId = id
 	$li.addClass 'active'
-	cActiveTree = chief.getTree id
+	cActiveTree = activeChief.getTree id
 	$activeTreeName.html cActiveTree.getName()
 	$activeTreeDesc.html cActiveTree.getDescription()
 
@@ -198,21 +239,18 @@ closeTree = ->
 	$('#controls').hide()
 
 addTree = (name) ->
-	newTree = chief.createTree()
+	newTree = activeChief.createTree()
 	newTree.setName name
 	newTree.setDescription 'Lorem ipsum dolor sit amet' # temp
-	chief.addTree newTree
+	activeChief.addTree newTree
 	loadTreeList()
 
 removeTree = (evt, cTreeId) ->
 	evt.stopPropagation()
 	return ->
 		closeTree()
-		chief.removeTree cTreeId
+		activeChief.removeTree cTreeId
 		loadTreeList()
-
-adapter.sync().then ->
-	loadTreeList()
 
 # Tree description
 
@@ -229,7 +267,7 @@ dragNode = (evt) ->
 	evt.dataTransfer.setData 'text/plain', transfer
 
 loadNodes = ->
-	cNodeList = chief.listBehaviorNodes()
+	cNodeList = activeChief.listBehaviorNodes()
 	sortedList = _.groupBy cNodeList, 'category'
 	order = ['composite', 'decorator', 'action']
 
@@ -246,16 +284,13 @@ loadNodes = ->
 			$li.attr 'data', node.name
 			$li.on 'dragstart', (evt) -> dragNode(evt)
 
-loadNodes()
-
-
 # Subject list
 
 activeSubject = null
 activeSubjectId = null
 
 loadSubjects = ->
-	cSubjectList = chief.listSubjects()
+	cSubjectList = activeChief.listSubjects()
 	$subjectList.empty()
 	for subject in cSubjectList
 		$li = $('<li>' + subject.getId() + '</li>').appendTo $subjectList
@@ -309,7 +344,6 @@ hideMemoryPanel = ->
 	$('#memory').addClass 'hidden'
 	treeLoader.getActiveTree().resize()
 
-loadSubjects()
 
 
 # Controls
@@ -323,7 +357,7 @@ $('#play').on 'click', ->
 		playing = true
 		memory.disableEditors()
 		$(this).removeClass('play').addClass('stop')
-		tickIntervalRef = setInterval((-> chief.tick()), tickInterval)
+		tickIntervalRef = setInterval((-> activeChief.tick()), tickInterval)
 
 	else
 		playing = false
@@ -336,4 +370,4 @@ $('#play').on 'click', ->
 
 
 $('#step').on 'click', ->
-	chief.tick()
+	activeChief.tick()

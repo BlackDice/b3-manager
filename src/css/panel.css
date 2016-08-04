@@ -5,6 +5,15 @@
 	width: 100%;
 }
 
+#firebase {
+	margin-top: 20px;
+	margin-bottom: 40px;
+}
+
+#select {
+	width: 100%;
+}
+
 .tab {
 	flex: 1;
 	display: inline;
