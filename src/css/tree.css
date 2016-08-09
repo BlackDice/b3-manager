@@ -39,6 +39,12 @@
 .node .node-name {
 	font-weight: bold;
 	font-size: 12pt;
+	max-width: 130px;
+	margin: auto;
+	display: block;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
 }
 
 /* tooltip */

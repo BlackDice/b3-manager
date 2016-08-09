@@ -17,15 +17,11 @@ treeLoader = require './treeLoader'
 memory = require './memory'
 
 nodes = [
-	name: 'setDestinationToRandom',
+	name: 'RandomStep',
 	base: 'Action',
 	tick: ->,
 ,
-	name: 'moveToDestination',
-	base: 'Action',
-	tick: ->,
-,
-	name: 'isAtDestination',
+	name: 'IsStill',
 	base: 'Condition',
 	tick: ->,
 ]
@@ -97,6 +93,7 @@ for env in enviroments
 		setupFirebase env
 
 $select.on 'change', (evt) ->
+	if cActiveTreeId then closeTree()
 	setupFirebase evt.target.value
 
 $treeInput.on 'keyup', (evt) ->
@@ -124,7 +121,7 @@ loadTreeList = ->
 	for cTree in cTreeList
 		$li = $('<li>' + cTree.getName() + '</li>').appendTo $treeList
 		$erase = $("<i>delete</i>").addClass('material-icons').appendTo($li)
-		$erase.on 'click', removeTree(event, cTree.getId())
+		$erase.on 'click', removeTree(cTree.getId())
 		$li.attr 'data', cTree.getId()
 		$li.on 'click', toggleTree(cTree, $li)
 
@@ -147,7 +144,6 @@ handleTreeChange = (change) ->
 				alertify.error 'Add node that accepts children'
 
 		when 'addNode'
-			console.log 'add node'
 			cNode = cActiveTree.createNode change.nodeName
 			cActiveTree.addNode cNode
 			cParent = cActiveTree.getNode change.parentCId
@@ -245,9 +241,9 @@ addTree = (name) ->
 	activeChief.addTree newTree
 	loadTreeList()
 
-removeTree = (evt, cTreeId) ->
-	evt.stopPropagation()
-	return ->
+removeTree = (cTreeId) ->
+	return (evt) ->
+		evt.stopPropagation()
 		closeTree()
 		activeChief.removeTree cTreeId
 		loadTreeList()
@@ -263,13 +259,20 @@ $activeTreeName.on 'input', ->
 # Node list
 
 dragNode = (evt) ->
-	transfer = JSON.stringify {type: 'add', name: evt.target.getAttribute 'data'}
+	transfer = JSON.stringify { type: 'add', name: evt.target.getAttribute 'data' }
 	evt.dataTransfer.setData 'text/plain', transfer
+
+imageExists = (imageUrl) ->
+	http = new XMLHttpRequest()
+	http.open 'HEAD', imageUrl, false
+	http.send()
+	return http.status != 404
 
 loadNodes = ->
 	cNodeList = activeChief.listBehaviorNodes()
 	sortedList = _.groupBy cNodeList, 'category'
-	order = ['composite', 'decorator', 'action']
+	order = ['composite', 'decorator', 'action', 'condition']
+	$nodeList.empty()
 
 	for key in order
 		category = sortedList[key]
@@ -279,8 +282,11 @@ loadNodes = ->
 		for key, node of category
 			$li = $('<li></li>').attr('draggable', 'true').appendTo $ul
 			$img = $('<span></span>').addClass('nodeIcon').appendTo $li
-			$img.css 'background-image', "url('./assets/nodes/" + node.name.toLowerCase() + ".png'"
-			$label = $('<span>' + node.name + '</span>').appendTo $li
+			testUrl = '/assets/nodes/' + node.name.toLowerCase() + '.png'
+			if imageExists testUrl then url = testUrl
+			else url = './assets/nodes/' + node.category + '.png'
+			$img.css 'background-image', "url('" + url + "')"
+			$label = $("<span class='nodeLabel'>" + node.name + '</span>').appendTo $li
 			$li.attr 'data', node.name
 			$li.on 'dragstart', (evt) -> dragNode(evt)
 

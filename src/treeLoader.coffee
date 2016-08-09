@@ -177,6 +177,12 @@ unregisterAllEvents = ->
 	$right.unbind 'click'
 	$erase.unbind 'click'
 
+imageExists = (imageUrl) ->
+	http = new XMLHttpRequest()
+	http.open 'HEAD', imageUrl, false
+	http.send()
+	return http.status != 404
+
 createTNode = (cNode) ->
 	tNode = {
 		text: {name: cNode.getName(), status: ' ', contact: ' ', desc: cNode.getDescription() }
@@ -215,7 +221,8 @@ clearClasses = (el) ->
 	el.classList.remove 'error'
 
 clearConnection = (el) ->
-	el.attr 'stroke', '#414141'
+	if el
+		el.attr 'stroke', '#414141'
 
 treantLoaded = ->
 	tNodes = tActiveTree.tree.nodeDB.db
@@ -228,7 +235,7 @@ treantLoaded = ->
 nodeAdded = (cNode, tNode, tNodeDefinition) ->
 	# register events
 	$(tNode.nodeDOM).on 'dragstart', (evt) -> dragNode(evt)
-	cNode.on 'status.change', updateNode.bind(cNode)
+	cNode.on 'status', updateNode.bind(cNode)
 	# add to nodeMap
 	id = cNode.getId()
 	nodeMap[id] = tNodeDefinition
@@ -291,8 +298,9 @@ exports.loadTree = (cTree, gridSize, cbIndex) ->
 
 exports.closeTree = (treeId) ->
 	nodeMap = {}
-	tActiveTree.destroy()
-	tActiveTree = null
-	unregisterAllEvents()
+	if tActiveTree
+		tActiveTree.destroy()
+		tActiveTree = null
+		unregisterAllEvents()
+		console.log 'closing tree', treeId
 	$container = null
-	console.log 'closing tree', treeId

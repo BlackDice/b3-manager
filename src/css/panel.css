@@ -114,6 +114,14 @@
 	color: #c5c5c5;
 }
 
+#nodeList .nodeLabel {
+	max-width: 210px;
+	display: inline-block;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
 .listOfToggles li.active {
 	background: #3f4853;
 	padding: 20px;
