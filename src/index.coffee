@@ -195,11 +195,11 @@ handleTreeChange = (change) ->
 
 toggleTree = (cTree, $li) ->
 	return ->
-		loadingId = cTree.getId()
+		loadingTreeId = cTree.getId()
 		$treeList.find('li').removeClass 'active' # clear all
 
 		# clicking the same item
-		if cActiveTreeId == loadingId
+		if cActiveTreeId == loadingTreeId
 			closeTree()
 			return
 
@@ -208,8 +208,8 @@ toggleTree = (cTree, $li) ->
 			closeTree()
 
 		# load if new
-		if cActiveTreeId != loadingId
-			openTree loadingId, cTree, $li
+		if cActiveTreeId != loadingTreeId
+			openTree loadingTreeId, cTree, $li
 
 		# temporary
 		if cActiveTree
@@ -268,6 +268,9 @@ imageExists = (imageUrl) ->
 	http.send()
 	return http.status != 404
 
+activeNode = null
+activeNodeId = null
+
 loadNodes = ->
 	cNodeList = activeChief.listBehaviorNodes()
 	sortedList = _.groupBy cNodeList, 'category'
@@ -289,6 +292,42 @@ loadNodes = ->
 			$label = $("<span class='nodeLabel'>" + node.name + '</span>').appendTo $li
 			$li.attr 'data', node.name
 			$li.on 'dragstart', (evt) -> dragNode(evt)
+			$li.on 'click', toggleNode(node, $li)
+
+toggleNode = (node, $li) ->
+	return ->
+		loadingNodeId = node.name # SWITCH TO ID NAME
+		$nodeList.find('li').removeClass 'active' # clear all
+
+		# clicking the same item
+		if activeNodeId == loadingNodeId
+			# stop displaying editor
+			closeNode()
+			return
+
+		# close any currently opened
+		if activeNodeId
+			closeNode()
+
+		# load if new
+		if activeNodeId != loadingNodeId
+			# start displaying node
+			openNode loadingNodeId, node, $li
+
+openNode = (id, node, $li) ->
+	activeNodeId = id
+	activeNode = node
+	$li.addClass 'active'
+	$('#code').removeClass 'hidden'
+	if cActiveTreeId
+		treeLoader.getActiveTree().resize()
+
+closeNode = ->
+	activeNodeId = null
+	$('#code').addClass 'hidden'
+	if cActiveTreeId
+		treeLoader.getActiveTree().resize()
+
 
 # Subject list
 
@@ -305,11 +344,11 @@ loadSubjects = ->
 
 toggleSubject = (subject, $li) ->
 	return ->
-		loadingId = subject.getId()
+		loadingSubjectId = subject.getId()
 		$subjectList.find('li').removeClass 'active' # clear all
 
 		# clicking the same item
-		if activeSubjectId == loadingId
+		if activeSubjectId == loadingSubjectId
 			# stop displaying subject
 			$activeTreeName.html cActiveTree.getName()
 			closeSubject()
@@ -320,9 +359,9 @@ toggleSubject = (subject, $li) ->
 			closeSubject()
 
 		# load if new
-		if activeSubjectId != loadingId
+		if activeSubjectId != loadingSubjectId
 			# start displaying subject
-			openSubject loadingId, subject, $li
+			openSubject loadingSubjectId, subject, $li
 
 openSubject = (id, subject, $li) ->
 	activeSubjectId = id

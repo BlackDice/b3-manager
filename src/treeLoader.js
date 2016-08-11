@@ -165,7 +165,9 @@
       return clearDisables();
     });
     return window.addEventListener('resize', function(evt) {
-      return tActiveTree.resize();
+      if (tActiveTree) {
+        return tActiveTree.resize();
+      }
     });
   };
 

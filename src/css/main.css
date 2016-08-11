@@ -128,7 +128,7 @@ select {
 	flex: 1;
 }
 
-#panel, #memory {
+#panel, #memory, #code {
 	width: 350px;
 	height: 100%;
 	background-color: #202020;
@@ -136,7 +136,7 @@ select {
 	overflow-x: hidden;
 }
 
-#memory {
+#memory, #code {
 	display: flex;
 	flex-direction: column;
 }

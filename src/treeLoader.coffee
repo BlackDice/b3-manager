@@ -121,7 +121,8 @@ registerRightClick = (treantConfig, callback) ->
 		clearDisables()
 
 	window.addEventListener 'resize', (evt) ->
-		tActiveTree.resize()
+		if tActiveTree
+			tActiveTree.resize()
 
 
 dragNode = (evt) ->
