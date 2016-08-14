@@ -81,7 +81,7 @@ exports.clearMemory = ->
 	treeMemory = null
 	subjMemory = null
 
-	nodeEditor.set {}
+	nodeEditor.set {} if nodeEditor
 	treeEditor.set {}
 	subjEditor.set {}
 
