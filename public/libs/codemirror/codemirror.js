@@ -318,7 +318,7 @@
       var gElt = gutters.appendChild(elt("div", null, "CodeMirror-gutter " + gutterClass));
       if (gutterClass == "CodeMirror-linenumbers") {
         cm.display.lineGutter = gElt;
-        gElt.style.width = (cm.display.lineNumWidth || 1) + "px";
+        gElt.style.width = (cm.display.lineNumWidth || 40) + "px";
       }
     }
     gutters.style.display = i ? "" : "none";

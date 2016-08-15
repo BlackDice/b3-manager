@@ -136,6 +136,12 @@ select {
 	overflow-x: hidden;
 }
 
+#code {
+	width: 500px;
+	font-size: 14pt;
+	cursor: text;
+}
+
 #memory, #code {
 	display: flex;
 	flex-direction: column;

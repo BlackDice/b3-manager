@@ -1,5 +1,6 @@
 # Node list
 
+code = require './code'
 treeList = require './treeList'
 
 activeNode = null
@@ -10,12 +11,6 @@ $nodeList = $('#nodeList')
 dragNode = (evt) ->
 	transfer = JSON.stringify { type: 'add', name: evt.target.getAttribute 'data' }
 	evt.dataTransfer.setData 'text/plain', transfer
-
-imageExists = (imageUrl) ->
-	http = new XMLHttpRequest()
-	http.open 'HEAD', imageUrl, false
-	http.send()
-	return http.status != 404
 
 exports.load = loadNodes = (chief) ->
 	activeChief = chief
@@ -32,9 +27,7 @@ exports.load = loadNodes = (chief) ->
 		for key, node of category
 			$li = $('<li></li>').attr('draggable', 'true').appendTo $ul
 			$img = $('<span></span>').addClass('nodeIcon').appendTo $li
-			testUrl = '/assets/nodes/' + node.name.toLowerCase() + '.png'
-			if imageExists testUrl then url = testUrl
-			else url = './assets/nodes/' + node.category + '.png'
+			url = '/assets/nodes/' + node.name.toLowerCase() + '.png'
 			$img.css 'background-image', "url('" + url + "')"
 			$label = $("<span class='nodeLabel'>" + node.name + '</span>').appendTo $li
 			$li.attr 'data', node.name
@@ -65,12 +58,12 @@ openNode = (id, node, $li) ->
 	activeNodeId = id
 	activeNode = node
 	$li.addClass 'active'
-	$('#code').removeClass 'hidden'
+	code.openCode 'code to load'
 	if treeList.getCActiveTreeId()
 		treeLoader.getActiveTree().resize()
 
 closeNode = ->
 	activeNodeId = null
-	$('#code').addClass 'hidden'
+	code.closeCode()
 	if treeList.getCActiveTreeId()
 		treeLoader.getActiveTree().resize()
