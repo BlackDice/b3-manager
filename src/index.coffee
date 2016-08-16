@@ -6,6 +6,7 @@ require './css/controls.css'
 require './css/jsoneditor-dark.css'
 require './css/codemirror/codemirror.css'
 require './css/codemirror/foldgutter.css'
+require './css/codemirror/fullscreen.css'
 require './css/codemirror/dialog.css'
 require './css/codemirror/monokai.css'
 
