@@ -11,7 +11,8 @@ editor = CodeMirror $('#code').get(0),
 	indentUnit: 4,
 	indentWithTabs: true,
 	foldGutter: true,
-	gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+	gutters: ["CodeMirror-lint-markers", "CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+	lint: true,
 	extraKeys:
 		"F11": (cm) ->
 			cm.setOption "fullScreen", !cm.getOption("fullScreen")

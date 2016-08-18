@@ -9,6 +9,7 @@ require './css/codemirror/foldgutter.css'
 require './css/codemirror/fullscreen.css'
 require './css/codemirror/dialog.css'
 require './css/codemirror/monokai.css'
+require './css/codemirror/lint.css'
 
 _ = require 'lodash'
 b3 = require 'b3'
