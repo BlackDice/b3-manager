@@ -11,8 +11,27 @@
 		<script src="/libs/jsoneditor_B3.js"></script>
 		<script src='/libs/behavior3-0.2.0dev.js'></script>
 
+		<script src="/libs/codemirror/codemirror.js"></script>
+		<script src="/libs/codemirror/searchcursor.js"></script>
+		<script src="/libs/codemirror/search.js"></script>
+		<script src="/libs/codemirror/dialog.js"></script>
+		<script src="/libs/codemirror/matchbrackets.js"></script>
+		<script src="/libs/codemirror/closebrackets.js"></script>
+		<script src="/libs/codemirror/comment.js"></script>
+		<script src="/libs/codemirror/hardwrap.js"></script>
+		<script src="/libs/codemirror/foldcode.js"></script>
+		<script src="/libs/codemirror/foldgutter.js"></script>
+		<script src="/libs/codemirror/brace-fold.js"></script>
+		<script src="/libs/codemirror/comment-fold.js"></script>
+		<script src="/libs/codemirror/javascript.js"></script>
+		<script src="/libs/codemirror/coffeescript.js"></script>
+		<script src="/libs/codemirror/fullscreen.js"></script>
+		<script src="/libs/codemirror/sublime.js"></script>
+		<script src="/libs/codemirror/lint.js"></script>
+		<script src="/libs/codemirror/eslint.js"></script>
+		<script src="/libs/codemirror/eslint-lint.js"></script>
+
 		<link rel='icon' type='image/png' href='/assets/favicon.png'>
-		<link href='https://fonts.googleapis.com/icon?family=Material+Icons' rel='stylesheet'>
 	</head>
 	<body>
 		<div id='container'>
@@ -37,7 +56,7 @@
 				</div>
 				<div id='nodes' class='panelContent'>
 					<h2>Nodes</h2>
-					<div id='nodeList'></div>
+					<div id='nodeList' class='listOfToggles'></div>
 				</div>
 				<div id='subjects' class='panelContent'>
 					<a href='#' id='filter' class='rightLink'>Filter<i class='material-icons md-36'>search</i></a>
@@ -67,6 +86,7 @@
 					<div id='subjEditor'></div>
 				</div>
 			</div>
+			<div id='code' class='hidden'></div>
 		</div>
 		<div id='contextmenu'>
 			<div id='commandMoveLeft'><i class='material-icons'>arrow_back</i><span>Left</span></div>

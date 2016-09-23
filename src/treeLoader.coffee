@@ -29,10 +29,10 @@ tActiveTreeHasRoot = null
 tActiveNode = null
 $container = null
 nodeMap = {}
-$contextmenu = $('#contextmenu')
+$erase = $('#commandErase')
 $left = $('#commandMoveLeft')
 $right = $('#commandMoveRight')
-$erase = $('#commandErase')
+$contextmenu = $('#contextmenu')
 
 registerClick = (treantConfig, callback) ->
 	$container = $(treantConfig.container)
@@ -121,7 +121,8 @@ registerRightClick = (treantConfig, callback) ->
 		clearDisables()
 
 	window.addEventListener 'resize', (evt) ->
-		tActiveTree.resize()
+		if tActiveTree
+			tActiveTree.resize()
 
 
 dragNode = (evt) ->

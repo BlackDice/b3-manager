@@ -6,9 +6,9 @@ body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,
   font-weight: 400;
   src: local('Material Icons'),
        local('MaterialIcons-Regular'),
-       url('/assets/iconfont/MaterialIcons-Regular.woff2') format('woff2'),
-       url('/assets/iconfont/MaterialIcons-Regular.woff') format('woff'),
-       url('/assets/iconfont/MaterialIcons-Regular.ttf') format('truetype');
+       url('/assets/font-material/MaterialIcons-Regular.woff2') format('woff2'),
+       url('/assets/font-material/MaterialIcons-Regular.woff') format('woff'),
+       url('/assets/font-material/MaterialIcons-Regular.ttf') format('truetype');
 }
 
 .material-icons {
@@ -128,7 +128,7 @@ select {
 	flex: 1;
 }
 
-#panel, #memory {
+#panel, #memory, #code {
 	width: 350px;
 	height: 100%;
 	background-color: #202020;
@@ -136,7 +136,13 @@ select {
 	overflow-x: hidden;
 }
 
-#memory {
+#code {
+	width: 500px;
+	font-size: 14pt;
+	cursor: text;
+}
+
+#memory, #code {
 	display: flex;
 	flex-direction: column;
 }
