@@ -21,20 +21,8 @@ alertify.logPosition 'bottom right'
 tabs = require './tabs'
 keyboard = require './keyboard'
 treeList = require './treeList'
-nodeList = require './nodeList'
+behaviorList = require './behaviorList'
 subjList = require './subjList'
-
-# Temporary custom nodes
-
-nodes = [
-	name: 'RandomStep',
-	base: 'Action',
-	tick: ->,
-,
-	name: 'IsStill',
-	base: 'Condition',
-	tick: ->,
-]
 
 # Firebase environments
 
@@ -48,7 +36,7 @@ setupFirebase = (envName) ->
 
 	app = firebase.connect envName
 	firebaseRef = app.database().ref()
-	activeChief = Chief.create({ nodes })
+	activeChief = Chief.create()
 	chiefList[envName] = activeChief
 
 	adapter = Chief.adapter.Firebase
@@ -60,8 +48,8 @@ setupFirebase = (envName) ->
 
 loadData = ->
 	treeList.load activeChief
-	nodeList.load activeChief
-	subjList.load activeChief
+	behaviorList.load activeChief
+	#subjList.load activeChief
 
 
 if navigator.onLine
@@ -69,17 +57,17 @@ if navigator.onLine
 	enviroments = firebase.listEnvironments()
 
 	for env in enviroments
-		$('#select').append $('<option>',
+		$('#fbSelect').append $('<option>',
 			value: env,
 			text: env
 		)
 		if activeChief is null
 			setupFirebase env
 else
-	$('#select').append $('<option>',
+	$('#fbSelect').append $('<option>',
 		text: 'Offline'
 	)
-	activeChief = Chief.create({ nodes })
+	activeChief = Chief.create()
 	loadData activeChief
 
 

@@ -1,13 +1,9 @@
 
 treesTab = $('#tab-trees')
-nodesTab = $('#tab-nodes')
+behaviorsTab = $('#tab-behaviors')
 subjectsTab = $('#tab-subjects')
 
-trees = $('#trees')
-nodes = $('#nodes')
-subjects = $('#nodes')
-
-activeTab = nodes
+activeTab = $('#trees')
 
 toggle = ->
 	if activeTab.attr('id') == $(this).attr('id') then return
@@ -19,6 +15,5 @@ toggle = ->
 	$(tab).show()
 
 treesTab.on 'click', toggle
-nodesTab.on 'click', toggle
+behaviorsTab.on 'click', toggle
 subjectsTab.on 'click', toggle
-

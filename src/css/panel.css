@@ -10,10 +10,6 @@
 	margin-bottom: 40px;
 }
 
-#select {
-	width: 100%;
-}
-
 .tab {
 	flex: 1;
 	display: inline;
@@ -27,7 +23,7 @@
 	background-position: -10px bottom;
 }
 
-#tab-nodes {
+#tab-behaviors {
 	background-position: center bottom;
 }
 
@@ -39,7 +35,7 @@
 	background-position: -10px top;
 }
 
-#tab-nodes.active {
+#tab-behaviors.active {
 	background-position: center top;
 }
 
@@ -86,9 +82,10 @@
 /* Input in panel */
 
 .panelInput {
-	display: inline-flex;
+	display: flex;
+	flex-wrap: wrap;
 	margin-top: 40px;
-	height: 50px;
+	min-height: 50px;
 }
 
 .panelInput input {
@@ -98,11 +95,25 @@
 
 .panelInput button {
 	flex: 0;
+	margin-top: 5px;
 }
+
+.panelInput .multiline button {
+	margin-top: 10px;
+}
+
+#fbSelect, #behaviorSelect {
+	width: 100%;
+}
+
+#behaviorSelect {
+	margin-top: 15px;
+}
+
 
 /* List */
 
-#treeList, #nodeList, #subjectList {
+#treeList, #behaviorList, #subjectList {
 	margin-top: 25px;
 }
 
@@ -114,7 +125,7 @@
 	color: #c5c5c5;
 }
 
-#nodeList .nodeLabel {
+#behaviorList .behaviorLabel {
 	max-width: 210px;
 	display: inline-block;
 	overflow: hidden;
@@ -163,7 +174,7 @@
 	text-transform: capitalize;
 }
 
-.nodeIcon {
+.behaviorIcon {
 	display: inline-block;
 	width: 40px;
 	height: 40px;
@@ -173,6 +184,6 @@
 	margin-right: 10px;
 }
 
-#panel li:hover .nodeIcon {
+#panel li:hover .behaviorIcon {
 	opacity: 0.5;
 }

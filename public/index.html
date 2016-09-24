@@ -38,13 +38,13 @@
 			<div id='panel'>
 				<div id='tabs'>
 					<div data='#trees' id='tab-trees' class='tab active'></div>
-					<div data='#nodes' id='tab-nodes' class='tab'></div>
+					<div data='#behaviors' id='tab-behaviors' class='tab'></div>
 					<div data='#subjects' id='tab-subjects' class='tab'></div>
 				</div>
 				<div id='trees' class='panelContent active'>
 					<h2>Firebase</h2>
 					<div id='firebase'>
-						<select id='select'></select>
+						<select id='fbSelect'></select>
 					</div>
 					<a href='#' id='addTree' class='rightLink'>Add<i class='material-icons md-36'>add</i></a>
 					<h2>Trees</h2>
@@ -54,9 +54,15 @@
 					</div>
 					<ul id='treeList' class='listOfToggles'></ul>
 				</div>
-				<div id='nodes' class='panelContent'>
-					<h2>Nodes</h2>
-					<div id='nodeList' class='listOfToggles'></div>
+				<div id='behaviors' class='panelContent'>
+					<a href='#' id='addBehavior' class='rightLink'>Add<i class='material-icons md-36'>add</i></a>
+					<h2>Behaviors</h2>
+					<div class='panelInput multiline hidden' name='addBehavior'>
+						<input id='behaviorInput' type='text'>
+						<select id='behaviorSelect'></select>
+						<button type='submit' class='material-icons md-36'>done</button>
+					</div>
+					<div id='behaviorList' class='listOfToggles'></div>
 				</div>
 				<div id='subjects' class='panelContent'>
 					<a href='#' id='filter' class='rightLink'>Filter<i class='material-icons md-36'>search</i></a>

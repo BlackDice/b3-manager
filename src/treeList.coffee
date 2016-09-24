@@ -3,6 +3,7 @@
 treeLoader = require './treeLoader'
 subjList = require './subjList'
 controls = require './controls'
+alertify = require 'alertify.js'
 
 gridSize = 50
 cActiveTreeId = null
@@ -62,24 +63,29 @@ handleTreeChange = (change) ->
 			eraseChildren child
 		cActiveTree.removeNode cNode
 
+	setNodeTitle = (cNode) ->
+		behavior = activeChief.getBehavior cNode.getBehaviorId()
+		cNode.setTitle behavior.getName()
+
 	switch change.action
 		when 'createRoot'
-			cRootNode = cActiveTree.createNode change.nodeName
-			if cRootNode.acceptsChildren()
-				cActiveTree.setRootNode cRootNode
-				treeLoader.addRootNode cRootNode
-			else
-				alertify.error 'Add node that accepts children'
+			cRootNode = cActiveTree.createNode change.behaviorId
+			setNodeTitle cRootNode
+			#if cRootNode.acceptsChildren()
+			cActiveTree.setRootNode cRootNode
+			treeLoader.addRootNode cRootNode
+			#else
+			#	alertify.error 'Add node that accepts children'
 
 		when 'addNode'
-			cNode = cActiveTree.createNode change.nodeName
-			cActiveTree.addNode cNode
-			cParent = cActiveTree.getNode change.parentCId
-			if cParent.acceptsChildren()
-				cParent.addChild cNode
-				treeLoader.addNodeToTree cNode, change.parentTId
-			else
-				alertify.error 'Node does not accept children'
+			cNode = cActiveTree.createNode change.behaviorId
+			setNodeTitle cRootNode
+			cParentId = cNode.getParentId()
+			#if cParent.acceptsChildren()
+			cActiveTree.addNodeChild cParentId, cNode
+			treeLoader.addNodeToTree cNode, change.parentTId
+			#else
+			#	alertify.error 'Node does not accept children'
 
 		when 'removeNode'
 			cNode = cActiveTree.getNode change.cNodeId
@@ -139,14 +145,6 @@ toggleTree = (cTree, $li) ->
 		if cActiveTreeId != loadingTreeId
 			openTree loadingTreeId, cTree, $li
 
-		# temporary
-		if cActiveTree
-			activeSubject = activeChief.addSubject(cActiveTree)
-			subjList.load activeChief
-		else
-			activeSubject = null
-			subjList.load activeChief
-
 openTree = (id, cTree, $li) ->
 	treeLoader.loadTree cTree, gridSize, handleTreeChange
 	cActiveTreeId = id
@@ -163,17 +161,17 @@ closeTree = ->
 	controls.hide()
 
 addTree = (name) ->
-	newTree = activeChief.createTree()
-	newTree.setName name
-	newTree.setDescription 'Lorem ipsum dolor sit amet' # temp
-	activeChief.addTree newTree
+	description = 'Lorem ipsum dolor sit amet' # temp
+	try activeChief.createTree name, description
+	catch e
+		alertify.error e
 	loadTrees activeChief
 
 removeTree = (cTreeId) ->
 	return (evt) ->
 		evt.stopPropagation()
 		closeTree()
-		activeChief.removeTree cTreeId
+		activeChief.destroyTree cTreeId
 		loadTrees activeChief
 
 # Tree description

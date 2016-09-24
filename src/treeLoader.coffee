@@ -150,7 +150,7 @@ registerDragAndDrop = (treantConfig, callback) ->
 		if tActiveTreeHasRoot is false
 			evt.preventDefault()
 			obj = JSON.parse evt.dataTransfer.getData 'text'
-			callback {action: 'createRoot', nodeName: obj.name}
+			callback {action: 'createRoot', behaviorId: obj.behaviorId}
 
 		else if evt.target.classList.contains 'node'
 			evt.preventDefault()
@@ -162,7 +162,7 @@ registerDragAndDrop = (treantConfig, callback) ->
 
 			switch obj.type
 				when 'add'
-					callback {action: 'addNode', nodeName: obj.name, parentCId: parentCId, parentTId: parentTId}
+					callback {action: 'addNode', nodeName: obj.behaviorId, parentCId: parentCId, parentTId: parentTId}
 				when 'change'
 					callback {action: 'changeParent', tNodeId: obj.tid, cNodeId: obj.cid, parentTId: parentTId, parentCId: parentCId}
 
@@ -186,8 +186,8 @@ imageExists = (imageUrl) ->
 
 createTNode = (cNode) ->
 	tNode = {
-		text: {name: cNode.getName(), status: ' ', contact: ' ', desc: cNode.getDescription() }
-		image: './assets/nodes/' + cNode.getName().toLowerCase() + '.png'
+		text: {name: cNode.getTitle(), status: ' ', contact: ' ' }
+		image: './assets/behaviors/' + cNode.getTitle().toLowerCase() + '.png'
 		collapsed: false
 		HTMLclass: 'none'			# running, failure, error, success
 		cNodeId: cNode.getId()
@@ -236,7 +236,6 @@ treantLoaded = ->
 nodeAdded = (cNode, tNode, tNodeDefinition) ->
 	# register events
 	$(tNode.nodeDOM).on 'dragstart', (evt) -> dragNode(evt)
-	cNode.on 'status', updateNode.bind(cNode)
 	# add to nodeMap
 	id = cNode.getId()
 	nodeMap[id] = tNodeDefinition
@@ -278,14 +277,12 @@ exports.loadTree = (cTree, gridSize, cbIndex) ->
 		nodeMap[cNode.getId()] = createTNode cNode
 
 	for cNode in cNodes
-		cParentNode = cNode.getParent()
+		cParentNodeId = cNode.getParentId()
 		tNode = nodeMap[cNode.getId()]
-		if cParentNode
-			tParentNode = nodeMap[cParentNode.getId()]
+		if cParentNodeId.indexOf('Tree') == -1
+			tParentNode = nodeMap[cParentNodeId]
+			console.log "fired"
 			tNode.parent = tParentNode
-
-		# register events
-		cNode.on 'status', updateNode.bind(cNode)
 
 	nodeStructure = _.values nodeMap
 	nodeStructure.unshift config
