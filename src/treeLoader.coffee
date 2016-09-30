@@ -162,7 +162,7 @@ registerDragAndDrop = (treantConfig, callback) ->
 
 			switch obj.type
 				when 'add'
-					callback {action: 'addNode', nodeName: obj.behaviorId, parentCId: parentCId, parentTId: parentTId}
+					callback {action: 'addNode', behaviorId: obj.behaviorId, parentCId: parentCId, parentTId: parentTId}
 				when 'change'
 					callback {action: 'changeParent', tNodeId: obj.tid, cNodeId: obj.cid, parentTId: parentTId, parentCId: parentCId}
 
@@ -268,7 +268,7 @@ exports.redrawTree = (animate) ->
 exports.getActiveTree = ->
 	return tActiveTree
 
-exports.loadTree = (cTree, gridSize, cbIndex) ->
+exports.loadTree = (cTree, gridSize, handleTreeChange) ->
 	config = _.cloneDeep treeConfig
 	config.quantize = gridSize
 	cNodes = cTree.listNodes()
@@ -281,18 +281,17 @@ exports.loadTree = (cTree, gridSize, cbIndex) ->
 		tNode = nodeMap[cNode.getId()]
 		if cParentNodeId.indexOf('Tree') == -1
 			tParentNode = nodeMap[cParentNodeId]
-			console.log "fired"
 			tNode.parent = tParentNode
 
 	nodeStructure = _.values nodeMap
 	nodeStructure.unshift config
 
-	tActiveTree = new Treant nodeStructure, cbIndex, treantLoaded
+	tActiveTree = new Treant nodeStructure, handleTreeChange, treantLoaded
 	tActiveTreeHasRoot = cTree.getRootNode() isnt null
 
-	registerDragAndDrop config, cbIndex
-	registerRightClick config, cbIndex
-	registerClick config, cbIndex
+	registerDragAndDrop config, handleTreeChange
+	registerRightClick config, handleTreeChange
+	registerClick config, handleTreeChange
 
 exports.closeTree = (treeId) ->
 	nodeMap = {}

@@ -57,11 +57,11 @@ exports.load = loadTrees = (chief) ->
 handleTreeChange = (change) ->
 
 	eraseChildren = (cNode) ->
-		children = cNode.getChildren()
+		cActiveTree.removeChildNode cNode.getId()
+		children = cActiveTree.getNodeChildren cNode.getId()
 		for child in children
-			cActiveTree.removeNode child
+			cActiveTree.removeChildNode child.getId()
 			eraseChildren child
-		cActiveTree.removeNode cNode
 
 	setNodeTitle = (cNode) ->
 		behavior = activeChief.getBehavior cNode.getBehaviorId()
@@ -79,8 +79,8 @@ handleTreeChange = (change) ->
 
 		when 'addNode'
 			cNode = cActiveTree.createNode change.behaviorId
-			setNodeTitle cRootNode
-			cParentId = cNode.getParentId()
+			setNodeTitle cNode
+			cParentId = change.parentCId
 			#if cParent.acceptsChildren()
 			cActiveTree.addNodeChild cParentId, cNode
 			treeLoader.addNodeToTree cNode, change.parentTId

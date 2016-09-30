@@ -1,4 +1,7 @@
 
+alertify = require 'alertify.js'
+behaviorList = require './behaviorList'
+
 editor = CodeMirror $('#code').get(0),
 	lineNumbers: true,
 	mode: "javascript",
@@ -21,9 +24,12 @@ editor = CodeMirror $('#code').get(0),
 			if cm.getOption "fullScreen"
 				cm.setOption "fullScreen", false
 
+$('#saveCode').on 'click', ->
+	save()
 
-exports.openCode = (code) ->
-	editor.value = code
+exports.openCode = (content, readOnly) ->
+	editor.setValue content
+	editor.setOption 'readOnly', readOnly
 	$('#code').removeClass 'hidden'
 	editor.refresh()
 
@@ -32,3 +38,8 @@ exports.closeCode = ->
 
 exports.hasFocus = ->
 	return editor.hasFocus()
+
+exports.save = save = ->
+	behavior = behaviorList.getActiveBehavior()
+	behavior.setDefinition editor.getValue()
+	alertify.success 'Code saved'

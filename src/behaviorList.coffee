@@ -32,11 +32,20 @@ addBehavior = (name) ->
 	try activeChief.createBehavior name
 	catch e
 		alertify.error e
-	loadTrees activeChief
+	loadBehaviors activeChief
+
+removeBehavior = (cBehaviorId) ->
+	return (evt) ->
+		evt.stopPropagation()
+		closeBehavior()
+		activeChief.destroyBehavior cBehaviorId
+		loadBehaviors activeChief
 
 dragBehavior = (evt) ->
 	transfer = JSON.stringify { type: 'add', behaviorId: evt.target.getAttribute 'data' }
 	evt.dataTransfer.setData 'text/plain', transfer
+
+exports.getActiveBehavior = -> return activeBehavior
 
 exports.load = loadBehaviors = (chief) ->
 	activeChief = chief
@@ -74,6 +83,11 @@ exports.load = loadBehaviors = (chief) ->
 			$li.on 'dragstart', (evt) -> dragBehavior(evt)
 			$li.on 'click', toggleBehavior(behavior, $li)
 
+			unless behavior.isNative
+				$erase = $("<i>delete</i>").addClass('material-icons').appendTo($li)
+				$erase.on 'click', removeBehavior(behavior.getId())
+
+
 	$('#behaviorSelect option[value="leaf"]').attr "selected", true
 
 toggleBehavior = (behavior, $li) ->
@@ -100,7 +114,9 @@ openBehavior = (id, behavior, $li) ->
 	activeBehaviorId = id
 	activeBehavior = behavior
 	$li.addClass 'active'
-	code.openCode 'code to load'
+	readOnly = behavior.isNative
+	content = behavior.getDefinition()
+	code.openCode content, readOnly
 	if treeList.getCActiveTreeId()
 		treeLoader.getActiveTree().resize()
 
