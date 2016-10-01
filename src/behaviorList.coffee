@@ -1,7 +1,9 @@
 # Behavior list
 
 code = require './code'
+config = require './config'
 treeList = require './treeList'
+treeLoader = require './treeLoader'
 
 activeBehavior = null
 activeBehaviorId = null
@@ -64,7 +66,7 @@ exports.load = loadBehaviors = (chief) ->
 
 	for key in typeOrder
 
-		$('#behaviorSelect').append $('<option>',
+		$('#categorySelect').append $('<option>',
 			value: key,
 			text: key
 		)
@@ -81,9 +83,9 @@ exports.load = loadBehaviors = (chief) ->
 			$label = $("<span class='behaviorLabel'>" + behavior.name + '</span>').appendTo $li
 			$li.attr 'data', behavior.getId()
 			$li.on 'dragstart', (evt) -> dragBehavior(evt)
-			$li.on 'click', toggleBehavior(behavior, $li)
 
 			unless behavior.isNative
+				$li.on 'click', toggleBehavior(behavior, $li)
 				$erase = $("<i>delete</i>").addClass('material-icons').appendTo($li)
 				$erase.on 'click', removeBehavior(behavior.getId())
 
@@ -117,6 +119,7 @@ openBehavior = (id, behavior, $li) ->
 	readOnly = behavior.isNative
 	content = behavior.getDefinition()
 	code.openCode content, readOnly
+	config.loadBehaviorConfig behavior
 	if treeList.getCActiveTreeId()
 		treeLoader.getActiveTree().resize()
 

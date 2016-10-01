@@ -57,11 +57,10 @@ exports.load = loadTrees = (chief) ->
 handleTreeChange = (change) ->
 
 	eraseChildren = (cNode) ->
-		cActiveTree.removeChildNode cNode.getId()
-		children = cActiveTree.getNodeChildren cNode.getId()
+		children = cActiveTree.getNodeChildren cNode
 		for child in children
-			cActiveTree.removeChildNode child.getId()
 			eraseChildren child
+		cActiveTree.destroyNode cNode
 
 	setNodeTitle = (cNode) ->
 		behavior = activeChief.getBehavior cNode.getBehaviorId()
@@ -71,17 +70,14 @@ handleTreeChange = (change) ->
 		when 'createRoot'
 			cRootNode = cActiveTree.createNode change.behaviorId
 			setNodeTitle cRootNode
-			#if cRootNode.acceptsChildren()
 			cActiveTree.setRootNode cRootNode
 			treeLoader.addRootNode cRootNode
-			#else
-			#	alertify.error 'Add node that accepts children'
 
 		when 'addNode'
+			cParentId = change.parentCId
+			#if cActiveTree.canNodeAcceptChild cParentId
 			cNode = cActiveTree.createNode change.behaviorId
 			setNodeTitle cNode
-			cParentId = change.parentCId
-			#if cParent.acceptsChildren()
 			cActiveTree.addNodeChild cParentId, cNode
 			treeLoader.addNodeToTree cNode, change.parentTId
 			#else
@@ -89,6 +85,9 @@ handleTreeChange = (change) ->
 
 		when 'removeNode'
 			cNode = cActiveTree.getNode change.cNodeId
+			cParentNodeId = cNode.getParentId()
+			if cParentNodeId.indexOf('Tree') != -1
+				console.log 'Erasing root'
 			eraseChildren cNode
 			treeLoader.redrawTree()
 

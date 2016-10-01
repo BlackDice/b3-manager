@@ -128,7 +128,12 @@ select {
 	flex: 1;
 }
 
-#panel, #memory, #code {
+#panel {
+	min-width: 350px;
+	display: block;
+}
+
+#panel, #memory {
 	width: 350px;
 	height: 100%;
 	background-color: #202020;
@@ -137,15 +142,49 @@ select {
 }
 
 #code {
+	display: flex;
 	position: relative;
-	width: 500px;
-	font-size: 14pt;
-	cursor: text;
+	height: 100%;
+	width: 100%;
+	background-color: #202020;
+	overflow: scroll;
+	overflow-x: hidden;
 }
 
-#memory, #code {
-	display: flex;
-	flex-direction: column;
+#codeMirror, #behaviorConfig {
+	flex-direction: row;
+	position: relative;
+	height: 100%;
+}
+
+#codeMirror {
+	cursor: text;
+	padding-top: 20px;
+	font-size: 14pt;
+	flex-grow: 2;
+}
+
+#behaviorConfig {
+	border-left: 3px #282828 solid;
+	padding: 20px;
+	width: 300px;
+}
+
+#behaviorConfigEditor, #behaviorConfigEditor .jsoneditor {
+	height: 100%;
+}
+
+#behaviorProperties {
+	margin-bottom: 50px;
+}
+
+#categorySelect {
+	width: 100%;
+	margin-top: 18px;
+}
+
+#behaviorConfig h2 {
+	font-size: 16pt;
 }
 
 #activeTreeName {
@@ -191,6 +230,11 @@ select {
 	flex-basis: auto;
 	transition: all 0.2s;
 	padding: 20px;
+}
+
+#memory {
+	display: flex;
+	flex-direction: column;
 }
 
 #memory h2 {
@@ -318,8 +362,13 @@ button:hover {
 	background: #454545;
 	font-size: 16pt;
 	font-weight: 300;
-	padding-top: 7px;
-	padding-bottom: 7px;
+	padding: 5px;
+}
+
+#saveCode i {
+	margin-top: -3px;
+	padding-right: 2px;
+	vertical-align: middle;
 }
 
 #saveCode:hover {

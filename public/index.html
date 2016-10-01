@@ -57,9 +57,8 @@
 				<div id='behaviors' class='panelContent'>
 					<a href='#' id='addBehavior' class='rightLink'>Add<i class='material-icons md-36'>add</i></a>
 					<h2>Behaviors</h2>
-					<div class='panelInput multiline hidden' name='addBehavior'>
+					<div class='panelInput hidden' name='addBehavior'>
 						<input id='behaviorInput' type='text'>
-						<select id='behaviorSelect'></select>
 						<button type='submit' class='material-icons md-36'>done</button>
 					</div>
 					<div id='behaviorList' class='listOfToggles'></div>
@@ -92,8 +91,17 @@
 					<div id='subjEditor'></div>
 				</div>
 			</div>
-			<div id='code' class='hidden'>
-				<button type='submit' id='saveCode'>Save</button>
+			<div id='code'>
+				<div id='codeMirror'>
+					<button type='submit' id='saveCode'><i class='material-icons md-24'>save</i>Save</button>
+				</div>
+				<div id='behaviorConfig'>
+					<h2 id='behaviorName'>Behavior config</h2>
+					<div id='behaviorProperties'>
+						<select id='categorySelect'></select>
+					</div>
+					<div id='behaviorConfigEditor'></div>
+				</div>
 			</div>
 		</div>
 		<div id='contextmenu'>
