@@ -23,6 +23,7 @@ keyboard = require './keyboard'
 treeList = require './treeList'
 behaviorList = require './behaviorList'
 subjList = require './subjList'
+config = require './config'
 
 # Firebase environments
 
@@ -49,7 +50,7 @@ setupFirebase = (envName) ->
 loadData = ->
 	treeList.load activeChief
 	behaviorList.load activeChief
-	#subjList.load activeChief
+	subjList.load activeChief
 
 
 if navigator.onLine

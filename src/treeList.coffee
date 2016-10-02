@@ -75,53 +75,57 @@ handleTreeChange = (change) ->
 
 		when 'addNode'
 			cParentId = change.parentCId
-			#if cActiveTree.canNodeAcceptChild cParentId
-			cNode = cActiveTree.createNode change.behaviorId
-			setNodeTitle cNode
-			cActiveTree.addNodeChild cParentId, cNode
-			treeLoader.addNodeToTree cNode, change.parentTId
-			#else
-			#	alertify.error 'Node does not accept children'
+			if cActiveTree.canNodeAcceptChild cParentId
+				cNode = cActiveTree.createNode change.behaviorId
+				setNodeTitle cNode
+				cActiveTree.addNodeChild cParentId, cNode
+				treeLoader.addNodeToTree cNode, change.parentTId
+			else
+				alertify.error 'Node does not accept children'
 
 		when 'removeNode'
 			cNode = cActiveTree.getNode change.cNodeId
 			cParentNodeId = cNode.getParentId()
-			if cParentNodeId.indexOf('Tree') != -1
-				console.log 'Erasing root'
+			#if cParentNodeId.indexOf('Tree') != -1
+			#	console.log 'Erasing root'
 			eraseChildren cNode
 			treeLoader.redrawTree()
 
 		when 'switchNodes'
 			cNodeA = cActiveTree.getNode change.cNodeIdA
 			cNodeB = cActiveTree.getNode change.cNodeIdB
-			cParent = cNodeA.getParent()
-			children = cParent.getChildren()
+			cParentId = cNodeA.getParentId()
+			cParent = cActiveTree.getNode cParentId
+			children = cActiveTree.getNodeChildren cParent
+
 			indexA = children.indexOf cNodeA
 			indexB = children.indexOf cNodeB
 
 			for child in children
-				cParent.removeChild child
+				cActiveTree.removeChildNode child
 
 			children.splice indexA, 1, cNodeB
 			children.splice indexB, 1, cNodeA
 
 			for child in children
-				cParent.addChild child
+				cActiveTree.addNodeChild cParentId, child
 			treeLoader.redrawTree()
 
 		when 'changeParent'
 			cNode = cActiveTree.getNode change.cNodeId
-			cParent = cNode.getParent()
+			cParentId = cNode.getParentId()
+			cParent = cActiveTree.getNode cParentId
 			cNewParent = cActiveTree.getNode change.parentCId
-			if cNewParent.acceptsChildren()
-				cParent.removeChild cNode
-				cNewParent.addChild cNode
+			if cActiveTree.canNodeAcceptChild cNewParent
+				cActiveTree.removeChildNode cNode
+				cActiveTree.addNodeChild cNewParent, cNode
 				treeLoader.changeParent change.tNodeId, change.parentTId
 				treeLoader.redrawTree()
 			else
 				alertify.error 'Node does not accept children'
 
 		when 'showNodeMemory'
+			activeSubject = subjList.getActiveSubject()
 			if activeSubject
 				cNode = cActiveTree.getNode change.cNodeId
 				memory.loadNodeMemory activeSubject, cNode

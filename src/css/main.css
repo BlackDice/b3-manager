@@ -83,6 +83,17 @@ h2 {
 	font-weight: 400;
 }
 
+h3 {
+	font-size: 16pt;
+	color: #636363;
+}
+
+h4 {
+	font-weight: normal;
+	font-size: 14pt;
+	color: #363636;
+}
+
 h5 {
 	color: #363636;
 	font-size: 14pt;
@@ -105,10 +116,12 @@ li {
 }
 
 select {
+	width: 100%;
 	font-size: 16pt;
 	padding: 10px;
 	color: #636363;
 	background: #181818;
+	margin-bottom: 5px;
 	border: none;
 	cursor: pointer;
 	-webkit-appearance: none;
@@ -175,16 +188,25 @@ select {
 }
 
 #behaviorProperties {
-	margin-bottom: 50px;
+	margin-bottom: 20px;
 }
 
-#categorySelect {
+#behaviorDescription {
 	width: 100%;
+	font-size: 13pt;
+	font-weight: 300;
+	color: #636363;
+	margin-top: 15px;
+	margin-bottom: 5px;
+	font-style: italic;
+}
+
+#typeSelect {
 	margin-top: 18px;
 }
 
-#behaviorConfig h2 {
-	font-size: 16pt;
+#behaviorName:hover {
+	background-color: #181818;
 }
 
 #activeTreeName {
@@ -258,11 +280,12 @@ select {
 }
 
 input {
-	font-size: 18pt;
+	font-size: 16pt;
 	padding: 10px;
+	margin-bottom: 5px;
 	background-color: #181818;
 	border: none;
-	color: #c5c5c5;
+	color: #636363;
 	outline: none;
 	outline-color: #3f4853;
 }

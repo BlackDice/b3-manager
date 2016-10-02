@@ -1,13 +1,14 @@
 # Behavior list
 
 code = require './code'
-config = require './config'
 treeList = require './treeList'
 treeLoader = require './treeLoader'
 
 activeBehavior = null
 activeBehaviorId = null
 activeChief = null
+activeListItem = null
+typeOrder = ['composite', 'decorator', 'leaf']
 
 $behaviorList = $('#behaviorList')
 $behaviorForm = $('#behaviors .panelInput')
@@ -49,6 +50,15 @@ dragBehavior = (evt) ->
 
 exports.getActiveBehavior = -> return activeBehavior
 
+exports.reload = ->
+	loadBehaviors activeChief
+
+exports.getTypes = ->
+	return typeOrder
+
+exports.getActiveListItem = ->
+	return activeListItem
+
 exports.load = loadBehaviors = (chief) ->
 	activeChief = chief
 	cBehaviorList = activeChief.listBehaviors()
@@ -57,29 +67,26 @@ exports.load = loadBehaviors = (chief) ->
 	behaviorList = cBehaviorList.map (behavior) ->
 		behavior.type = behavior.getType().toLowerCase()
 		behavior.name = behavior.getName()
+		behavior.category = behavior.getMeta()?.category
 		return behavior
 
 	sortedList = _.groupBy behaviorList, 'type'
 
-	typeOrder = ['composite', 'decorator', 'leaf']
 	$behaviorList.empty()
 
 	for key in typeOrder
-
-		$('#categorySelect').append $('<option>',
-			value: key,
-			text: key
-		)
-
-		category = _.sortBy sortedList[key], 'isNative'
+		category = _.orderBy sortedList[key], ['isNative', 'name'], ['desc', 'asc']
 		$('<h5>' + key + 's' + '</h5>').appendTo $behaviorList
 		$ul = $('<ul></ul>').appendTo $behaviorList
 
 		for key, behavior of category
 			$li = $('<li></li>').attr('draggable', 'true').appendTo $ul
 			$img = $('<span></span>').addClass('behaviorIcon').appendTo $li
-			url = '/assets/behaviors/' + behavior.name.toLowerCase() + '.png'
-			$img.css 'background-image', "url('" + url + "')"
+
+			url1 = '/assets/behaviors/' + behavior.name.toLowerCase() + '.png'
+			url2 = '/assets/behaviors/' + behavior.category + '.png'
+			$img.css 'background-image', "url('" + url1 + "'), url('" + url2 + "')"
+
 			$label = $("<span class='behaviorLabel'>" + behavior.name + '</span>').appendTo $li
 			$li.attr 'data', behavior.getId()
 			$li.on 'dragstart', (evt) -> dragBehavior(evt)
@@ -88,9 +95,6 @@ exports.load = loadBehaviors = (chief) ->
 				$li.on 'click', toggleBehavior(behavior, $li)
 				$erase = $("<i>delete</i>").addClass('material-icons').appendTo($li)
 				$erase.on 'click', removeBehavior(behavior.getId())
-
-
-	$('#behaviorSelect option[value="leaf"]').attr "selected", true
 
 toggleBehavior = (behavior, $li) ->
 	return ->
@@ -112,10 +116,13 @@ toggleBehavior = (behavior, $li) ->
 			# start displaying behavior
 			openBehavior loadingBehaviorId, behavior, $li
 
+config = require './config'
+
 openBehavior = (id, behavior, $li) ->
 	activeBehaviorId = id
 	activeBehavior = behavior
 	$li.addClass 'active'
+	activeListItem = $li
 	readOnly = behavior.isNative
 	content = behavior.getDefinition()
 	code.openCode content, readOnly
@@ -124,6 +131,7 @@ openBehavior = (id, behavior, $li) ->
 		treeLoader.getActiveTree().resize()
 
 closeBehavior = ->
+	activeListItem = null
 	activeBehaviorId = null
 	code.closeCode()
 	if treeList.getCActiveTreeId()

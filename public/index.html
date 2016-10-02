@@ -91,18 +91,22 @@
 					<div id='subjEditor'></div>
 				</div>
 			</div>
-			<div id='code'>
+			<div id='code' class='hidden'>
 				<div id='codeMirror'>
 					<button type='submit' id='saveCode'><i class='material-icons md-24'>save</i>Save</button>
 				</div>
 				<div id='behaviorConfig'>
-					<h2 id='behaviorName'>Behavior config</h2>
+					<h3 id='behaviorName' contenteditable='true'></h3>
+					<div id='behaviorDescription' contenteditable='true'></div>
 					<div id='behaviorProperties'>
-						<select id='categorySelect'></select>
+						<select id='typeSelect'></select><br>
+						<select id='categorySelect'></select><br>
 					</div>
+					<h4>Config</h4>
 					<div id='behaviorConfigEditor'></div>
 				</div>
 			</div>
+			<div id='nodeConfigEditor'></div>
 		</div>
 		<div id='contextmenu'>
 			<div id='commandMoveLeft'><i class='material-icons'>arrow_back</i><span>Left</span></div>

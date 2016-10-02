@@ -11,6 +11,7 @@ activeChief = null
 $subjectList = $('#subjectList')
 $activeTreeName = $('#activeTreeName')
 
+
 exports.load = loadSubjects = (chief) ->
 	activeChief = chief
 	cSubjectList = activeChief.listSubjects()
@@ -19,6 +20,16 @@ exports.load = loadSubjects = (chief) ->
 		$li = $('<li>' + subject.getId() + '</li>').appendTo $subjectList
 		$li.attr 'data', subject.getId()
 		$li.on 'click', toggleSubject(subject, $li)
+
+window.createSubject = ->
+	cActiveTree = treeList.getCActiveTree()
+	if cActiveTree
+		activeChief.createSubject cActiveTree
+		alertify.success 'Subject created'
+	else
+		alertify.error 'No tree is active'
+
+exports.getActiveSubject = -> return activeSubject
 
 toggleSubject = (subject, $li) ->
 	return ->
