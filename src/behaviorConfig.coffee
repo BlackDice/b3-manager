@@ -58,7 +58,7 @@ setCategorySelect = (behavior) ->
 	else
 		$('#categorySelect').val 'other'
 
-exports.loadBehaviorConfig = (behavior) ->
+exports.load = (behavior) ->
 	behaviorConfig = behavior.getConfig()
 	type = behavior.getType().toLowerCase()
 	$('#behaviorName').html behavior.getName()
@@ -86,10 +86,3 @@ confirmChange = (evt, editor, config) ->
 		json = editor.get()
 		activeBehavior = behaviorList.getActiveBehavior()
 		activeBehavior.setConfig json
-		###
-		for key, val of json
-			cfg = config.get(key)
-			if cfg is val then continue # skip same
-			if cfg? then config.set key, val # change
-			else config.set key, val # add
-		###

@@ -177,6 +177,10 @@ select {
 	flex-grow: 2;
 }
 
+#nodeConfigEditor {
+	position: absolute;
+}
+
 #behaviorConfig {
 	border-left: 3px #282828 solid;
 	padding: 20px;

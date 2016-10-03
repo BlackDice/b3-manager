@@ -1,6 +1,7 @@
 
-data = require './trees/tree.json'
 Chief = require 'behavior3-chief'
+data = require './trees/tree.json'
+nodeConfig = require './nodeConfig'
 
 treeConfig = {
 	container: '#treant',
@@ -27,6 +28,8 @@ treeConfig = {
 tActiveTree = null
 tActiveTreeHasRoot = null
 tActiveNode = null
+cActiveTree = null
+cActiveNode = null
 $container = null
 nodeMap = {}
 $erase = $('#commandErase')
@@ -44,7 +47,9 @@ registerClick = (treantConfig, callback) ->
 				evt.target.classList.add 'highlight'
 				tActiveNode = evt.target
 				cNodeId = evt.target.getAttribute 'cnodeid'
-				callback {action: 'showNodeMemory', cNodeId: cNodeId}
+				cActiveNode = cActiveTree.getNode cNodeId
+				#callback {action: 'showNodeMemory', cNodeId: cNodeId}
+				nodeConfig.load cActiveNode
 			else
 				evt.target.classList.add 'highlight'
 
@@ -265,8 +270,9 @@ exports.changeParent = (tNodeId, parentTId) ->
 exports.redrawTree = (animate) ->
 	tActiveTree.redraw null, animate
 
-exports.getActiveTree = ->
-	return tActiveTree
+exports.getActiveCNode = -> return cActiveNode
+
+exports.getActiveTree = -> return tActiveTree
 
 exports.loadTree = (cTree, gridSize, handleTreeChange) ->
 	config = _.cloneDeep treeConfig
@@ -286,6 +292,7 @@ exports.loadTree = (cTree, gridSize, handleTreeChange) ->
 	nodeStructure = _.values nodeMap
 	nodeStructure.unshift config
 
+	cActiveTree = cTree
 	tActiveTree = new Treant nodeStructure, handleTreeChange, treantLoaded
 	tActiveTreeHasRoot = cTree.getRootNode() isnt null
 

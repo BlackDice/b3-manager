@@ -116,7 +116,7 @@ toggleBehavior = (behavior, $li) ->
 			# start displaying behavior
 			openBehavior loadingBehaviorId, behavior, $li
 
-config = require './config'
+behaviorConfig = require './behaviorConfig'
 
 openBehavior = (id, behavior, $li) ->
 	activeBehaviorId = id
@@ -126,7 +126,7 @@ openBehavior = (id, behavior, $li) ->
 	readOnly = behavior.isNative
 	content = behavior.getDefinition()
 	code.openCode content, readOnly
-	config.loadBehaviorConfig behavior
+	behaviorConfig.load behavior
 	if treeList.getCActiveTreeId()
 		treeLoader.getActiveTree().resize()
 
