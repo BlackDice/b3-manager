@@ -31,11 +31,22 @@ tActiveNode = null
 cActiveTree = null
 cActiveNode = null
 $container = null
+highlightedEl = null
 nodeMap = {}
 $erase = $('#commandErase')
 $left = $('#commandMoveLeft')
 $right = $('#commandMoveRight')
 $contextmenu = $('#contextmenu')
+
+
+clearDisables = ->
+	$left.removeClass 'disabled'
+	$right.removeClass 'disabled'
+	$erase.removeClass 'disabled'
+
+clearHighlight = ->
+	if highlightedEl
+		highlightedEl.classList.remove 'highlight'
 
 registerClick = (treantConfig, callback) ->
 	$container = $(treantConfig.container)
@@ -44,27 +55,26 @@ registerClick = (treantConfig, callback) ->
 			evt.preventDefault()
 			if tActiveNode != evt.target
 				if tActiveNode then tActiveNode.classList.remove 'highlight'
+				highlightedEl = evt.target
 				evt.target.classList.add 'highlight'
 				tActiveNode = evt.target
 				cNodeId = evt.target.getAttribute 'cnodeid'
 				cActiveNode = cActiveTree.getNode cNodeId
 				#callback {action: 'showNodeMemory', cNodeId: cNodeId}
 				nodeConfig.load cActiveNode
+				nodeConfig.positionEditor evt.target
+				nodeConfig.showEditor()
 			else
 				evt.target.classList.add 'highlight'
+		else
+			tActiveNode = null
+			nodeConfig.hideEditor()
+			$contextmenu.hide()
+			clearHighlight()
+			clearDisables()
 
 registerRightClick = (treantConfig, callback) ->
 	$container = $(treantConfig.container)
-	highlightedEl = null
-
-	clearDisables = ->
-		$left.removeClass 'disabled'
-		$right.removeClass 'disabled'
-		$erase.removeClass 'disabled'
-
-	clearHighlight = ->
-		if highlightedEl
-			highlightedEl.classList.remove 'highlight'
 
 	$container.on 'contextmenu', (evt) ->
 		if evt.target.classList.contains 'node'
@@ -101,6 +111,7 @@ registerRightClick = (treantConfig, callback) ->
 		tActiveTree.removeNode tNodeId
 		if parentId is -1 then tActiveTreeHasRoot = false
 		callback {action: 'removeNode', cNodeId: cNodeId}
+		$contextmenu.hide()
 
 	$left.on 'click', (evt) ->
 		if $left.hasClass 'disabled' then return
@@ -110,6 +121,7 @@ registerRightClick = (treantConfig, callback) ->
 		cNodeIdB = tActiveTree.getNodeAttribute leftNeighborTId, 'cNodeId'
 		tActiveTree.switchIndexes tNodeId, leftNeighborTId
 		callback {action: 'switchNodes', cNodeIdA: cNodeIdA, cNodeIdB: cNodeIdB}
+		$contextmenu.hide()
 
 	$right.on 'click', (evt) ->
 		if $right.hasClass 'disabled' then return
@@ -119,11 +131,7 @@ registerRightClick = (treantConfig, callback) ->
 		cNodeIdB = tActiveTree.getNodeAttribute rightNeighborTId, 'cNodeId'
 		tActiveTree.switchIndexes tNodeId, rightNeighborTId
 		callback {action: 'switchNodes', cNodeIdA: cNodeIdA, cNodeIdB: cNodeIdB}
-
-	document.addEventListener 'click', (evt) ->
 		$contextmenu.hide()
-		clearHighlight()
-		clearDisables()
 
 	window.addEventListener 'resize', (evt) ->
 		if tActiveTree

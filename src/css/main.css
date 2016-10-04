@@ -179,12 +179,26 @@ select {
 
 #nodeConfigEditor {
 	position: absolute;
+	background-color: #202020;
+	width: 250px;
+	min-height: 100px;
+	padding: 20px;
+}
+
+#nodeConfigEditor .jsoneditor {
+	margin-top: 0px;
+	height: auto;
+}
+
+#nodeConfigEditor div.jsoneditor-menu {
+	display: none;
 }
 
 #behaviorConfig {
-	border-left: 3px #282828 solid;
+	border-left: 3px #333 solid;
 	padding: 20px;
 	width: 300px;
+	border-radius: 4px;
 }
 
 #behaviorConfigEditor, #behaviorConfigEditor .jsoneditor {
