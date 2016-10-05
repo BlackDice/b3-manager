@@ -13,13 +13,13 @@ nodeEditor = null
 treeEditor = null
 subjEditor = null
 
-nodeEl = document.getElementById 'nodeEditor'
-treeEl = document.getElementById 'treeEditor'
-subjEl = document.getElementById 'subjEditor'
-
-nodeEl.addEventListener 'keydown', (evt) -> confirmChange evt, nodeEditor, nodeMemory
-treeEl.addEventListener 'keydown', (evt) -> confirmChange evt, treeEditor, treeMemory
-subjEl.addEventListener 'keydown', (evt) -> confirmChange evt, subjEditor, subjMemory
+#nodeEl = document.getElementById 'nodeEditor'
+#treeEl = document.getElementById 'treeEditor'
+#subjEl = document.getElementById 'subjEditor'
+#
+#nodeEl.addEventListener 'keydown', (evt) -> confirmChange evt, nodeEditor, nodeMemory
+#treeEl.addEventListener 'keydown', (evt) -> confirmChange evt, treeEditor, treeMemory
+#subjEl.addEventListener 'keydown', (evt) -> confirmChange evt, subjEditor, subjMemory
 
 confirmChange = (evt, editor, memory) ->
 	if evt.keyCode is 13 # enter key

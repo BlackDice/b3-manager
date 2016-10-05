@@ -19,27 +19,27 @@
 	background-color: #181818;
 }
 
-#tab-trees {
+.tab-trees {
 	background-position: -10px bottom;
 }
 
-#tab-behaviors {
+.tab-behaviors {
 	background-position: center bottom;
 }
 
-#tab-subjects {
+.tab-subjects {
 	background-position: -275px bottom;
 }
 
-#tab-trees.active {
+.tab-trees.active {
 	background-position: -10px top;
 }
 
-#tab-behaviors.active {
+.tab-behaviors.active {
 	background-position: center top;
 }
 
-#tab-subjects.active {
+.tab-subjects.active {
 	background-position: -275px top;
 }
 

@@ -1,19 +1,17 @@
 
-treesTab = $('#tab-trees')
-behaviorsTab = $('#tab-behaviors')
-subjectsTab = $('#tab-subjects')
-
-activeTab = $('#trees')
-
 toggle = ->
-	if activeTab.attr('id') == $(this).attr('id') then return
-	activeTab = $(this)
-	$(this).toggleClass 'active'
-	$(this).siblings().removeClass 'active'
-	tab = $(this).attr 'data'
-	$('.panelContent').not(tab).css 'display', 'none'
-	$(tab).show()
+	unless $(this).hasClass 'active'
+		$(this).toggleClass 'active'
+		$(this).siblings().removeClass 'active'
 
-treesTab.on 'click', toggle
-behaviorsTab.on 'click', toggle
-subjectsTab.on 'click', toggle
+		tabName = $(this).attr 'data'
+		$(this).parent().parent().find('.panelContent').not(tabName).css 'display', 'none'
+		$(this).parent().parent().find(tabName).show()
+
+treesTabs = $('.tab-trees')
+behaviorsTabs = $('.tab-behaviors')
+subjectsTabs = $('.tab-subjects')
+
+treesTabs.on 'click', toggle
+behaviorsTabs.on 'click', toggle
+subjectsTabs.on 'click', toggle

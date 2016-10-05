@@ -66,7 +66,6 @@ body {
 	background-image: url('/assets/grid50.png');
 	font-family: 'Roboto', sans-serif;
 	color: #dddddd;
-	display: flex;
 	min-height: 100vh;
 	flex-direction: row;
 }
@@ -132,6 +131,7 @@ select {
 #container {
 	display: flex;
 	flex: 1;
+	height: 100%;
 }
 
 #chart {
@@ -142,13 +142,10 @@ select {
 }
 
 #panel {
-	min-width: 350px;
 	display: block;
-}
-
-#panel, #memory {
 	width: 350px;
 	height: 100%;
+	min-width: 350px;
 	background-color: #202020;
 	overflow: scroll;
 	overflow-x: hidden;
@@ -263,6 +260,22 @@ select {
 	display: none;
 }
 
+#memory {
+	position: absolute;
+	right: 0px;
+	bottom: 0px;
+	width: 350px;
+	background-color: #202020;
+	overflow: scroll;
+	overflow-x: hidden;
+	display: flex;
+	flex-direction: column;
+}
+
+#memory h2 {
+	font-size: 16pt;
+}
+
 #nodeMemory, #treeMemory, #subjMemory {
 	width: 100%;
 	flex-grow: 1;
@@ -270,15 +283,6 @@ select {
 	flex-basis: auto;
 	transition: all 0.2s;
 	padding: 20px;
-}
-
-#memory {
-	display: flex;
-	flex-direction: column;
-}
-
-#memory h2 {
-	font-size: 16pt;
 }
 
 #nodeMemory {
