@@ -36,7 +36,7 @@
 	<body>
 		<div id='container'>
 			<div id='panel'>
-				<div id='tabs'>
+				<div class='tabs'>
 					<div data='#trees' class='tab-trees tab active'></div>
 					<div data='#behaviors' class='tab-behaviors tab'></div>
 					<div data='#subjects' class='tab-subjects tab'></div>
@@ -95,34 +95,17 @@
 			<div id='nodeConfigEditor' class='hidden'></div>
 		</div>
 		<div id='memory'>
-			<div id='tabs'>
+			<div class='tabs'>
 				<div data='#trees' class='tab-trees tab active'></div>
 				<div data='#behaviors' class='tab-behaviors tab'></div>
 				<div data='#subjects' class='tab-subjects tab'></div>
+				<div id='panelName'>Memory<i id='openMemory' class='material-icons md-48'>keyboard_arrow_up</i></div>
 			</div>
-			<div id='trees' class='panelContent active'>
-				x
+			<div id='editors' class='hidden'>
+				<div id='trees' class='panelContent active'>x</div>
+				<div id='behaviors' class='panelContent'>y</div>
+				<div id='subjects' class='panelContent'>z</div>
 			</div>
-			<div id='behaviors' class='panelContent'>
-				y
-			</div>
-			<div id='subjects' class='panelContent'>
-				z
-			</div>
-			<!--
-			<div id='nodeMemory' class='collapsed'>
-				<h2 id='nodeMemoryName'>Node memory</h2>
-				<div id='nodeEditor'></div>
-			</div>
-			<div id='treeMemory'>
-				<h2 id='treeMemoryName'>Tree memory</h2>
-				<div id='treeEditor'></div>
-			</div>
-			<div id='subjMemory'>
-				<h2 id='subjMemoryName'>Subject memory</h2>
-				<div id='subjEditor'></div>
-			</div>
-			-->
 		</div>
 		<div id='contextmenu'>
 			<div id='commandMoveLeft'><i class='material-icons'>arrow_back</i><span>Left</span></div>

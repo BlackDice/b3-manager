@@ -1,0 +1,105 @@
+
+/* GENERAL */
+
+.tab {
+	flex: 1;
+	display: inline;
+	cursor: pointer;
+	background-image: url('/assets/tabs.png');
+	background-repeat: no-repeat;
+}
+
+/* PANEL */
+
+#panel .tab {
+	background-color: #181818;
+}
+
+#panel .tab.active {
+	background-color: #202020;
+}
+
+#panel .tabs {
+	display: flex;
+	height: 80px;
+	width: 100%;
+}
+
+#panel .tab-trees {
+	background-position: -10px bottom;
+}
+
+#panel .tab-behaviors {
+	background-position: center bottom;
+}
+
+#panel .tab-subjects {
+	background-position: -275px bottom;
+}
+
+#panel .tab-trees.active {
+	background-position: -10px top;
+}
+
+#panel .tab-behaviors.active {
+	background-position: center top;
+}
+
+#panel .tab-subjects.active {
+	background-position: -275px top;
+}
+
+/* MEMORY */
+
+#memory .tabs {
+	height: 60px;
+}
+
+#memory .tab {
+	float: left;
+	width: 60px;
+	height: 60px;
+}
+
+#memory .tab-trees {
+	background-position: -35px -91px;
+}
+
+#memory .tab-behaviors {
+	background-position: -170px -91px;
+}
+
+#memory .tab-subjects {
+	background-position: -303px -91px;
+}
+
+#memory .tab-trees.active {
+	background-position: -35px -10px;
+}
+
+#memory .tab-behaviors.active {
+	background-position: -170px -10px;
+}
+
+#memory .tab-subjects.active {
+	background-position: -303px -10px;
+}
+
+#panelName {
+	color: #363636;
+	font-size: 20pt;
+	font-weight: 400;
+	height: 60px;
+	text-align: right;
+}
+
+#panelName:hover {
+	color: #636363;
+	cursor: pointer;
+}
+
+#panelName i {
+	vertical-align: middle;
+	height: 100%;
+	line-height: 130%;
+}

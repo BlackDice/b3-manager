@@ -264,12 +264,8 @@ select {
 	position: absolute;
 	right: 0px;
 	bottom: 0px;
-	width: 350px;
+	width: 400px;
 	background-color: #202020;
-	overflow: scroll;
-	overflow-x: hidden;
-	display: flex;
-	flex-direction: column;
 }
 
 #memory h2 {
@@ -299,6 +295,10 @@ select {
 
 .hidden {
 	display: none !important;
+}
+
+.rotate {
+	transform: rotate(180deg);
 }
 
 input {

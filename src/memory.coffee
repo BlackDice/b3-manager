@@ -21,6 +21,10 @@ subjEditor = null
 #treeEl.addEventListener 'keydown', (evt) -> confirmChange evt, treeEditor, treeMemory
 #subjEl.addEventListener 'keydown', (evt) -> confirmChange evt, subjEditor, subjMemory
 
+$('#panelName').click ->
+	$(this).find('i').toggleClass 'rotate'
+	$('#editors').toggleClass 'hidden'
+
 confirmChange = (evt, editor, memory) ->
 	if evt.keyCode is 13 # enter key
 		evt.preventDefault()

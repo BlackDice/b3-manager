@@ -1,50 +1,7 @@
 
-#tabs {
-	display: flex;
-	height: 80px;
-	width: 100%;
-}
-
 #firebase {
 	margin-top: 20px;
 	margin-bottom: 40px;
-}
-
-.tab {
-	flex: 1;
-	display: inline;
-	cursor: pointer;
-	background-image: url('/assets/tabs.png');
-	background-repeat: no-repeat;
-	background-color: #181818;
-}
-
-.tab-trees {
-	background-position: -10px bottom;
-}
-
-.tab-behaviors {
-	background-position: center bottom;
-}
-
-.tab-subjects {
-	background-position: -275px bottom;
-}
-
-.tab-trees.active {
-	background-position: -10px top;
-}
-
-.tab-behaviors.active {
-	background-position: center top;
-}
-
-.tab-subjects.active {
-	background-position: -275px top;
-}
-
-.tab.active {
-	background-color: #202020;
 }
 
 .panelContent {

@@ -2,6 +2,7 @@
 require './css/main.css'
 require './css/tree.css'
 require './css/panel.css'
+require './css/tabs.css'
 require './css/controls.css'
 require './css/jsoneditor-dark.css'
 require './css/codemirror/codemirror.css'
