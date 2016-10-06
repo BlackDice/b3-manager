@@ -25,27 +25,27 @@
 	width: 100%;
 }
 
-#panel .tab-trees {
+#panel #tab-trees {
 	background-position: -10px bottom;
 }
 
-#panel .tab-behaviors {
+#panel #tab-behaviors {
 	background-position: center bottom;
 }
 
-#panel .tab-subjects {
+#panel #tab-subjects {
 	background-position: -275px bottom;
 }
 
-#panel .tab-trees.active {
+#panel #tab-trees.active {
 	background-position: -10px top;
 }
 
-#panel .tab-behaviors.active {
+#panel #tab-behaviors.active {
 	background-position: center top;
 }
 
-#panel .tab-subjects.active {
+#panel #tab-subjects.active {
 	background-position: -275px top;
 }
 
@@ -61,27 +61,40 @@
 	height: 60px;
 }
 
-#memory .tab-trees {
+#memory #tab-treeEditor {
 	background-position: -35px -91px;
 }
 
-#memory .tab-behaviors {
+#memory #tab-nodeEditor {
 	background-position: -170px -91px;
 }
 
-#memory .tab-subjects {
+#memory #tab-subjEditor {
 	background-position: -303px -91px;
 }
 
-#memory .tab-trees.active {
+#memory #tab-treeEditor.disabled {
+	cursor: auto;
+	opacity: 0.2;
+}
+#memory #tab-nodeEditor.disabled {
+	cursor: auto;
+	opacity: 0.2;
+}
+#memory #tab-subjEditor.disabled {
+	cursor: auto;
+	opacity: 0.2;
+}
+
+#memory #tab-treeEditor.active {
 	background-position: -35px -10px;
 }
 
-#memory .tab-behaviors.active {
+#memory #tab-nodeEditor.active {
 	background-position: -170px -10px;
 }
 
-#memory .tab-subjects.active {
+#memory #tab-subjEditor.active {
 	background-position: -303px -10px;
 }
 
@@ -91,6 +104,10 @@
 	font-weight: 400;
 	height: 60px;
 	text-align: right;
+}
+
+#panelName span {
+	vertical-align: middle;
 }
 
 #panelName:hover {

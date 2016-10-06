@@ -59,21 +59,13 @@ openSubject = (id, subject, $li) ->
 	controls.show()
 	$activeTreeName.html treeList.getCActiveTreeName() + ': ' + activeSubjectId
 
-	showMemoryPanel()
 	memory.loadTreeMemory treeList.getCActiveTree(), activeSubject
 	memory.loadSubjectMemory activeSubject
+	memory.activate 'tab-subjEditor'
 
 closeSubject = ->
 	controls.hide()
 	activeSubjectId = null
 
-	hideMemoryPanel()
 	memory.clearMemory()
-
-showMemoryPanel = ->
-	$('#memory').removeClass 'hidden'
-	treeLoader.getActiveTree().resize()
-
-hideMemoryPanel = ->
-	$('#memory').addClass 'hidden'
-	treeLoader.getActiveTree().resize()
+	memory.disable 'tab-subjEditor'

@@ -5,21 +5,21 @@ options =
 	search: false
 	history: false
 
-nodeMemory = null
 treeMemory = null
+nodeMemory = null
 subjMemory = null
 
-nodeEditor = null
 treeEditor = null
+nodeEditor = null
 subjEditor = null
 
-#nodeEl = document.getElementById 'nodeEditor'
-#treeEl = document.getElementById 'treeEditor'
-#subjEl = document.getElementById 'subjEditor'
-#
-#nodeEl.addEventListener 'keydown', (evt) -> confirmChange evt, nodeEditor, nodeMemory
-#treeEl.addEventListener 'keydown', (evt) -> confirmChange evt, treeEditor, treeMemory
-#subjEl.addEventListener 'keydown', (evt) -> confirmChange evt, subjEditor, subjMemory
+treeEl = document.getElementById 'treeEditor'
+nodeEl = document.getElementById 'nodeEditor'
+subjEl = document.getElementById 'subjEditor'
+
+nodeEl.addEventListener 'keydown', (evt) -> confirmChange evt, nodeEditor, nodeMemory
+treeEl.addEventListener 'keydown', (evt) -> confirmChange evt, treeEditor, treeMemory
+subjEl.addEventListener 'keydown', (evt) -> confirmChange evt, subjEditor, subjMemory
 
 $('#panelName').click ->
 	$(this).find('i').toggleClass 'rotate'
@@ -53,6 +53,12 @@ chiefNodeMemoryChange = -> nodeEditor.set nodeMemory.dump()
 chiefTreeMemoryChange = -> treeEditor.set treeMemory.dump()
 chiefsubjMemoryChange = -> subjEditor.set subjMemory.dump()
 
+
+exports.activate = (tabId) ->
+	$(tabId).removeClass 'disabled'
+
+exports.disable = (tabId) ->
+	$(tabId).addClass 'disabled'
 
 exports.loadNodeMemory = (subj, cNode) ->
 	# when a node is clicked, load memory of the node for the currently active subj and tree

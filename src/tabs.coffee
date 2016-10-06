@@ -1,6 +1,6 @@
 
 toggle = ->
-	unless $(this).hasClass 'active'
+	unless $(this).hasClass('active') or $(this).hasClass('disabled')
 		$(this).toggleClass 'active'
 		$(this).siblings().removeClass 'active'
 
@@ -8,10 +8,10 @@ toggle = ->
 		$(this).parent().parent().find('.panelContent').not(tabName).css 'display', 'none'
 		$(this).parent().parent().find(tabName).show()
 
-treesTabs = $('.tab-trees')
-behaviorsTabs = $('.tab-behaviors')
-subjectsTabs = $('.tab-subjects')
+$('.tab-trees').on 'click', toggle
+$('.tab-behaviors').on 'click', toggle
+$('.tab-subjects').on 'click', toggle
 
-treesTabs.on 'click', toggle
-behaviorsTabs.on 'click', toggle
-subjectsTabs.on 'click', toggle
+$('#tab-treeEditor').on 'click', toggle
+$('#tab-nodeEditor').on 'click', toggle
+$('#tab-subjEditor').on 'click', toggle

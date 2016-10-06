@@ -65,6 +65,7 @@ if navigator.onLine
 		if activeChief is null
 			setupFirebase env
 else
+	alertify.error 'Offline mode'
 	$('#fbSelect').append $('<option>',
 		text: 'Offline'
 	)

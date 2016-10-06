@@ -37,9 +37,9 @@
 		<div id='container'>
 			<div id='panel'>
 				<div class='tabs'>
-					<div data='#trees' class='tab-trees tab active'></div>
-					<div data='#behaviors' class='tab-behaviors tab'></div>
-					<div data='#subjects' class='tab-subjects tab'></div>
+					<div id='tab-trees' data='#trees' class='tab active'></div>
+					<div id='tab-behaviors' data='#behaviors' class='tab'></div>
+					<div id='tab-subjects' data='#subjects' class='tab'></div>
 				</div>
 				<div id='trees' class='panelContent active'>
 					<h2>Firebase</h2>
@@ -70,8 +70,8 @@
 				</div>
 			</div>
 			<div id='chart'>
-				<h1 id='activeTreeName' contenteditable='true'></h1>
-				<h4 id='activeTreeDesc' contenteditable='true'></h4>
+				<h1 id='activeTreeName' class='hidden' contenteditable='true'></h1>
+				<h4 id='activeTreeDesc' class='hidden' contenteditable='true'></h4>
 				<div id='treant'></div>
 				<div id='controls'>
 					<div id='play' class='play'></div><div id='step' class='step'></div>
@@ -96,15 +96,15 @@
 		</div>
 		<div id='memory'>
 			<div class='tabs'>
-				<div data='#trees' class='tab-trees tab active'></div>
-				<div data='#behaviors' class='tab-behaviors tab'></div>
-				<div data='#subjects' class='tab-subjects tab'></div>
-				<div id='panelName'>Memory<i id='openMemory' class='material-icons md-48'>keyboard_arrow_up</i></div>
+				<div id='tab-treeEditor' data='#treeEditor' class='tab disabled'></div>
+				<div id='tab-nodeEditor' data='#nodeEditor' class='tab disabled'></div>
+				<div id='tab-subjEditor' data='#subjEditor' class='tab disabled'></div>
+				<div id='panelName'><span>Memory</span><i id='openMemory' class='material-icons md-48'>keyboard_arrow_up</i></div>
 			</div>
 			<div id='editors' class='hidden'>
-				<div id='trees' class='panelContent active'>x</div>
-				<div id='behaviors' class='panelContent'>y</div>
-				<div id='subjects' class='panelContent'>z</div>
+				<div id='treeEditor' class='panelContent active'></div>
+				<div id='nodeEditor' class='panelContent'></div>
+				<div id='subjEditor' class='panelContent'></div>
 			</div>
 		</div>
 		<div id='contextmenu'>

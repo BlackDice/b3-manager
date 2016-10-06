@@ -3,6 +3,7 @@
 treeLoader = require './treeLoader'
 subjList = require './subjList'
 controls = require './controls'
+memory = require './memory'
 alertify = require 'alertify.js'
 
 gridSize = 50
@@ -155,12 +156,18 @@ openTree = (id, cTree, $li) ->
 	cActiveTree = activeChief.getTree id
 	$activeTreeName.html cActiveTree.getName()
 	$activeTreeDesc.html cActiveTree.getDescription()
+	$activeTreeName.removeClass 'hidden'
+	$activeTreeDesc.removeClass 'hidden'
+	memory.activate 'tab-treeEditor'
 
 closeTree = ->
 	treeLoader.closeTree cActiveTreeId
 	cActiveTreeId = null
 	$activeTreeName.html ''
 	$activeTreeDesc.html ''
+	$activeTreeName.addClass 'hidden'
+	$activeTreeDesc.addClass 'hidden'
+	memory.disable 'tab-treeEditor'
 	controls.hide()
 
 addTree = (name) ->

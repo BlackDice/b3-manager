@@ -2,6 +2,7 @@
 Chief = require 'behavior3-chief'
 data = require './trees/tree.json'
 nodeConfig = require './nodeConfig'
+memory = require './memory'
 
 treeConfig = {
 	container: '#treant',
@@ -60,7 +61,8 @@ registerClick = (treantConfig, callback) ->
 				tActiveNode = evt.target
 				cNodeId = evt.target.getAttribute 'cnodeid'
 				cActiveNode = cActiveTree.getNode cNodeId
-				#callback {action: 'showNodeMemory', cNodeId: cNodeId}
+				callback {action: 'showNodeMemory', cNodeId: cNodeId}
+				memory.activate 'tab-nodeEditor'
 				nodeConfig.load cActiveNode
 				nodeConfig.positionEditor evt.target
 				nodeConfig.showEditor()
@@ -69,6 +71,7 @@ registerClick = (treantConfig, callback) ->
 		else
 			tActiveNode = null
 			nodeConfig.hideEditor()
+			memory.disable 'tab-nodeEditor'
 			$contextmenu.hide()
 			clearHighlight()
 			clearDisables()
@@ -314,5 +317,4 @@ exports.closeTree = (treeId) ->
 		tActiveTree.destroy()
 		tActiveTree = null
 		unregisterAllEvents()
-		console.log 'closing tree', treeId
 	$container = null
