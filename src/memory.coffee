@@ -49,9 +49,9 @@ handlesubjMemoryChange = (data) ->
 	if node?.parent is null then subjMemory.set(node.field, null) # Delete
 
 
-chiefNodeMemoryChange = -> nodeEditor.set nodeMemory.dump()
-chiefTreeMemoryChange = -> treeEditor.set treeMemory.dump()
-chiefsubjMemoryChange = -> subjEditor.set subjMemory.dump()
+chiefNodeMemoryChange = -> nodeEditor.set nodeMemory.get()
+chiefTreeMemoryChange = -> treeEditor.set treeMemory.get()
+chiefsubjMemoryChange = -> subjEditor.set subjMemory.get()
 
 
 exports.activate = (tabId) ->
@@ -87,15 +87,12 @@ loadMemory = (element, editor, memory, chiefChangeCb, editorChangeCb) ->
 
 exports.clearTreeMemory = clearTreeMemory = ->
 	treeEditor.set {}
-	treeMemory = null
 
 exports.clearNodeMemory = clearNodeMemory = ->
 	nodeEditor.set {}
-	nodeMemory = null
 
 exports.clearSubjectMemory = clearSubjectMemory = ->
 	subjEditor.set {}
-	subjMemory = null
 
 exports.clearMemory = ->
 	clearTreeMemory()

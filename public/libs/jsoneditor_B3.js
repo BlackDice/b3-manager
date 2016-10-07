@@ -11635,7 +11635,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  this.hide();
 
 	  // determine whether to display the menu below or above the anchor
-	  var showBelow = true;
+	  var showBelow = false;
+	  /*
 	  if (contentWindow) {
 	    var anchorRect = anchor.getBoundingClientRect();
 	    var contentRect = contentWindow.getBoundingClientRect();
@@ -11651,6 +11652,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // doesn't fit above nor below -> show below
 	    }
 	  }
+	  */
 
 	  // position the menu
 	  if (showBelow) {
