@@ -85,7 +85,10 @@ exports.load = loadBehaviors = (chief) ->
 
 			url1 = '/assets/behaviors/' + behavior.name.toLowerCase() + '.png'
 			url2 = '/assets/behaviors/' + behavior.category + '.png'
-			$img.css 'background-image', "url('" + url1 + "'), url('" + url2 + "')"
+			if behavior.name and behavior.category
+				$img.css 'background-image', "url('" + url1 + "'), url('" + url2 + "')"
+			else
+				$img.css 'background-image', "url('" + url1 + "')"
 
 			$label = $("<span class='behaviorLabel'>" + behavior.name + '</span>').appendTo $li
 			$li.attr 'data', behavior.getId()

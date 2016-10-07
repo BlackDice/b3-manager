@@ -62,7 +62,7 @@ exports.load = (behavior) ->
 	behaviorConfig = behavior.getConfig()
 	type = behavior.getType().toLowerCase()
 	$('#behaviorName').html behavior.getName()
-	$('#behaviorDescription').html behavior.getDescription()
+	$('#behaviorDescription').html behavior.getDescription() or '...'
 	setCategorySelect behavior
 	$('#typeSelect').val type
 	customOptions = _.assign {onChange: handleConfigChange}, options

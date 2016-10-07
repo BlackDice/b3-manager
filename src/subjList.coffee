@@ -1,9 +1,10 @@
 # Subject list
 
+memory = require './memory'
 controls = require './controls'
 treeList = require './treeList'
 treeLoader = require './treeLoader'
-memory = require './memory'
+alertify = require 'alertify.js'
 
 activeSubject = null
 activeSubjectId = null
@@ -39,7 +40,8 @@ toggleSubject = (subject, $li) ->
 		# clicking the same item
 		if activeSubjectId == loadingSubjectId
 			# stop displaying subject
-			$activeTreeName.html treeList.getCActiveTreeName()
+			activeTree = treeList.getCActiveTree()
+			$activeTreeName.html activeTree.getName()
 			closeSubject()
 			return
 
@@ -53,19 +55,23 @@ toggleSubject = (subject, $li) ->
 			openSubject loadingSubjectId, subject, $li
 
 openSubject = (id, subject, $li) ->
-	activeSubjectId = id
-	activeSubject = subject
-	$li.addClass 'active'
-	controls.show()
-	$activeTreeName.html treeList.getCActiveTreeName() + ': ' + activeSubjectId
+	activeTree = treeList.getCActiveTree()
+	if activeTree
+		activeSubjectId = id
+		activeSubject = subject
+		$li.addClass 'active'
+		$activeTreeName.html activeTree.getName() + ': ' + activeSubjectId
+		
+		#controls.show()
+		$('#memory').removeClass 'hidden'
 
-	memory.loadTreeMemory treeList.getCActiveTree(), activeSubject
-	memory.loadSubjectMemory activeSubject
-	memory.activate 'tab-subjEditor'
+		memory.loadTreeMemory activeSubject, activeTree
+		memory.loadSubjectMemory activeSubject
+	else
+		alertify.error 'Open a tree first'
 
 closeSubject = ->
-	controls.hide()
+	#controls.hide()
 	activeSubjectId = null
-
+	$('#memory').addClass 'hidden'
 	memory.clearMemory()
-	memory.disable 'tab-subjEditor'

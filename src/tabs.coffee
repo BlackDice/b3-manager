@@ -8,9 +8,9 @@ toggle = ->
 		$(this).parent().parent().find('.panelContent').not(tabName).css 'display', 'none'
 		$(this).parent().parent().find(tabName).show()
 
-$('.tab-trees').on 'click', toggle
-$('.tab-behaviors').on 'click', toggle
-$('.tab-subjects').on 'click', toggle
+$('#tab-trees').on 'click', toggle
+$('#tab-behaviors').on 'click', toggle
+$('#tab-subjects').on 'click', toggle
 
 $('#tab-treeEditor').on 'click', toggle
 $('#tab-nodeEditor').on 'click', toggle

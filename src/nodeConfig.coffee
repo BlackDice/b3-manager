@@ -6,10 +6,6 @@ options =
 	search: false
 	history: false
 
-offset =
-	x: 150
-	y: 0
-
 nodeConfig = null
 nodeConfigEditor = null
 nodeConfigEditorEl = document.getElementById 'nodeConfigEditor'
@@ -35,17 +31,17 @@ exports.load = (cNode) ->
 	else nodeConfigEditor.set nodeConfig
 
 exports.positionEditor = (element) ->
-	bb = element.getBoundingClientRect()
-	left = bb.left + offset.x
-	top  = bb.top  + offset.y
-	width = parseInt $("#nodeConfigEditor").css('width')
+	node = element.getBoundingClientRect()
+	editorWidth = parseInt $("#nodeConfigEditor").css('width')
 
-	if left + width + bb.width > window.innerWidth
-		left = bb.left - width
+	if node.left + editorWidth + node.width > window.innerWidth
+		left = node.left - editorWidth
+	else
+		left = node.left + node.width
 
 	$('#nodeConfigEditor').css
 		left: left
-		top: top
+		top: node.top
 
 exports.showEditor = ->
 	nodeConfigEditorEl.classList.remove 'hidden'

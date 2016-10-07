@@ -62,7 +62,7 @@ registerClick = (treantConfig, callback) ->
 				cNodeId = evt.target.getAttribute 'cnodeid'
 				cActiveNode = cActiveTree.getNode cNodeId
 				callback {action: 'showNodeMemory', cNodeId: cNodeId}
-				memory.activate 'tab-nodeEditor'
+				memory.activate '#tab-nodeEditor'
 				nodeConfig.load cActiveNode
 				nodeConfig.positionEditor evt.target
 				nodeConfig.showEditor()
@@ -71,7 +71,7 @@ registerClick = (treantConfig, callback) ->
 		else
 			tActiveNode = null
 			nodeConfig.hideEditor()
-			memory.disable 'tab-nodeEditor'
+			memory.disable '#tab-nodeEditor'
 			$contextmenu.hide()
 			clearHighlight()
 			clearDisables()

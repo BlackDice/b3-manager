@@ -37,9 +37,6 @@ exports.getCActiveTreeId = ->
 exports.getCActiveTree = ->
 	return cActiveTree
 
-exports.getCActiveTreeName = ->
-	return cActiveTree.getName()
-
 toggleInput = ->
 	$(this).toggleClass 'active'
 	$treeForm.toggleClass 'hidden'
@@ -129,7 +126,8 @@ handleTreeChange = (change) ->
 			activeSubject = subjList.getActiveSubject()
 			if activeSubject
 				cNode = cActiveTree.getNode change.cNodeId
-				memory.loadNodeMemory activeSubject, cNode
+				memory.loadNodeMemory activeSubject, cActiveTree, cNode
+
 
 toggleTree = (cTree, $li) ->
 	return ->
@@ -158,7 +156,6 @@ openTree = (id, cTree, $li) ->
 	$activeTreeDesc.html cActiveTree.getDescription()
 	$activeTreeName.removeClass 'hidden'
 	$activeTreeDesc.removeClass 'hidden'
-	memory.activate 'tab-treeEditor'
 
 closeTree = ->
 	treeLoader.closeTree cActiveTreeId
@@ -167,7 +164,6 @@ closeTree = ->
 	$activeTreeDesc.html ''
 	$activeTreeName.addClass 'hidden'
 	$activeTreeDesc.addClass 'hidden'
-	memory.disable 'tab-treeEditor'
 	controls.hide()
 
 addTree = (name) ->

@@ -60,49 +60,54 @@ exports.activate = (tabId) ->
 exports.disable = (tabId) ->
 	$(tabId).addClass 'disabled'
 
-exports.loadNodeMemory = (subj, cNode) ->
-	# when a node is clicked, load memory of the node for the currently active subj and tree
-	nodeMemory = subj.getMemoryForNode cNode
-	nodeEditor = loadMemory nodeEl, nodeEditor, nodeMemory, chiefNodeMemoryChange, handleNodeMemoryChange
-	$('#nodeMemory').removeClass 'collapsed'
-
-exports.loadTreeMemory = (tree, subj) ->
+exports.loadTreeMemory = (subj, tree) ->
 	# when tree and subj is active, load subset of subjs memory relevant to the tree
-	treeMemory = subj.getMemoryForTree tree
+	treeMemory = subj.getTreeMemory tree
 	treeEditor = loadMemory treeEl, treeEditor, treeMemory, chiefTreeMemoryChange, handleTreeMemoryChange
+
+exports.loadNodeMemory = (subj, node, tree) ->
+	# when a node is clicked, load memory of the node for the currently active subj and tree
+	nodeMemory = subj.getNodeMemory node, tree
+	nodeEditor = loadMemory nodeEl, nodeEditor, nodeMemory, chiefNodeMemoryChange, handleNodeMemoryChange
 
 exports.loadSubjectMemory = (subj) ->
 	# when subj is active, load complete memory for that subj
-	subjMemory = subj.getMemory()
+	subjMemory = subj.getSubjectMemory()
 	subjEditor = loadMemory subjEl, subjEditor, subjMemory, chiefsubjMemoryChange, handlesubjMemoryChange
 
 
 loadMemory = (element, editor, memory, chiefChangeCb, editorChangeCb) ->
-	memory.on 'change', chiefChangeCb
-	json = memory.dump()
+	json = memory.get()
 	customOptions = _.assign {onChange: editorChangeCb}, options
 	unless editor
 		editor = new JSONEditor element, customOptions, json
+		editor.set json
 	else editor.set json
 	return editor
 
-exports.clearMemory = ->
-	nodeMemory = null
+exports.clearTreeMemory = clearTreeMemory = ->
+	treeEditor.set {}
 	treeMemory = null
+
+exports.clearNodeMemory = clearNodeMemory = ->
+	nodeEditor.set {}
+	nodeMemory = null
+
+exports.clearSubjectMemory = clearSubjectMemory = ->
+	subjEditor.set {}
 	subjMemory = null
 
-	nodeEditor.set {} if nodeEditor
-	treeEditor.set {}
-	subjEditor.set {}
+exports.clearMemory = ->
+	clearTreeMemory()
+	clearNodeMemory()
+	clearSubjectMemory()
 
 exports.enableEditors = ->
-	nodeEditor.setMode 'tree' if nodeEditor
+	nodeEditor.setMode 'tree'
 	treeEditor.setMode 'tree'
 	subjEditor.setMode 'tree'
 
 exports.disableEditors = ->
-	nodeEditor.setMode 'view' if nodeEditor
+	nodeEditor.setMode 'view'
 	treeEditor.setMode 'view'
 	subjEditor.setMode 'view'
-
-
