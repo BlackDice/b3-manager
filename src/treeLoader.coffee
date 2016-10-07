@@ -1,4 +1,5 @@
 
+_ = require 'lodash'
 Chief = require 'behavior3-chief'
 data = require './trees/tree.json'
 nodeConfig = require './nodeConfig'

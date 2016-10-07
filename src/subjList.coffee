@@ -61,14 +61,15 @@ openSubject = (id, subject, $li) ->
 		activeSubject = subject
 		$li.addClass 'active'
 		$activeTreeName.html activeTree.getName() + ': ' + activeSubjectId
-		
+
 		#controls.show()
 		$('#memory').removeClass 'hidden'
 
 		memory.loadTreeMemory activeSubject, activeTree
 		memory.loadSubjectMemory activeSubject
 	else
-		alertify.error 'Open a tree first'
+		treeId = subject.getTreeId()
+		treeList.openTree treeId
 
 closeSubject = ->
 	#controls.hide()

@@ -159,6 +159,7 @@ select {
 	background-color: #202020;
 	overflow: scroll;
 	overflow-x: hidden;
+	z-index: 500;
 }
 
 #codeMirror, #behaviorConfig {

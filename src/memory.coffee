@@ -32,6 +32,7 @@ confirmChange = (evt, editor, memory) ->
 		for key, val of json
 			mem = memory.get(key)
 			if mem is val then continue # skip same
+			console.log key, val
 			if mem? then memory.set key, val # change
 			else memory.set key, val # add
 
@@ -62,12 +63,12 @@ exports.disable = (tabId) ->
 
 exports.loadTreeMemory = (subj, tree) ->
 	# when tree and subj is active, load subset of subjs memory relevant to the tree
-	treeMemory = subj.getTreeMemory tree
+	treeMemory = subj.getTreeMemory tree.getId()
 	treeEditor = loadMemory treeEl, treeEditor, treeMemory, chiefTreeMemoryChange, handleTreeMemoryChange
 
 exports.loadNodeMemory = (subj, node, tree) ->
 	# when a node is clicked, load memory of the node for the currently active subj and tree
-	nodeMemory = subj.getNodeMemory node, tree
+	nodeMemory = subj.getNodeMemory node.getId(), tree.getId()
 	nodeEditor = loadMemory nodeEl, nodeEditor, nodeMemory, chiefNodeMemoryChange, handleNodeMemoryChange
 
 exports.loadSubjectMemory = (subj) ->

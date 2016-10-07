@@ -1,34 +1,47 @@
 
+_ = require 'lodash'
+diff = require 'loot-diff'
 alertify = require 'alertify.js'
 treeLoader = require './treeLoader'
+behaviorList = require './behaviorList'
 
 options =
 	search: false
 	history: false
 
+activeNode = null
 nodeConfig = null
+mergedConfig = null
+defaultConfig = null
 nodeConfigEditor = null
 nodeConfigEditorEl = document.getElementById 'nodeConfigEditor'
-nodeConfigEditorEl.addEventListener 'keydown', (evt) -> confirmChange evt, nodeConfigEditor, nodeConfig
+nodeConfigEditorEl.addEventListener 'keydown', (evt) -> confirmChange evt
 
-confirmChange = (evt, editor, config) ->
+confirmChange = (evt) ->
 	if evt.keyCode is 13 # enter key
 		evt.preventDefault()
-		json = editor.get()
-		activeNode = treeLoader.getActiveCNode()
-		activeNode.setBehaviorConfig json
+		json = nodeConfigEditor.get()
+		diffObject = diff defaultConfig, json
+		activeNode.setBehaviorConfig diffObject
 
 handleConfigChange = (data) ->
 	node = data.nodes?[0]
-	if node?.parent is null then nodeConfig.set(node.field, null) # Delete
+	if node?.parent is null
+		json = nodeConfigEditor.get()
+		diffObject = diff defaultConfig, json
+		activeNode.setBehaviorConfig diffObject
 
 exports.load = (cNode) ->
+	activeNode = cNode
 	nodeConfig = cNode.getBehaviorConfig()
+	defaultConfig = behaviorList.getDefaultConfig cNode.getBehaviorId()
+	mergedConfig = _.merge {}, defaultConfig, nodeConfig
+
 	customOptions = _.assign {onChange: handleConfigChange}, options
 	unless nodeConfigEditor
-		nodeConfigEditor = new JSONEditor nodeConfigEditorEl, customOptions, nodeConfig
-		nodeConfigEditor.set nodeConfig
-	else nodeConfigEditor.set nodeConfig
+		nodeConfigEditor = new JSONEditor nodeConfigEditorEl, customOptions
+		nodeConfigEditor.set mergedConfig
+	else nodeConfigEditor.set mergedConfig
 
 exports.positionEditor = (element) ->
 	node = element.getBoundingClientRect()

@@ -1,5 +1,6 @@
 # Behavior list
 
+_ = require 'lodash'
 code = require './code'
 treeList = require './treeList'
 treeLoader = require './treeLoader'
@@ -58,6 +59,10 @@ exports.getTypes = ->
 
 exports.getActiveListItem = ->
 	return activeListItem
+
+exports.getDefaultConfig = (behaviorId) ->
+	behavior = activeChief.getBehavior behaviorId
+	return behavior.getConfig()
 
 exports.load = loadBehaviors = (chief) ->
 	activeChief = chief

@@ -145,13 +145,17 @@ toggleTree = (cTree, $li) ->
 
 		# load if new
 		if cActiveTreeId != loadingTreeId
-			openTree loadingTreeId, cTree, $li
+			openTree cTree, $li
 
-openTree = (id, cTree, $li) ->
+exports.openTree = (treeId) ->
+	cTree = activeChief.getTree treeId
+	openTree cTree, $treeList.find(":contains('" + cTree.getName() + "')")
+
+openTree = (cTree, $li) ->
 	treeLoader.loadTree cTree, gridSize, handleTreeChange
-	cActiveTreeId = id
 	$li.addClass 'active'
-	cActiveTree = activeChief.getTree id
+	cActiveTree = cTree
+	cActiveTreeId = cTree.getId()
 	$activeTreeName.html cActiveTree.getName()
 	$activeTreeDesc.html cActiveTree.getDescription()
 	$activeTreeName.removeClass 'hidden'

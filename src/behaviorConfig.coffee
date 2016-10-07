@@ -1,4 +1,5 @@
 
+_ = require 'lodash'
 alertify = require 'alertify.js'
 behaviorList = require './behaviorList'
 
