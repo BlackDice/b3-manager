@@ -87,13 +87,13 @@ loadMemory = (element, editor, memory, chiefChangeCb, editorChangeCb) ->
 	return editor
 
 exports.clearTreeMemory = clearTreeMemory = ->
-	treeEditor.set {}
+	if treeEditor then treeEditor.set {}
 
 exports.clearNodeMemory = clearNodeMemory = ->
-	nodeEditor.set {}
+	if nodeEditor then nodeEditor.set {}
 
 exports.clearSubjectMemory = clearSubjectMemory = ->
-	subjEditor.set {}
+	if subjEditor then subjEditor.set {}
 
 exports.clearMemory = ->
 	clearTreeMemory()

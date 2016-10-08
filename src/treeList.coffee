@@ -148,8 +148,10 @@ toggleTree = (cTree, $li) ->
 			openTree cTree, $li
 
 exports.openTree = (treeId) ->
+	if cActiveTree then closeTree()
 	cTree = activeChief.getTree treeId
-	openTree cTree, $treeList.find(":contains('" + cTree.getName() + "')")
+	openTree cTree, $('li:contains(' + cTree.getName() + ')')
+	return cTree
 
 openTree = (cTree, $li) ->
 	treeLoader.loadTree cTree, gridSize, handleTreeChange
@@ -163,6 +165,7 @@ openTree = (cTree, $li) ->
 
 closeTree = ->
 	treeLoader.closeTree cActiveTreeId
+	$treeList.find('li').removeClass 'active' # clear all
 	cActiveTreeId = null
 	$activeTreeName.html ''
 	$activeTreeDesc.html ''

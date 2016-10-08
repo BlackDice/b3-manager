@@ -55,24 +55,21 @@ toggleSubject = (subject, $li) ->
 			openSubject loadingSubjectId, subject, $li
 
 openSubject = (id, subject, $li) ->
-	activeTree = treeList.getCActiveTree()
-	if activeTree
+	treeId = subject.getTreeId()
+	if treeId
+		tree = treeList.openTree treeId
 		activeSubjectId = id
 		activeSubject = subject
 		$li.addClass 'active'
-		$activeTreeName.html activeTree.getName() + ': ' + activeSubjectId
-
-		#controls.show()
+		$activeTreeName.html tree.getName() + ': ' + activeSubjectId
 		$('#memory').removeClass 'hidden'
-
-		memory.loadTreeMemory activeSubject, activeTree
+		memory.loadTreeMemory activeSubject, tree
 		memory.loadSubjectMemory activeSubject
 	else
-		treeId = subject.getTreeId()
-		treeList.openTree treeId
+		alertify.error 'Subject doesn´t have a tree'
 
 closeSubject = ->
-	#controls.hide()
+	activeSubject = null
 	activeSubjectId = null
 	$('#memory').addClass 'hidden'
 	memory.clearMemory()
