@@ -47,7 +47,7 @@ removeBehavior = (cBehaviorId) ->
 
 dragBehavior = (evt) ->
 	transfer = JSON.stringify { type: 'add', behaviorId: evt.target.getAttribute 'data' }
-	evt.dataTransfer.setData 'text/plain', transfer
+	evt.originalEvent.dataTransfer.setData 'text/plain', transfer
 
 exports.getActiveBehavior = -> return activeBehavior
 

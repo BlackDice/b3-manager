@@ -148,7 +148,7 @@ dragNode = (evt) ->
 		tid: evt.target.getAttribute('tnodeid'),
 		cid: evt.target.getAttribute('cnodeid')
 
-	evt.dataTransfer.setData 'text/plain', transfer
+	evt.originalEvent.dataTransfer.setData 'text/plain', transfer
 
 registerDragAndDrop = (treantConfig, callback) ->
 	$container = $(treantConfig.container)
@@ -166,14 +166,14 @@ registerDragAndDrop = (treantConfig, callback) ->
 	$container.on 'drop', (evt) ->
 		if tActiveTreeHasRoot is false
 			evt.preventDefault()
-			obj = JSON.parse evt.dataTransfer.getData 'text'
+			obj = JSON.parse evt.originalEvent.dataTransfer.getData 'text'
 			callback {action: 'createRoot', behaviorId: obj.behaviorId}
 
 		else if evt.target.classList.contains 'node'
 			evt.preventDefault()
 			evt.target.classList.remove 'highlight'
 
-			obj = JSON.parse evt.dataTransfer.getData 'text'
+			obj = JSON.parse evt.originalEvent.dataTransfer.getData 'text'
 			parentCId = evt.target.getAttribute 'cnodeid'
 			parentTId = parseInt evt.target.getAttribute 'tnodeid'
 

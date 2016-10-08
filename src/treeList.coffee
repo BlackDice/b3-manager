@@ -41,15 +41,20 @@ toggleInput = ->
 	$(this).toggleClass 'active'
 	$treeForm.toggleClass 'hidden'
 
+dragTree = (evt) ->
+	transfer = JSON.stringify { type: 'addSubtree', treeId: evt.target.getAttribute 'data' }
+	evt.originalEvent.dataTransfer.setData 'text/plain', transfer
+
 exports.load = loadTrees = (chief) ->
 	activeChief = chief
 	cTreeList = activeChief.listTrees()
 	$treeList.empty()
 	for cTree in cTreeList
-		$li = $('<li>' + cTree.getName() + '</li>').appendTo $treeList
+		$li = $('<li>' + cTree.getName() + '</li>').attr('draggable', 'true').appendTo $treeList
 		$erase = $("<i>delete</i>").addClass('material-icons').appendTo($li)
 		$erase.on 'click', removeTree(cTree.getId())
 		$li.attr 'data', cTree.getId()
+		$li.on 'dragstart', (evt) -> dragTree(evt)
 		$li.on 'click', toggleTree(cTree, $li)
 
 handleTreeChange = (change) ->
