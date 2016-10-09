@@ -66,7 +66,6 @@ body {
 	background-image: url('/assets/grid50.png');
 	font-family: 'Roboto', sans-serif;
 	color: #dddddd;
-	display: flex;
 	min-height: 100vh;
 	flex-direction: row;
 }
@@ -81,6 +80,17 @@ h2 {
 	color: #363636;
 	font-size: 20pt;
 	font-weight: 400;
+}
+
+h3 {
+	font-size: 16pt;
+	color: #636363;
+}
+
+h4 {
+	font-weight: normal;
+	font-size: 14pt;
+	color: #363636;
 }
 
 h5 {
@@ -105,10 +115,12 @@ li {
 }
 
 select {
+	width: 100%;
 	font-size: 16pt;
 	padding: 10px;
 	color: #636363;
 	background: #181818;
+	margin-bottom: 5px;
 	border: none;
 	cursor: pointer;
 	-webkit-appearance: none;
@@ -119,6 +131,7 @@ select {
 #container {
 	display: flex;
 	flex: 1;
+	height: 100%;
 }
 
 #chart {
@@ -128,44 +141,110 @@ select {
 	flex: 1;
 }
 
-#panel, #memory, #code {
+#panel {
+	display: block;
 	width: 350px;
 	height: 100%;
+	min-width: 350px;
 	background-color: #202020;
 	overflow: scroll;
 	overflow-x: hidden;
 }
 
 #code {
-	width: 500px;
-	font-size: 14pt;
-	cursor: text;
+	display: flex;
+	position: relative;
+	height: 100%;
+	width: 100%;
+	background-color: #202020;
+	overflow: scroll;
+	overflow-x: hidden;
+	z-index: 500;
 }
 
-#memory, #code {
-	display: flex;
-	flex-direction: column;
+#codeMirror, #behaviorConfig {
+	flex-direction: row;
+	position: relative;
+	height: 100%;
+}
+
+#codeMirror {
+	cursor: text;
+	padding-top: 20px;
+	font-size: 14pt;
+	flex-grow: 2;
+}
+
+#nodeConfigEditor {
+	position: absolute;
+	background-color: #202020;
+	width: 250px;
+	min-height: 100px;
+	padding: 20px;
+}
+
+#nodeConfigEditor .jsoneditor {
+	margin-top: 0px;
+	height: auto;
+}
+
+#nodeConfigEditor div.jsoneditor-menu {
+	display: none;
+}
+
+#behaviorConfig {
+	border-left: 3px #333 solid;
+	padding: 20px;
+	width: 300px;
+	border-radius: 4px;
+}
+
+#behaviorConfigEditor, #behaviorConfigEditor .jsoneditor {
+	height: 100%;
+}
+
+#behaviorProperties {
+	margin-bottom: 20px;
+}
+
+#behaviorDescription {
+	width: 100%;
+	font-size: 13pt;
+	font-weight: 300;
+	color: #636363;
+	margin-top: 15px;
+	margin-bottom: 5px;
+	font-style: italic;
+}
+
+#typeSelect {
+	margin-top: 18px;
+}
+
+#behaviorName:hover {
+	background-color: #181818;
+}
+
+#treeInfo {
+	position: absolute;
+	top: 16px;
+	left: 0px;
+	width: 100%;
+	z-index: 100;
+	text-align: center;
 }
 
 #activeTreeName {
-	position: absolute;
-	top: 16px;
 	width: 100%;
-	text-align: center;
-	z-index: 100;
 }
 
 #activeTreeDesc {
-	position: absolute;
-	top: 50px;
 	padding: 10px;
 	width: 100%;
-	text-align: center;
 	font-style: italic;
 	font-weight: normal;
 	font-size: 10pt;
 	color: #666;
-	z-index: 110;
 }
 
 #treant {
@@ -183,6 +262,18 @@ select {
 	display: none;
 }
 
+#memory {
+	position: absolute;
+	right: 0px;
+	bottom: 0px;
+	width: 400px;
+	background-color: #202020;
+}
+
+#memory h2 {
+	font-size: 16pt;
+}
+
 #nodeMemory, #treeMemory, #subjMemory {
 	width: 100%;
 	flex-grow: 1;
@@ -190,10 +281,6 @@ select {
 	flex-basis: auto;
 	transition: all 0.2s;
 	padding: 20px;
-}
-
-#memory h2 {
-	font-size: 16pt;
 }
 
 #nodeMemory {
@@ -212,12 +299,17 @@ select {
 	display: none !important;
 }
 
+.rotate {
+	transform: rotate(180deg);
+}
+
 input {
-	font-size: 18pt;
+	font-size: 16pt;
 	padding: 10px;
+	margin-bottom: 5px;
 	background-color: #181818;
 	border: none;
-	color: #c5c5c5;
+	color: #636363;
 	outline: none;
 	outline-color: #3f4853;
 }
@@ -301,4 +393,31 @@ button:hover {
 .alertify-logs .error {
 	color: #282828;
 	background-color: #d2521a;
+}
+
+#saveCode {
+	z-index: 10;
+	display: block;
+	position: absolute;
+	bottom: 10px;
+	left: 10px;
+	width: auto;
+	height: auto;
+	font-weight: 500;
+	color: #181818;
+	border-radius: 4px;
+	background: #454545;
+	font-size: 16pt;
+	font-weight: 300;
+	padding: 5px;
+}
+
+#saveCode i {
+	margin-top: -3px;
+	padding-right: 2px;
+	vertical-align: middle;
+}
+
+#saveCode:hover {
+	background: #666;
 }

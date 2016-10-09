@@ -1,54 +1,7 @@
 
-#tabs {
-	display: flex;
-	height: 80px;
-	width: 100%;
-}
-
 #firebase {
 	margin-top: 20px;
 	margin-bottom: 40px;
-}
-
-#select {
-	width: 100%;
-}
-
-.tab {
-	flex: 1;
-	display: inline;
-	cursor: pointer;
-	background-image: url('/assets/tabs.png');
-	background-repeat: no-repeat;
-	background-color: #181818;
-}
-
-#tab-trees {
-	background-position: -10px bottom;
-}
-
-#tab-nodes {
-	background-position: center bottom;
-}
-
-#tab-subjects {
-	background-position: -275px bottom;
-}
-
-#tab-trees.active {
-	background-position: -10px top;
-}
-
-#tab-nodes.active {
-	background-position: center top;
-}
-
-#tab-subjects.active {
-	background-position: -275px top;
-}
-
-.tab.active {
-	background-color: #202020;
 }
 
 .panelContent {
@@ -69,7 +22,7 @@
 	font-weight: 700;
 	float: right;
 	font-size: 16pt;
-	padding-top: 8px;
+	padding-top: 5px;
 	padding-right: 40px;
 }
 
@@ -86,9 +39,10 @@
 /* Input in panel */
 
 .panelInput {
-	display: inline-flex;
+	display: flex;
+	flex-wrap: wrap;
 	margin-top: 40px;
-	height: 50px;
+	min-height: 50px;
 }
 
 .panelInput input {
@@ -98,11 +52,25 @@
 
 .panelInput button {
 	flex: 0;
+	margin-top: 5px;
 }
+
+.panelInput .multiline button {
+	margin-top: 10px;
+}
+
+#fbSelect, #behaviorSelect {
+	width: 100%;
+}
+
+#behaviorSelect {
+	margin-top: 15px;
+}
+
 
 /* List */
 
-#treeList, #nodeList, #subjectList {
+#treeList, #behaviorList, #subjectList {
 	margin-top: 25px;
 }
 
@@ -114,7 +82,7 @@
 	color: #c5c5c5;
 }
 
-#nodeList .nodeLabel {
+#behaviorList .behaviorLabel {
 	max-width: 210px;
 	display: inline-block;
 	overflow: hidden;
@@ -163,7 +131,7 @@
 	text-transform: capitalize;
 }
 
-.nodeIcon {
+.behaviorIcon {
 	display: inline-block;
 	width: 40px;
 	height: 40px;
@@ -173,6 +141,6 @@
 	margin-right: 10px;
 }
 
-#panel li:hover .nodeIcon {
+#panel li:hover .behaviorIcon {
 	opacity: 0.5;
 }

@@ -5,21 +5,25 @@ options =
 	search: false
 	history: false
 
-nodeMemory = null
 treeMemory = null
+nodeMemory = null
 subjMemory = null
 
-nodeEditor = null
 treeEditor = null
+nodeEditor = null
 subjEditor = null
 
-nodeEl = document.getElementById 'nodeEditor'
 treeEl = document.getElementById 'treeEditor'
+nodeEl = document.getElementById 'nodeEditor'
 subjEl = document.getElementById 'subjEditor'
 
 nodeEl.addEventListener 'keydown', (evt) -> confirmChange evt, nodeEditor, nodeMemory
 treeEl.addEventListener 'keydown', (evt) -> confirmChange evt, treeEditor, treeMemory
 subjEl.addEventListener 'keydown', (evt) -> confirmChange evt, subjEditor, subjMemory
+
+$('#panelName').click ->
+	$(this).find('i').toggleClass 'rotate'
+	$('#editors').toggleClass 'hidden'
 
 confirmChange = (evt, editor, memory) ->
 	if evt.keyCode is 13 # enter key
@@ -28,6 +32,7 @@ confirmChange = (evt, editor, memory) ->
 		for key, val of json
 			mem = memory.get(key)
 			if mem is val then continue # skip same
+			console.log key, val
 			if mem? then memory.set key, val # change
 			else memory.set key, val # add
 
@@ -45,54 +50,62 @@ handlesubjMemoryChange = (data) ->
 	if node?.parent is null then subjMemory.set(node.field, null) # Delete
 
 
-chiefNodeMemoryChange = -> nodeEditor.set nodeMemory.dump()
-chiefTreeMemoryChange = -> treeEditor.set treeMemory.dump()
-chiefsubjMemoryChange = -> subjEditor.set subjMemory.dump()
+chiefNodeMemoryChange = -> nodeEditor.set nodeMemory.get()
+chiefTreeMemoryChange = -> treeEditor.set treeMemory.get()
+chiefsubjMemoryChange = -> subjEditor.set subjMemory.get()
 
 
-exports.loadNodeMemory = (subj, cNode) ->
-	# when a node is clicked, load memory of the node for the currently active subj and tree
-	nodeMemory = subj.getMemoryForNode cNode
-	nodeEditor = loadMemory nodeEl, nodeEditor, nodeMemory, chiefNodeMemoryChange, handleNodeMemoryChange
-	$('#nodeMemory').removeClass 'collapsed'
+exports.activate = (tabId) ->
+	$(tabId).removeClass 'disabled'
 
-exports.loadTreeMemory = (tree, subj) ->
+exports.disable = (tabId) ->
+	$(tabId).addClass 'disabled'
+
+exports.loadTreeMemory = (subj, tree) ->
 	# when tree and subj is active, load subset of subjs memory relevant to the tree
-	treeMemory = subj.getMemoryForTree tree
+	treeMemory = subj.getTreeMemory tree.getId()
 	treeEditor = loadMemory treeEl, treeEditor, treeMemory, chiefTreeMemoryChange, handleTreeMemoryChange
+
+exports.loadNodeMemory = (subj, node, tree) ->
+	# when a node is clicked, load memory of the node for the currently active subj and tree
+	nodeMemory = subj.getNodeMemory node.getId(), tree.getId()
+	nodeEditor = loadMemory nodeEl, nodeEditor, nodeMemory, chiefNodeMemoryChange, handleNodeMemoryChange
 
 exports.loadSubjectMemory = (subj) ->
 	# when subj is active, load complete memory for that subj
-	subjMemory = subj.getMemory()
+	subjMemory = subj.getSubjectMemory()
 	subjEditor = loadMemory subjEl, subjEditor, subjMemory, chiefsubjMemoryChange, handlesubjMemoryChange
 
 
 loadMemory = (element, editor, memory, chiefChangeCb, editorChangeCb) ->
-	memory.on 'change', chiefChangeCb
-	json = memory.dump()
+	json = memory.get()
 	customOptions = _.assign {onChange: editorChangeCb}, options
 	unless editor
 		editor = new JSONEditor element, customOptions, json
+		editor.set json
 	else editor.set json
 	return editor
 
-exports.clearMemory = ->
-	nodeMemory = null
-	treeMemory = null
-	subjMemory = null
+exports.clearTreeMemory = clearTreeMemory = ->
+	if treeEditor then treeEditor.set {}
 
-	nodeEditor.set {} if nodeEditor
-	treeEditor.set {}
-	subjEditor.set {}
+exports.clearNodeMemory = clearNodeMemory = ->
+	if nodeEditor then nodeEditor.set {}
+
+exports.clearSubjectMemory = clearSubjectMemory = ->
+	if subjEditor then subjEditor.set {}
+
+exports.clearMemory = ->
+	clearTreeMemory()
+	clearNodeMemory()
+	clearSubjectMemory()
 
 exports.enableEditors = ->
-	nodeEditor.setMode 'tree' if nodeEditor
+	nodeEditor.setMode 'tree'
 	treeEditor.setMode 'tree'
 	subjEditor.setMode 'tree'
 
 exports.disableEditors = ->
-	nodeEditor.setMode 'view' if nodeEditor
+	nodeEditor.setMode 'view'
 	treeEditor.setMode 'view'
 	subjEditor.setMode 'view'
-
-

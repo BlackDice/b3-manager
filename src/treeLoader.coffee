@@ -1,6 +1,9 @@
 
-data = require './trees/tree.json'
+_ = require 'lodash'
 Chief = require 'behavior3-chief'
+data = require './trees/tree.json'
+nodeConfig = require './nodeConfig'
+memory = require './memory'
 
 treeConfig = {
 	container: '#treant',
@@ -27,12 +30,25 @@ treeConfig = {
 tActiveTree = null
 tActiveTreeHasRoot = null
 tActiveNode = null
+cActiveTree = null
+cActiveNode = null
 $container = null
+highlightedEl = null
 nodeMap = {}
 $erase = $('#commandErase')
 $left = $('#commandMoveLeft')
 $right = $('#commandMoveRight')
 $contextmenu = $('#contextmenu')
+
+
+clearDisables = ->
+	$left.removeClass 'disabled'
+	$right.removeClass 'disabled'
+	$erase.removeClass 'disabled'
+
+clearHighlight = ->
+	if highlightedEl
+		highlightedEl.classList.remove 'highlight'
 
 registerClick = (treantConfig, callback) ->
 	$container = $(treantConfig.container)
@@ -41,25 +57,28 @@ registerClick = (treantConfig, callback) ->
 			evt.preventDefault()
 			if tActiveNode != evt.target
 				if tActiveNode then tActiveNode.classList.remove 'highlight'
+				highlightedEl = evt.target
 				evt.target.classList.add 'highlight'
 				tActiveNode = evt.target
 				cNodeId = evt.target.getAttribute 'cnodeid'
+				cActiveNode = cActiveTree.getNode cNodeId
 				callback {action: 'showNodeMemory', cNodeId: cNodeId}
+				memory.activate '#tab-nodeEditor'
+				nodeConfig.load cActiveNode
+				nodeConfig.positionEditor evt.target
+				nodeConfig.showEditor()
 			else
 				evt.target.classList.add 'highlight'
+		else
+			tActiveNode = null
+			nodeConfig.hideEditor()
+			memory.disable '#tab-nodeEditor'
+			$contextmenu.hide()
+			clearHighlight()
+			clearDisables()
 
 registerRightClick = (treantConfig, callback) ->
 	$container = $(treantConfig.container)
-	highlightedEl = null
-
-	clearDisables = ->
-		$left.removeClass 'disabled'
-		$right.removeClass 'disabled'
-		$erase.removeClass 'disabled'
-
-	clearHighlight = ->
-		if highlightedEl
-			highlightedEl.classList.remove 'highlight'
 
 	$container.on 'contextmenu', (evt) ->
 		if evt.target.classList.contains 'node'
@@ -96,6 +115,7 @@ registerRightClick = (treantConfig, callback) ->
 		tActiveTree.removeNode tNodeId
 		if parentId is -1 then tActiveTreeHasRoot = false
 		callback {action: 'removeNode', cNodeId: cNodeId}
+		$contextmenu.hide()
 
 	$left.on 'click', (evt) ->
 		if $left.hasClass 'disabled' then return
@@ -105,6 +125,7 @@ registerRightClick = (treantConfig, callback) ->
 		cNodeIdB = tActiveTree.getNodeAttribute leftNeighborTId, 'cNodeId'
 		tActiveTree.switchIndexes tNodeId, leftNeighborTId
 		callback {action: 'switchNodes', cNodeIdA: cNodeIdA, cNodeIdB: cNodeIdB}
+		$contextmenu.hide()
 
 	$right.on 'click', (evt) ->
 		if $right.hasClass 'disabled' then return
@@ -114,11 +135,7 @@ registerRightClick = (treantConfig, callback) ->
 		cNodeIdB = tActiveTree.getNodeAttribute rightNeighborTId, 'cNodeId'
 		tActiveTree.switchIndexes tNodeId, rightNeighborTId
 		callback {action: 'switchNodes', cNodeIdA: cNodeIdA, cNodeIdB: cNodeIdB}
-
-	document.addEventListener 'click', (evt) ->
 		$contextmenu.hide()
-		clearHighlight()
-		clearDisables()
 
 	window.addEventListener 'resize', (evt) ->
 		if tActiveTree
@@ -131,7 +148,7 @@ dragNode = (evt) ->
 		tid: evt.target.getAttribute('tnodeid'),
 		cid: evt.target.getAttribute('cnodeid')
 
-	evt.dataTransfer.setData 'text/plain', transfer
+	evt.originalEvent.dataTransfer.setData 'text/plain', transfer
 
 registerDragAndDrop = (treantConfig, callback) ->
 	$container = $(treantConfig.container)
@@ -149,20 +166,20 @@ registerDragAndDrop = (treantConfig, callback) ->
 	$container.on 'drop', (evt) ->
 		if tActiveTreeHasRoot is false
 			evt.preventDefault()
-			obj = JSON.parse evt.dataTransfer.getData 'text'
-			callback {action: 'createRoot', nodeName: obj.name}
+			obj = JSON.parse evt.originalEvent.dataTransfer.getData 'text'
+			callback {action: 'createRoot', behaviorId: obj.behaviorId}
 
 		else if evt.target.classList.contains 'node'
 			evt.preventDefault()
 			evt.target.classList.remove 'highlight'
 
-			obj = JSON.parse evt.dataTransfer.getData 'text'
+			obj = JSON.parse evt.originalEvent.dataTransfer.getData 'text'
 			parentCId = evt.target.getAttribute 'cnodeid'
 			parentTId = parseInt evt.target.getAttribute 'tnodeid'
 
 			switch obj.type
 				when 'add'
-					callback {action: 'addNode', nodeName: obj.name, parentCId: parentCId, parentTId: parentTId}
+					callback {action: 'addNode', behaviorId: obj.behaviorId, parentCId: parentCId, parentTId: parentTId}
 				when 'change'
 					callback {action: 'changeParent', tNodeId: obj.tid, cNodeId: obj.cid, parentTId: parentTId, parentCId: parentCId}
 
@@ -186,8 +203,8 @@ imageExists = (imageUrl) ->
 
 createTNode = (cNode) ->
 	tNode = {
-		text: {name: cNode.getName(), status: ' ', contact: ' ', desc: cNode.getDescription() }
-		image: './assets/nodes/' + cNode.getName().toLowerCase() + '.png'
+		text: {name: cNode.getTitle(), status: ' ', contact: ' ' }
+		image: './assets/behaviors/' + cNode.getTitle().toLowerCase() + '.png'
 		collapsed: false
 		HTMLclass: 'none'			# running, failure, error, success
 		cNodeId: cNode.getId()
@@ -236,7 +253,6 @@ treantLoaded = ->
 nodeAdded = (cNode, tNode, tNodeDefinition) ->
 	# register events
 	$(tNode.nodeDOM).on 'dragstart', (evt) -> dragNode(evt)
-	cNode.on 'status', updateNode.bind(cNode)
 	# add to nodeMap
 	id = cNode.getId()
 	nodeMap[id] = tNodeDefinition
@@ -266,10 +282,11 @@ exports.changeParent = (tNodeId, parentTId) ->
 exports.redrawTree = (animate) ->
 	tActiveTree.redraw null, animate
 
-exports.getActiveTree = ->
-	return tActiveTree
+exports.getActiveCNode = -> return cActiveNode
 
-exports.loadTree = (cTree, gridSize, cbIndex) ->
+exports.getActiveTree = -> return tActiveTree
+
+exports.loadTree = (cTree, gridSize, handleTreeChange) ->
 	config = _.cloneDeep treeConfig
 	config.quantize = gridSize
 	cNodes = cTree.listNodes()
@@ -278,24 +295,22 @@ exports.loadTree = (cTree, gridSize, cbIndex) ->
 		nodeMap[cNode.getId()] = createTNode cNode
 
 	for cNode in cNodes
-		cParentNode = cNode.getParent()
+		cParentNodeId = cNode.getParentId()
 		tNode = nodeMap[cNode.getId()]
-		if cParentNode
-			tParentNode = nodeMap[cParentNode.getId()]
+		if cParentNodeId.indexOf('Tree') == -1
+			tParentNode = nodeMap[cParentNodeId]
 			tNode.parent = tParentNode
-
-		# register events
-		cNode.on 'status', updateNode.bind(cNode)
 
 	nodeStructure = _.values nodeMap
 	nodeStructure.unshift config
 
-	tActiveTree = new Treant nodeStructure, cbIndex, treantLoaded
+	cActiveTree = cTree
+	tActiveTree = new Treant nodeStructure, handleTreeChange, treantLoaded
 	tActiveTreeHasRoot = cTree.getRootNode() isnt null
 
-	registerDragAndDrop config, cbIndex
-	registerRightClick config, cbIndex
-	registerClick config, cbIndex
+	registerDragAndDrop config, handleTreeChange
+	registerRightClick config, handleTreeChange
+	registerClick config, handleTreeChange
 
 exports.closeTree = (treeId) ->
 	nodeMap = {}
@@ -303,5 +318,4 @@ exports.closeTree = (treeId) ->
 		tActiveTree.destroy()
 		tActiveTree = null
 		unregisterAllEvents()
-		console.log 'closing tree', treeId
 	$container = null

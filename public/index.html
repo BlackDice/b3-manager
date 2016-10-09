@@ -3,13 +3,10 @@
 	<head>
 		<meta charset='UTF-8'>
 		<title>Behavior3 Manager</title>
-		<script src='/libs/zepto.js'></script>
-		<script src='/libs/zepto.fx.js'></script>
-		<script src='/libs/zepto.fx_methods.js'></script>
+		<script src='/libs/jquery-3.1.1.min.js'></script>
 		<script src='/libs/Raphael_B3.js'></script>
 		<script src='/libs/Treant_B3.js'></script>
 		<script src="/libs/jsoneditor_B3.js"></script>
-		<script src='/libs/behavior3-0.2.0dev.js'></script>
 
 		<script src="/libs/codemirror/codemirror.js"></script>
 		<script src="/libs/codemirror/searchcursor.js"></script>
@@ -36,15 +33,15 @@
 	<body>
 		<div id='container'>
 			<div id='panel'>
-				<div id='tabs'>
-					<div data='#trees' id='tab-trees' class='tab active'></div>
-					<div data='#nodes' id='tab-nodes' class='tab'></div>
-					<div data='#subjects' id='tab-subjects' class='tab'></div>
+				<div class='tabs'>
+					<div id='tab-trees' data='#trees' class='tab active'></div>
+					<div id='tab-behaviors' data='#behaviors' class='tab'></div>
+					<div id='tab-subjects' data='#subjects' class='tab'></div>
 				</div>
 				<div id='trees' class='panelContent active'>
 					<h2>Firebase</h2>
 					<div id='firebase'>
-						<select id='select'></select>
+						<select id='fbSelect'></select>
 					</div>
 					<a href='#' id='addTree' class='rightLink'>Add<i class='material-icons md-36'>add</i></a>
 					<h2>Trees</h2>
@@ -54,9 +51,14 @@
 					</div>
 					<ul id='treeList' class='listOfToggles'></ul>
 				</div>
-				<div id='nodes' class='panelContent'>
-					<h2>Nodes</h2>
-					<div id='nodeList' class='listOfToggles'></div>
+				<div id='behaviors' class='panelContent'>
+					<a href='#' id='addBehavior' class='rightLink'>Add<i class='material-icons md-36'>add</i></a>
+					<h2>Behaviors</h2>
+					<div class='panelInput hidden' name='addBehavior'>
+						<input id='behaviorInput' type='text'>
+						<button type='submit' class='material-icons md-36'>done</button>
+					</div>
+					<div id='behaviorList' class='listOfToggles'></div>
 				</div>
 				<div id='subjects' class='panelContent'>
 					<a href='#' id='filter' class='rightLink'>Filter<i class='material-icons md-36'>search</i></a>
@@ -65,28 +67,44 @@
 				</div>
 			</div>
 			<div id='chart'>
-				<h1 id='activeTreeName' contenteditable='true'></h1>
-				<h4 id='activeTreeDesc' contenteditable='true'></h4>
+				<div id='treeInfo'>
+					<h1 id='activeTreeName' class='hidden' contenteditable='true'></h1>
+					<h4 id='activeTreeDesc' class='hidden' contenteditable='true'></h4>
+				</div>
 				<div id='treant'></div>
 				<div id='controls'>
 					<div id='play' class='play'></div><div id='step' class='step'></div>
 				</div>
 			</div>
-			<div id='memory' class='hidden'>
-				<div id='nodeMemory' class='collapsed'>
-					<h2 id='nodeMemoryName'>Node memory</h2>
-					<div id='nodeEditor'></div>
+			<div id='code' class='hidden'>
+				<div id='codeMirror'>
+					<button type='submit' id='saveCode'><i class='material-icons md-24'>save</i>Save</button>
 				</div>
-				<div id='treeMemory'>
-					<h2 id='treeMemoryName'>Tree memory</h2>
-					<div id='treeEditor'></div>
-				</div>
-				<div id='subjMemory'>
-					<h2 id='subjMemoryName'>Subject memory</h2>
-					<div id='subjEditor'></div>
+				<div id='behaviorConfig'>
+					<h3 id='behaviorName' contenteditable='true'></h3>
+					<div id='behaviorDescription' contenteditable='true'></div>
+					<div id='behaviorProperties'>
+						<select id='typeSelect'></select><br>
+						<select id='categorySelect'></select><br>
+					</div>
+					<h4>Config</h4>
+					<div id='behaviorConfigEditor'></div>
 				</div>
 			</div>
-			<div id='code' class='hidden'></div>
+			<div id='nodeConfigEditor' class='hidden'></div>
+		</div>
+		<div id='memory' class='hidden'>
+			<div class='tabs'>
+				<div id='tab-treeEditor' data='#treeEditor' class='tab active'></div>
+				<div id='tab-nodeEditor' data='#nodeEditor' class='tab disabled'></div>
+				<div id='tab-subjEditor' data='#subjEditor' class='tab'></div>
+				<div id='panelName'><span>Memory</span><i id='openMemory' class='material-icons md-48'>keyboard_arrow_up</i></div>
+			</div>
+			<div id='editors' class='hidden'>
+				<div id='treeEditor' class='panelContent active'></div>
+				<div id='nodeEditor' class='panelContent'></div>
+				<div id='subjEditor' class='panelContent'></div>
+			</div>
 		</div>
 		<div id='contextmenu'>
 			<div id='commandMoveLeft'><i class='material-icons'>arrow_back</i><span>Left</span></div>

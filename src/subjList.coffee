@@ -1,15 +1,17 @@
 # Subject list
 
+memory = require './memory'
 controls = require './controls'
 treeList = require './treeList'
 treeLoader = require './treeLoader'
-memory = require './memory'
+alertify = require 'alertify.js'
 
 activeSubject = null
 activeSubjectId = null
 activeChief = null
 $subjectList = $('#subjectList')
 $activeTreeName = $('#activeTreeName')
+
 
 exports.load = loadSubjects = (chief) ->
 	activeChief = chief
@@ -20,6 +22,16 @@ exports.load = loadSubjects = (chief) ->
 		$li.attr 'data', subject.getId()
 		$li.on 'click', toggleSubject(subject, $li)
 
+window.createSubject = ->
+	cActiveTree = treeList.getCActiveTree()
+	if cActiveTree
+		activeChief.createSubject cActiveTree
+		alertify.success 'Subject created'
+	else
+		alertify.error 'No tree is active'
+
+exports.getActiveSubject = -> return activeSubject
+
 toggleSubject = (subject, $li) ->
 	return ->
 		loadingSubjectId = subject.getId()
@@ -28,7 +40,8 @@ toggleSubject = (subject, $li) ->
 		# clicking the same item
 		if activeSubjectId == loadingSubjectId
 			# stop displaying subject
-			$activeTreeName.html treeList.getCActiveTreeName()
+			activeTree = treeList.getCActiveTree()
+			$activeTreeName.html activeTree.getName()
 			closeSubject()
 			return
 
@@ -42,27 +55,21 @@ toggleSubject = (subject, $li) ->
 			openSubject loadingSubjectId, subject, $li
 
 openSubject = (id, subject, $li) ->
-	activeSubjectId = id
-	activeSubject = subject
-	$li.addClass 'active'
-	controls.show()
-	$activeTreeName.html treeList.getCActiveTreeName() + ': ' + activeSubjectId
-
-	showMemoryPanel()
-	memory.loadTreeMemory treeList.getCActiveTree(), activeSubject
-	memory.loadSubjectMemory activeSubject
+	treeId = subject.getTreeId()
+	if treeId
+		tree = treeList.openTree treeId
+		activeSubjectId = id
+		activeSubject = subject
+		$li.addClass 'active'
+		$activeTreeName.html tree.getName() + ': ' + activeSubjectId
+		$('#memory').removeClass 'hidden'
+		memory.loadTreeMemory activeSubject, tree
+		memory.loadSubjectMemory activeSubject
+	else
+		alertify.error 'Subject doesn´t have a tree'
 
 closeSubject = ->
-	controls.hide()
+	activeSubject = null
 	activeSubjectId = null
-
-	hideMemoryPanel()
-	memory.clearMemory()
-
-showMemoryPanel = ->
-	$('#memory').removeClass 'hidden'
-	treeLoader.getActiveTree().resize()
-
-hideMemoryPanel = ->
 	$('#memory').addClass 'hidden'
-	treeLoader.getActiveTree().resize()
+	memory.clearMemory()
