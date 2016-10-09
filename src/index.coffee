@@ -37,7 +37,7 @@ setupFirebase = (envName) ->
 		return
 
 	app = firebase.connect envName
-	firebaseRef = app.database().ref()
+	firebaseRef = app.database().ref('chief')
 	activeChief = Chief.create()
 	chiefList[envName] = activeChief
 
