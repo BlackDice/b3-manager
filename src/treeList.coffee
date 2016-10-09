@@ -4,7 +4,7 @@ treeLoader = require './treeLoader'
 subjList = require './subjList'
 controls = require './controls'
 memory = require './memory'
-alertify = require 'alertify.js'
+alertify = require('./alertify').get()
 
 gridSize = 50
 cActiveTreeId = null

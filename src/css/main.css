@@ -166,6 +166,7 @@ select {
 	flex-direction: row;
 	position: relative;
 	height: 100%;
+	overflow: scroll;
 }
 
 #codeMirror {
@@ -376,6 +377,10 @@ button:hover {
 
 #contextmenu .disabled:hover {
 	background: none !important;
+}
+
+.alertify-logs {
+	z-index: 1000;
 }
 
 .alertify-logs .default, .alertify-logs .error, .alertify-logs .success {

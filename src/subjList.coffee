@@ -4,7 +4,7 @@ memory = require './memory'
 controls = require './controls'
 treeList = require './treeList'
 treeLoader = require './treeLoader'
-alertify = require 'alertify.js'
+alertify = require('./alertify').get()
 
 activeSubject = null
 activeSubjectId = null

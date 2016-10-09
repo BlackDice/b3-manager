@@ -16,14 +16,13 @@ _ = require 'lodash'
 b3 = require 'b3'
 Chief = require 'behavior3-chief'
 firebase = require 'tauros-firebase/b3manager'
-alertify = require 'alertify.js'
-alertify.logPosition 'bottom right'
 
 tabs = require './tabs'
+alertify = require('./alertify').get()
 keyboard = require './keyboard'
 treeList = require './treeList'
-behaviorList = require './behaviorList'
 subjList = require './subjList'
+behaviorList = require './behaviorList'
 behaviorConfig = require './behaviorConfig'
 
 # Firebase environments

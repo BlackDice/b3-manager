@@ -1,6 +1,6 @@
 
 _ = require 'lodash'
-alertify = require 'alertify.js'
+alertify = require('./alertify').get()
 behaviorList = require './behaviorList'
 
 options =
@@ -20,7 +20,6 @@ for key in categoryList
 typeList = behaviorList.getTypes()
 for key in typeList
 	$('#typeSelect').append $('<option>', value: key, text: key)
-
 
 $('#typeSelect').on 'change', ->
 	newValue = $(this).val().toUpperCase()

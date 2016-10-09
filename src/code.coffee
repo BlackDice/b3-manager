@@ -1,5 +1,5 @@
 
-alertify = require 'alertify.js'
+alertify = require('./alertify').get()
 behaviorList = require './behaviorList'
 
 editor = CodeMirror $('#codeMirror').get(0),

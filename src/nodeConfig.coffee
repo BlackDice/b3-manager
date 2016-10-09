@@ -1,7 +1,6 @@
 
 _ = require 'lodash'
 diff = require 'loot-diff'
-alertify = require 'alertify.js'
 treeLoader = require './treeLoader'
 behaviorList = require './behaviorList'
 
