@@ -179,8 +179,7 @@ closeTree = ->
 	controls.hide()
 
 addTree = (name) ->
-	description = 'Lorem ipsum dolor sit amet' # temp
-	try activeChief.createTree name, description
+	try activeChief.createTree name
 	catch e
 		alertify.error e
 	loadTrees activeChief
