@@ -67,12 +67,10 @@
 /* MEMORY */
 
 #memory .tabs {
-	display: flex;
 	height: 60px;
 }
 
 #memory .tab {
-	flex: 1;
 	float: left;
 	display: inline;
 	width: 60px;
@@ -84,24 +82,24 @@
 }
 
 #memory #tab-nodeEditor {
-	background-position: -170px -91px;
+	background-position: -171px -91px;
 }
 
 #memory #tab-subjEditor {
-	background-position: -303px -91px;
+	background-position: -442px -91px;
 }
 
 #memory #tab-treeEditor.disabled {
 	cursor: auto;
-	opacity: 0.2;
+	opacity: 0.3;
 }
 #memory #tab-nodeEditor.disabled {
 	cursor: auto;
-	opacity: 0.2;
+	opacity: 0.3;
 }
 #memory #tab-subjEditor.disabled {
 	cursor: auto;
-	opacity: 0.2;
+	opacity: 0.3;
 }
 
 #memory #tab-treeEditor.active {
@@ -109,11 +107,11 @@
 }
 
 #memory #tab-nodeEditor.active {
-	background-position: -170px -10px;
+	background-position: -171px -10px;
 }
 
 #memory #tab-subjEditor.active {
-	background-position: -303px -10px;
+	background-position: -442px -10px;
 }
 
 #panelName {
@@ -122,6 +120,7 @@
 	font-weight: 400;
 	height: 60px;
 	text-align: right;
+	float: right;
 }
 
 #panelName span {

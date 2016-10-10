@@ -145,6 +145,7 @@ select {
 #panel {
 	display: block;
 	width: 350px;
+	min-width: 350px;
 	height: 100%;
 	background-color: #202020;
 	/*overflow: scroll;*/
@@ -160,6 +161,7 @@ select {
 	overflow: scroll;
 	overflow-x: hidden;
 	z-index: 500;
+	margin-left: 5px;
 }
 
 #codeMirror, #behaviorConfig {

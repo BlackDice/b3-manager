@@ -70,7 +70,7 @@
 
 /* List */
 
-#treeList, #behaviorList, #subjectList {
+#treeList, #behaviorList, #customList, #subjectList {
 	margin-top: 25px;
 }
 
@@ -82,7 +82,7 @@
 	color: #c5c5c5;
 }
 
-#behaviorList .behaviorLabel {
+.behaviorLabel {
 	max-width: 210px;
 	display: inline-block;
 	overflow: hidden;

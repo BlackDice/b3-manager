@@ -12,8 +12,9 @@ activeListItem = null
 typeOrder = ['composite', 'decorator', 'leaf']
 
 $behaviorList = $('#behaviorList')
-$behaviorForm = $('#behaviors .panelInput')
-$behaviorInput = $('#behaviors input')
+$customList = $('#customList')
+$behaviorForm = $('#custom .panelInput')
+$behaviorInput = $('#custom input')
 
 $behaviorForm.on 'keyup', (evt) ->
 	if evt.keyCode is 13 # enter
@@ -78,36 +79,48 @@ exports.load = loadBehaviors = (chief) ->
 	sortedList = _.groupBy behaviorList, 'type'
 
 	$behaviorList.empty()
+	$customList.empty()
 
 	for key in typeOrder
 		category = _.orderBy sortedList[key], ['isNative', 'name'], ['desc', 'asc']
+
 		$('<h5>' + key + 's' + '</h5>').appendTo $behaviorList
-		$ul = $('<ul></ul>').appendTo $behaviorList
+		$('<h5>' + key + 's' + '</h5>').appendTo $customList
+
+		$ulNative = $('<ul></ul>').appendTo $behaviorList
+		$ulCustom = $('<ul></ul>').appendTo $customList
 
 		for key, behavior of category
-			$li = $('<li></li>').attr('draggable', 'true').appendTo $ul
-			$img = $('<span></span>').addClass('behaviorIcon').appendTo $li
 
-			url1 = '/assets/behaviors/' + behavior.name.toLowerCase() + '.png'
-			url2 = '/assets/behaviors/' + behavior.category + '.png'
-			if behavior.name and behavior.category
-				$img.css 'background-image', "url('" + url1 + "'), url('" + url2 + "')"
+			if behavior.isNative
+				$li = addToList behavior, $ulNative
 			else
-				$img.css 'background-image', "url('" + url1 + "')"
-
-			$label = $("<span class='behaviorLabel'>" + behavior.name + '</span>').appendTo $li
-			$li.attr 'data', behavior.getId()
-			$li.on 'dragstart', (evt) -> dragBehavior(evt)
-
-			unless behavior.isNative
+				$li = addToList behavior, $ulCustom
 				$li.on 'click', toggleBehavior(behavior, $li)
 				$erase = $("<i>delete</i>").addClass('material-icons').appendTo($li)
 				$erase.on 'click', removeBehavior(behavior.getId())
 
+addToList = (behavior, list) ->
+	$li = $('<li></li>').attr('draggable', 'true').appendTo list
+	$img = $('<span></span>').addClass('behaviorIcon').appendTo $li
+
+	url1 = '/assets/behaviors/' + behavior.name.toLowerCase() + '.png'
+	url2 = '/assets/behaviors/' + behavior.category + '.png'
+
+	if behavior.name and behavior.category
+		$img.css 'background-image', "url('" + url1 + "'), url('" + url2 + "')"
+	else
+		$img.css 'background-image', "url('" + url1 + "')"
+
+	$label = $("<span class='behaviorLabel'>" + behavior.name + '</span>').appendTo $li
+	$li.attr 'data', behavior.getId()
+	$li.on 'dragstart', (evt) -> dragBehavior(evt)
+	return $li
+
 toggleBehavior = (behavior, $li) ->
 	return ->
 		loadingBehaviorId = behavior.name # SWITCH TO ID NAME
-		$behaviorList.find('li').removeClass 'active' # clear all
+		$customList.find('li').removeClass 'active' # clear all
 
 		# clicking the same item
 		if activeBehaviorId == loadingBehaviorId

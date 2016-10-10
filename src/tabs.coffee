@@ -10,6 +10,7 @@ toggle = ->
 
 $('#tab-trees').on 'click', toggle
 $('#tab-behaviors').on 'click', toggle
+$('#tab-custom').on 'click', toggle
 $('#tab-subjects').on 'click', toggle
 
 $('#tab-treeEditor').on 'click', toggle
