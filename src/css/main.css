@@ -200,10 +200,6 @@ select {
 	border-radius: 4px;
 }
 
-#behaviorConfigEditor, #behaviorConfigEditor .jsoneditor {
-	height: 100%;
-}
-
 #behaviorProperties {
 	margin-bottom: 20px;
 }
