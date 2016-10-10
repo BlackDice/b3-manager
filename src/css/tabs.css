@@ -2,8 +2,6 @@
 /* GENERAL */
 
 .tab {
-	flex: 1;
-	display: inline;
 	cursor: pointer;
 	background-image: url('/assets/tabs.png');
 	background-repeat: no-repeat;
@@ -11,52 +9,72 @@
 
 /* PANEL */
 
-#panel .tab {
-	background-color: #181818;
-}
-
-#panel .tab.active {
-	background-color: #202020;
-}
-
 #panel .tabs {
 	display: flex;
 	height: 80px;
 	width: 100%;
 }
 
+#panel .tab {
+	flex: 1;
+	background-color: #181818;
+	display: inline-block;
+	height: 80px;
+	border-right: 1px #202020 solid;
+}
+
+#panel .tab:last-child {
+	border-right: none;
+}
+
+#panel .tab.active {
+	background-color: #202020;
+	border-right: none;
+}
+
 #panel #tab-trees {
-	background-position: -10px bottom;
+	background-position: -22px bottom;
 }
 
 #panel #tab-behaviors {
-	background-position: center bottom;
+	background-position: -157px bottom;
+}
+
+#panel #tab-custom {
+	background-position: -293px bottom;
 }
 
 #panel #tab-subjects {
-	background-position: -275px bottom;
+	background-position: -429px bottom;
 }
 
 #panel #tab-trees.active {
-	background-position: -10px top;
+	background-position: -22px top;
 }
 
 #panel #tab-behaviors.active {
-	background-position: center top;
+	background-position: -157px top;
+}
+
+#panel #tab-custom.active {
+	background-position: -293px bottom;
 }
 
 #panel #tab-subjects.active {
-	background-position: -275px top;
+	background-position: -429px top;
 }
 
 /* MEMORY */
 
 #memory .tabs {
+	display: flex;
 	height: 60px;
 }
 
 #memory .tab {
+	flex: 1;
 	float: left;
+	display: inline;
 	width: 60px;
 	height: 60px;
 }

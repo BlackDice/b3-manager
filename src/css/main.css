@@ -64,6 +64,7 @@ html, body {
 body {
 	background-color: #282828;
 	background-image: url('/assets/grid50.png');
+	background-position: top left;
 	font-family: 'Roboto', sans-serif;
 	color: #dddddd;
 	min-height: 100vh;
@@ -145,9 +146,8 @@ select {
 	display: block;
 	width: 350px;
 	height: 100%;
-	min-width: 350px;
 	background-color: #202020;
-	overflow: scroll;
+	/*overflow: scroll;*/
 	overflow-x: hidden;
 }
 

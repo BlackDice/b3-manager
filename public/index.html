@@ -34,9 +34,7 @@
 		<div id='container'>
 			<div id='panel'>
 				<div class='tabs'>
-					<div id='tab-trees' data='#trees' class='tab active'></div>
-					<div id='tab-behaviors' data='#behaviors' class='tab'></div>
-					<div id='tab-subjects' data='#subjects' class='tab'></div>
+					<div id='tab-trees' data='#trees' class='tab active'></div><div id='tab-behaviors' data='#behaviors' class='tab'></div><div id='tab-custom' data='#custom' class='tab'></div><div id='tab-subjects' data='#subjects' class='tab'></div>
 				</div>
 				<div id='trees' class='panelContent active'>
 					<h2>Firebase</h2>
@@ -52,6 +50,14 @@
 					<ul id='treeList' class='listOfToggles'></ul>
 				</div>
 				<div id='behaviors' class='panelContent'>
+					<h2>Behaviors</h2>
+					<div class='panelInput hidden' name='addBehavior'>
+						<input id='behaviorInput' type='text'>
+						<button type='submit' class='material-icons md-36'>done</button>
+					</div>
+					<div id='behaviorList'></div>
+				</div>
+				<div id='custom' class='panelContent'>
 					<a href='#' id='addBehavior' class='rightLink'>Add<i class='material-icons md-36'>add</i></a>
 					<h2>Behaviors</h2>
 					<div class='panelInput hidden' name='addBehavior'>
