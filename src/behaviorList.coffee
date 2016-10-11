@@ -52,6 +52,8 @@ dragBehavior = (evt) ->
 
 exports.getActiveBehavior = -> return activeBehavior
 
+exports.getActiveChief = -> return activeChief
+
 exports.reload = ->
 	loadBehaviors activeChief
 

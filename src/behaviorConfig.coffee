@@ -30,14 +30,16 @@ $('#typeSelect').on 'change', ->
 $('#categorySelect').on 'change', ->
 	newValue = $(this).val()
 	behavior = behaviorList.getActiveBehavior()
+
 	meta = behavior.getMeta()
-	meta.category = newValue
-	console.log meta
+	if meta then meta.category = newValue
+	else meta = { category: newValue }
+	behavior.setMeta {}
 	behavior.setMeta meta
-	#behavior.setMeta { category: newValue }
+
 	alertify.success 'Category changed'
 
-$('#behaviorName').on 'input', ->
+$('#behaviorName').on 'blur', ->
 	newValue = $(this).html()
 	behavior = behaviorList.getActiveBehavior()
 	try behavior.setName newValue
@@ -51,13 +53,17 @@ $('#behaviorDescription').on 'input', ->
 	behavior = behaviorList.getActiveBehavior()
 	behavior.setDescription newValue
 
-$('#imageName').on 'input', ->
+$('#imageName').on 'blur', ->
 	newValue = $(this).html()
 	behavior = behaviorList.getActiveBehavior()
+
 	meta = behavior.getMeta()
-	meta.image = newValue
+	if meta then meta.image = newValue
+	else meta = { image: newValue }
+	behavior.setMeta {}
 	behavior.setMeta meta
 
+	alertify.success 'Image changed'
 
 handleConfigChange = (data) ->
 	node = data.nodes?[0]
@@ -85,8 +91,7 @@ exports.load = (behavior) ->
 	$('#typeSelect').val type
 
 	image = getImage behavior
-	if image
-		$('#imageName').html image
+	if image then $('#imageName').html image
 
 	customOptions = _.assign {onChange: handleConfigChange}, options
 	unless behaviorConfigEditor

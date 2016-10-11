@@ -2,8 +2,9 @@
 _ = require 'lodash'
 Chief = require 'behavior3-chief'
 data = require './trees/tree.json'
-nodeConfig = require './nodeConfig'
 memory = require './memory'
+nodeConfig = require './nodeConfig'
+behaviorList = require './behaviorList'
 
 treeConfig = {
 	container: '#treant',
@@ -196,9 +197,19 @@ unregisterAllEvents = ->
 	$erase.unbind 'click'
 
 createTNode = (cNode) ->
+	activeChief = behaviorList.getActiveChief()
+	behavior = activeChief.getBehavior cNode.getBehaviorId()
+	if behavior.isNative
+		imageName = cNode.getTitle()?.toLowerCase()
+	else
+		meta = behavior.getMeta()
+		if meta.image then imageName = meta.image
+		else if meta.category then imageName = meta.category
+		else imageName = 'default'
+
 	tNode = {
 		text: {name: cNode.getTitle(), status: ' ', contact: ' ' }
-		image: './assets/behaviors/' + cNode.getTitle().toLowerCase() + '.png'
+		image: './assets/behaviors/' + imageName + '.png'
 		collapsed: false
 		HTMLclass: 'none'			# running, failure, error, success
 		cNodeId: cNode.getId()
