@@ -127,7 +127,7 @@
 	color: #c5c5c5;
 }
 
-.listOfToggles h5:first-letter {
+#behaviorList h5:first-letter, #customList h5:first-letter {
 	text-transform: capitalize;
 }
 

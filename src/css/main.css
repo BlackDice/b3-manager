@@ -66,7 +66,7 @@ body {
 	background-image: url('/assets/grid50.png');
 	background-position: top left;
 	font-family: 'Roboto', sans-serif;
-	color: #dddddd;
+	color: #636363;
 	min-height: 100vh;
 	flex-direction: row;
 }
@@ -206,6 +206,15 @@ select {
 	margin-bottom: 20px;
 }
 
+#behaviorImage {
+	margin-top: 10px;
+	display: flex;
+}
+
+#imageName {
+	flex-grow: 2;
+}
+
 #behaviorDescription {
 	width: 100%;
 	font-size: 13pt;
@@ -300,6 +309,15 @@ select {
 
 .rotate {
 	transform: rotate(180deg);
+}
+
+.label {
+	color: #363636;
+	padding-right: 10px;
+}
+
+.underlined {
+	border-bottom: 2px #282828 solid;
 }
 
 input {

@@ -30,7 +30,11 @@ $('#typeSelect').on 'change', ->
 $('#categorySelect').on 'change', ->
 	newValue = $(this).val()
 	behavior = behaviorList.getActiveBehavior()
-	behavior.setMeta { category: newValue }
+	meta = behavior.getMeta()
+	meta.category = newValue
+	console.log meta
+	behavior.setMeta meta
+	#behavior.setMeta { category: newValue }
 	alertify.success 'Category changed'
 
 $('#behaviorName').on 'input', ->
@@ -47,27 +51,47 @@ $('#behaviorDescription').on 'input', ->
 	behavior = behaviorList.getActiveBehavior()
 	behavior.setDescription newValue
 
+$('#imageName').on 'input', ->
+	newValue = $(this).html()
+	behavior = behaviorList.getActiveBehavior()
+	meta = behavior.getMeta()
+	meta.image = newValue
+	behavior.setMeta meta
+
+
 handleConfigChange = (data) ->
 	node = data.nodes?[0]
 	if node?.parent is null then behaviorConfig.set(node.field, null) # Delete
 
-setCategorySelect = (behavior) ->
+getCategory = (behavior) ->
 	category = behavior.getMeta()?.category
 	if category and category in categoryList
-		$('#categorySelect').val category
+		cat = category
 	else
-		$('#categorySelect').val 'other'
+		cat = 'other'
+	return cat
+
+getImage = (behavior) ->
+	image = behavior.getMeta()?.image
+	return image
 
 exports.load = (behavior) ->
 	behaviorConfig = behavior.getConfig()
 	type = behavior.getType().toLowerCase()
 	$('#behaviorName').html behavior.getName()
 	$('#behaviorDescription').html behavior.getDescription() or '...'
-	setCategorySelect behavior
+	category = getCategory behavior
+	$('#categorySelect').val category
 	$('#typeSelect').val type
+
+	image = getImage behavior
+	if image
+		$('#imageName').html image
+
 	customOptions = _.assign {onChange: handleConfigChange}, options
 	unless behaviorConfigEditor
-		behaviorConfigEditor = new JSONEditor behaviorEditorEl, customOptions, behaviorConfig
+		behaviorConfigEditor = new JSONEditor behaviorEditorEl, customOptions
+		behaviorConfigEditor.set behaviorConfig
 	else behaviorConfigEditor.set behaviorConfig
 
 exports.clearMemory = ->

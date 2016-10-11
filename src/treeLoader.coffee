@@ -195,12 +195,6 @@ unregisterAllEvents = ->
 	$right.unbind 'click'
 	$erase.unbind 'click'
 
-imageExists = (imageUrl) ->
-	http = new XMLHttpRequest()
-	http.open 'HEAD', imageUrl, false
-	http.send()
-	return http.status != 404
-
 createTNode = (cNode) ->
 	tNode = {
 		text: {name: cNode.getTitle(), status: ' ', contact: ' ' }

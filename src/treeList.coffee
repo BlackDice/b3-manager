@@ -1,5 +1,6 @@
 # Tree list
 
+nodeConfig = require './nodeConfig'
 treeLoader = require './treeLoader'
 subjList = require './subjList'
 controls = require './controls'
@@ -176,6 +177,7 @@ closeTree = ->
 	$activeTreeDesc.html ''
 	$activeTreeName.addClass 'hidden'
 	$activeTreeDesc.addClass 'hidden'
+	nodeConfig.hideEditor()
 	controls.hide()
 
 addTree = (name) ->

@@ -73,7 +73,10 @@ exports.load = loadBehaviors = (chief) ->
 	behaviorList = cBehaviorList.map (behavior) ->
 		behavior.type = behavior.getType().toLowerCase()
 		behavior.name = behavior.getName()
-		behavior.category = behavior.getMeta()?.category
+		meta = behavior.getMeta()
+		if meta
+			behavior.category = meta.category
+			behavior.image = meta.image
 		return behavior
 
 	sortedList = _.groupBy behaviorList, 'type'
@@ -91,26 +94,25 @@ exports.load = loadBehaviors = (chief) ->
 		$ulCustom = $('<ul></ul>').appendTo $customList
 
 		for key, behavior of category
-
 			if behavior.isNative
-				$li = addToList behavior, $ulNative
+				imageName = behavior.name.toLowerCase()
+				$li = addToList behavior, imageName, $ulNative
 			else
-				$li = addToList behavior, $ulCustom
+				if behavior.image
+					imageName = behavior.image
+				else
+					imageName = behavior.category
+				$li = addToList behavior, imageName, $ulCustom
 				$li.on 'click', toggleBehavior(behavior, $li)
 				$erase = $("<i>delete</i>").addClass('material-icons').appendTo($li)
 				$erase.on 'click', removeBehavior(behavior.getId())
 
-addToList = (behavior, list) ->
+addToList = (behavior, imageName, list) ->
 	$li = $('<li></li>').attr('draggable', 'true').appendTo list
 	$img = $('<span></span>').addClass('behaviorIcon').appendTo $li
 
-	url1 = '/assets/behaviors/' + behavior.name.toLowerCase() + '.png'
-	url2 = '/assets/behaviors/' + behavior.category + '.png'
-
-	if behavior.name and behavior.category
-		$img.css 'background-image', "url('" + url1 + "'), url('" + url2 + "')"
-	else
-		$img.css 'background-image', "url('" + url1 + "')"
+	url = '/assets/behaviors/' + imageName + '.png'
+	$img.css 'background-image', "url('" + url + "')"
 
 	$label = $("<span class='behaviorLabel'>" + behavior.name + '</span>').appendTo $li
 	$li.attr 'data', behavior.getId()
