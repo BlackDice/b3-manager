@@ -6,7 +6,7 @@
 
 .panelContent {
 	display: none;
-	padding: 40px;
+	padding: 30px;
 }
 
 .panelContent.active {

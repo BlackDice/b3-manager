@@ -47,6 +47,7 @@ $('#behaviorName').on 'blur', ->
 		alertify.error e
 	li = behaviorList.getActiveListItem()
 	li.children('.behaviorLabel').html newValue
+	alertify.success 'Name changed'
 
 $('#behaviorDescription').on 'input', ->
 	newValue = $('#behaviorDescription').html()
