@@ -214,8 +214,13 @@ createTNode = (cNode) ->
 		else if meta.category then imageName = meta.category
 		else imageName = 'default'
 
+	description = behavior.getDescription()
+	name = cNode.getTitle()
+	if name.length > 15
+		description = name + ': ' + description
+
 	tNode = {
-		text: {name: cNode.getTitle(), status: ' ', contact: ' ', desc: behavior.getDescription() }
+		text: {name: name, status: ' ', contact: ' ', desc: description }
 		image: './assets/behaviors/' + imageName + '.png'
 		collapsed: false
 		HTMLclass: 'none'			# running, failure, error, success
