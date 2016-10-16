@@ -75,6 +75,7 @@
 }
 
 #panel li {
+	position: relative;
 	cursor: pointer;
 }
 
@@ -88,6 +89,7 @@
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
+	vertical-align: sub;
 }
 
 .listOfToggles li.active {
@@ -143,4 +145,24 @@
 
 #panel li:hover .behaviorIcon {
 	opacity: 0.5;
+}
+
+#panel .behaviorDescription {
+	position: absolute;
+	top: 50px;
+	left: 0px;
+	width: 287px;
+	display: none;
+	font-style: italic;
+	color: #dddddd;
+	font-size: 10pt;
+	background: #3B3B3B;
+	border-radius: 5px;
+	padding: 10px;
+	z-index: 500;
+	box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.3);
+}
+
+#panel li:hover .behaviorDescription {
+	display: block;
 }

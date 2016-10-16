@@ -119,6 +119,9 @@ addToList = (behavior, imageName, list) ->
 	$label = $("<span class='behaviorLabel'>" + behavior.name + '</span>').appendTo $li
 	$li.attr 'data', behavior.getId()
 	$li.on 'dragstart', (evt) -> dragBehavior(evt)
+	description = behavior.getDescription()
+	if description
+		$description = $("<span class='behaviorDescription'>" + description + '</span>').appendTo $li
 	return $li
 
 toggleBehavior = (behavior, $li) ->

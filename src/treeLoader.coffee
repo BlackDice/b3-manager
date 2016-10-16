@@ -208,12 +208,13 @@ createTNode = (cNode) ->
 		else imageName = 'default'
 
 	tNode = {
-		text: {name: cNode.getTitle(), status: ' ', contact: ' ' }
+		text: {name: cNode.getTitle(), status: ' ', contact: ' ', desc: behavior.getDescription() }
 		image: './assets/behaviors/' + imageName + '.png'
 		collapsed: false
 		HTMLclass: 'none'			# running, failure, error, success
 		cNodeId: cNode.getId()
 	}
+	return tNode
 
 updateNode = (status) ->
 	cNode = this
@@ -294,11 +295,16 @@ exports.getActiveTree = -> return tActiveTree
 exports.loadTree = (cTree, gridSize, handleTreeChange) ->
 	config = _.cloneDeep treeConfig
 	config.quantize = gridSize
-	cNodes = cTree.listNodes()
 
+	# sort nodes by childIndex
+	cNodes = _.sortBy cTree.listNodes(), (node) => node.getChildIndex()
+
+	# create treant node configs for all cNodes
 	for cNode in cNodes
 		nodeMap[cNode.getId()] = createTNode cNode
+		cNode.childIndex = cNode.getCh
 
+	# set parent values for everything but root
 	for cNode in cNodes
 		cParentNodeId = cNode.getParentId()
 		tNode = nodeMap[cNode.getId()]

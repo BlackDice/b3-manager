@@ -1358,7 +1358,7 @@
 				// TEXT
 				if(this.text) {
 					for(var key in this.text) {
-						if(TreeNode.CONFIG.textClass[key]) {
+						if(TreeNode.CONFIG.textClass[key] && this.text[key]) {
 							var text = document.createElement(this.text[key].href ? 'a' : 'p');
 
 							// meke an <a> element if required

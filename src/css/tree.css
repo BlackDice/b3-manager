@@ -50,14 +50,19 @@
 /* tooltip */
 
 .node .node-desc {
+	position: relative;
 	display: none;
 	font-style: italic;
-	color: #999;
+	color: #dddddd;
 	font-size: 10pt;
 	width: 200px;
 	margin-top: 20px;
 	margin-left: -25px;
-	text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+	background: #3B3B3B;
+	border-radius: 5px;
+	padding: 10px;
+	z-index: 500;
+	box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.3);
 }
 
 .node:hover .node-desc {

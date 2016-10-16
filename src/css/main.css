@@ -350,6 +350,7 @@ button:hover {
 	left: 0px;
 	width: 120px;
 	border-radius: 6px;
+	color: #aaaaaa;
 	background: #454545;
 	box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
 }
@@ -374,6 +375,7 @@ button:hover {
 
 #contextmenu div:hover {
 	background: #577499;
+	color: #ffffff;
 }
 
 #contextmenu #commandErase:hover {
@@ -393,6 +395,7 @@ button:hover {
 
 #contextmenu .disabled:hover {
 	background: none !important;
+	color: #aaaaaa;
 }
 
 .alertify-logs {

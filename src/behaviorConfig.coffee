@@ -49,10 +49,11 @@ $('#behaviorName').on 'blur', ->
 	li.children('.behaviorLabel').html newValue
 	alertify.success 'Name changed'
 
-$('#behaviorDescription').on 'input', ->
+$('#behaviorDescription').on 'blur', ->
 	newValue = $('#behaviorDescription').html()
 	behavior = behaviorList.getActiveBehavior()
 	behavior.setDescription newValue
+	alertify.success 'Description changed'
 
 $('#imageName').on 'blur', ->
 	newValue = $(this).html()
