@@ -1,14 +1,18 @@
+require('argv-set-env')();
 var pathUtils = require('path');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
+var webpack = require('webpack');
 
 var srcPath = pathUtils.resolve(__dirname, './src');
 
-module.exports = {
+var isProd = process.env.npm_lifecycle_event === 'build';
+
+var config = {
 	entry: './src/index.coffee',
+	devtool: 'source-map',
 	output: {
 		path: 'public',
 		filename: 'bundle.js',
-		pathinfo: true
+		pathinfo: !isProd
 	},
 	module: {
 		preLoaders: [
@@ -18,12 +22,22 @@ module.exports = {
 			{ test: /\.coffee$/, loader: 'coffee', include: srcPath },
 			{ test: /\.json$/, loader: 'json', include: srcPath },
 			{ test: /\.css$/, loader: 'style!css', include: srcPath },
+			{ test: /\.js$/, loader: 'buble', include: pathUtils.join(__dirname, 'node_modules/tauros-firebase') },
 		]
 	},
 	resolve: {
 		extensions: ['', '.coffee', '.js']
 	},
-	externals: {
-		'b3': 'this b3'
-	}
 }
+
+if (isProd) {
+	config.cache = false;
+	config.plugins = [
+		new webpack.optimize.OccurrenceOrderPlugin(true),
+		new webpack.optimize.UglifyJsPlugin({
+			compress: { warnings: false }
+		})
+	];
+}
+
+module.exports = config;

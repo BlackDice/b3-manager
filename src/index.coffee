@@ -14,7 +14,6 @@ require './css/codemirror/monokai.css'
 require './css/codemirror/lint.css'
 
 _ = require 'lodash'
-b3 = require 'b3'
 Chief = require 'behavior3-chief'
 firebase = require 'tauros-firebase/b3manager'
 
