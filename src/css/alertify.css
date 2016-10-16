@@ -1,0 +1,31 @@
+
+.alertify-logs {
+	z-index: 1000;
+}
+
+.alertify-logs .default, .alertify-logs .error, .alertify-logs .success {
+	padding: 20px;
+	color: #dddddd;
+	background-color: #363636;
+	border-radius: 4px;
+}
+
+.alertify-logs .success {
+	color: #282828;
+	background-color: #299b44;
+}
+
+.alertify-logs .error {
+	color: #282828;
+	background-color: #d2521a;
+}
+
+.alertify .dialog div {
+	color: #dddddd;
+	background: #454545;
+	border-radius: 5px;
+}
+
+.alertify .dialog nav button {
+	color: #dddddd !important;
+}

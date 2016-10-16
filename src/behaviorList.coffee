@@ -4,6 +4,7 @@ _ = require 'lodash'
 code = require './code'
 treeList = require './treeList'
 treeLoader = require './treeLoader'
+alertify = require('./alertify').get()
 
 activeBehavior = null
 activeBehaviorId = null
@@ -42,9 +43,10 @@ addBehavior = (name) ->
 removeBehavior = (cBehaviorId) ->
 	return (evt) ->
 		evt.stopPropagation()
-		closeBehavior()
-		activeChief.destroyBehavior cBehaviorId
-		loadBehaviors activeChief
+		alertify.confirm 'Delete behavior?', ->
+			closeBehavior()
+			activeChief.destroyBehavior cBehaviorId
+			loadBehaviors activeChief
 
 dragBehavior = (evt) ->
 	transfer = JSON.stringify { type: 'add', behaviorId: evt.target.getAttribute 'data' }

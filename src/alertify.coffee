@@ -1,4 +1,6 @@
 
+# https://alertifyjs.org/
+
 alertifyjs = require 'alertify.js'
 alertify = new alertifyjs
 

@@ -5,6 +5,7 @@ data = require './trees/tree.json'
 memory = require './memory'
 nodeConfig = require './nodeConfig'
 behaviorList = require './behaviorList'
+alertify = require('./alertify').get()
 
 treeConfig = {
 	container: '#treant',
@@ -110,13 +111,19 @@ registerRightClick = (treantConfig, callback) ->
 
 	$erase.on 'click', (evt) ->
 		if $erase.hasClass 'disabled' then return
-		cNodeId = $(this).parent().attr 'cnodeid'
-		tNodeId = parseInt $(this).parent().attr 'tnodeid'
-		parentId = tActiveTree.getNodeAttribute(tNodeId, 'parentId')
-		tActiveTree.removeNode tNodeId
-		if parentId is -1 then tActiveTreeHasRoot = false
-		callback {action: 'removeNode', cNodeId: cNodeId}
-		$contextmenu.hide()
+		that = $(this)
+		alertify.confirm 'Delete node?', ->
+			# user clicked "ok"
+			cNodeId = that.parent().attr 'cnodeid'
+			tNodeId = parseInt that.parent().attr 'tnodeid'
+			parentId = tActiveTree.getNodeAttribute(tNodeId, 'parentId')
+			tActiveTree.removeNode tNodeId
+			if parentId is -1 then tActiveTreeHasRoot = false
+			callback {action: 'removeNode', cNodeId: cNodeId}
+			$contextmenu.hide()
+		, ->
+			# user clicked "cancel"
+			$contextmenu.hide()
 
 	$left.on 'click', (evt) ->
 		if $left.hasClass 'disabled' then return

@@ -90,8 +90,6 @@ handleTreeChange = (change) ->
 		when 'removeNode'
 			cNode = cActiveTree.getNode change.cNodeId
 			cParentNodeId = cNode.getParentId()
-			#if cParentNodeId.indexOf('Tree') != -1
-			#	console.log 'Erasing root'
 			eraseChildren cNode
 			treeLoader.redrawTree()
 
@@ -189,9 +187,10 @@ addTree = (name) ->
 removeTree = (cTreeId) ->
 	return (evt) ->
 		evt.stopPropagation()
-		closeTree()
-		activeChief.destroyTree cTreeId
-		loadTrees activeChief
+		alertify.confirm 'Delete tree?', ->
+			closeTree()
+			activeChief.destroyTree cTreeId
+			loadTrees activeChief
 
 # Tree description
 

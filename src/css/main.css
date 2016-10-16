@@ -398,27 +398,6 @@ button:hover {
 	color: #aaaaaa;
 }
 
-.alertify-logs {
-	z-index: 1000;
-}
-
-.alertify-logs .default, .alertify-logs .error, .alertify-logs .success {
-	padding: 20px;
-	color: #dddddd;
-	background-color: #363636;
-	border-radius: 4px;
-}
-
-.alertify-logs .success {
-	color: #282828;
-	background-color: #299b44;
-}
-
-.alertify-logs .error {
-	color: #282828;
-	background-color: #d2521a;
-}
-
 #saveCode {
 	z-index: 10;
 	display: block;
