@@ -104,8 +104,10 @@ exports.load = loadBehaviors = (chief) ->
 			else
 				if behavior.image
 					imageName = behavior.image
-				else
+				else if behavior.category
 					imageName = behavior.category
+				else
+					imageName = 'other'
 				$li = addToList behavior, imageName, $ulCustom
 				$li.on 'click', toggleBehavior(behavior, $li)
 				$erase = $("<i>delete</i>").addClass('material-icons').appendTo($li)

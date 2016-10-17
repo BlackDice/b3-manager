@@ -100,8 +100,8 @@ handleTreeChange = (change) ->
 			cParent = cActiveTree.getNode cParentId
 			children = cActiveTree.getNodeChildren cParent
 
-			indexA = children.indexOf cNodeA
-			indexB = children.indexOf cNodeB
+			indexA = children.findIndex (child) -> child.getId() is cNodeA.getId()
+			indexB = children.findIndex (child) -> child.getId() is cNodeB.getId()
 
 			for child in children
 				cActiveTree.removeChildNode child

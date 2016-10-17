@@ -210,9 +210,10 @@ createTNode = (cNode) ->
 		imageName = cNode.getTitle()?.toLowerCase()
 	else
 		meta = behavior.getMeta()
-		if meta.image then imageName = meta.image
-		else if meta.category then imageName = meta.category
-		else imageName = 'default'
+		imageName = 'other'
+		if meta
+			if meta.image then imageName = meta.image
+			else if meta.category then imageName = meta.category
 
 	description = behavior.getDescription()
 	name = cNode.getTitle()
