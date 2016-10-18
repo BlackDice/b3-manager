@@ -1,4 +1,4 @@
-
+require './codelint'
 alertify = require('./alertify').get()
 behaviorList = require './behaviorList'
 
