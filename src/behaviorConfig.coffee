@@ -40,23 +40,23 @@ $('#categorySelect').on 'change', ->
 	alertify.success 'Category changed'
 
 $('#behaviorName').on 'blur', ->
-	newValue = $(this).html()
+	newValue = $(this).text()
 	behavior = behaviorList.getActiveBehavior()
 	try behavior.setName newValue
 	catch e
 		alertify.error e
 	li = behaviorList.getActiveListItem()
-	li.children('.behaviorLabel').html newValue
+	li.children('.behaviorLabel').text newValue
 	alertify.success 'Name changed'
 
 $('#behaviorDescription').on 'blur', ->
-	newValue = $('#behaviorDescription').html()
+	newValue = $('#behaviorDescription').text()
 	behavior = behaviorList.getActiveBehavior()
 	behavior.setDescription newValue
 	alertify.success 'Description changed'
 
 $('#imageName').on 'blur', ->
-	newValue = $(this).html()
+	newValue = $(this).text()
 	behavior = behaviorList.getActiveBehavior()
 
 	meta = behavior.getMeta()
@@ -86,14 +86,14 @@ getImage = (behavior) ->
 exports.load = (behavior) ->
 	behaviorConfig = behavior.getConfig()
 	type = behavior.getType().toLowerCase()
-	$('#behaviorName').html behavior.getName()
-	$('#behaviorDescription').html behavior.getDescription() or '...'
+	$('#behaviorName').text behavior.getName()
+	$('#behaviorDescription').text behavior.getDescription() or '...'
 	category = getCategory behavior
 	$('#categorySelect').val category
 	$('#typeSelect').val type
 
 	image = getImage behavior
-	if image then $('#imageName').html image
+	if image then $('#imageName').text image
 
 	customOptions = _.assign {onChange: handleConfigChange}, options
 	unless behaviorConfigEditor

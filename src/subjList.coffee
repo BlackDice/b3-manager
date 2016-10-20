@@ -41,7 +41,7 @@ toggleSubject = (subject, $li) ->
 		if activeSubjectId == loadingSubjectId
 			# stop displaying subject
 			activeTree = treeList.getCActiveTree()
-			$activeTreeName.html activeTree.getName()
+			$activeTreeName.text activeTree.getName()
 			closeSubject()
 			return
 
@@ -61,7 +61,7 @@ openSubject = (id, subject, $li) ->
 		activeSubjectId = id
 		activeSubject = subject
 		$li.addClass 'active'
-		$activeTreeName.html tree.getName() + ': ' + activeSubjectId
+		$activeTreeName.text tree.getName() + ': ' + activeSubjectId
 		$('#memory').removeClass 'hidden'
 		memory.loadTreeMemory activeSubject, tree
 		memory.loadSubjectMemory activeSubject

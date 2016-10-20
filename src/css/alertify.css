@@ -1,4 +1,8 @@
 
+.alertify {
+	z-index: 9999 !important;
+}
+
 .alertify-logs {
 	z-index: 1000;
 }

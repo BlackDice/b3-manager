@@ -49,8 +49,15 @@ dragTree = (evt) ->
 exports.load = loadTrees = (chief) ->
 	activeChief = chief
 	cTreeList = activeChief.listTrees()
+
+	treeList = []
+	treeList = cTreeList.map (tree) ->
+		tree.name = tree.getName()
+		return tree
+	sortedTreeList = _.sortBy treeList, 'name'
+
 	$treeList.empty()
-	for cTree in cTreeList
+	for cTree in sortedTreeList
 		$li = $('<li>' + cTree.getName() + '</li>').attr('draggable', 'true').appendTo $treeList
 		$erase = $("<i>delete</i>").addClass('material-icons').appendTo($li)
 		$erase.on 'click', removeTree(cTree.getId())
@@ -162,8 +169,8 @@ openTree = (cTree, $li) ->
 	$li.addClass 'active'
 	cActiveTree = cTree
 	cActiveTreeId = cTree.getId()
-	$activeTreeName.html cActiveTree.getName()
-	$activeTreeDesc.html cActiveTree.getDescription()
+	$activeTreeName.text cActiveTree.getName()
+	$activeTreeDesc.text cActiveTree.getDescription()
 	$activeTreeName.removeClass 'hidden'
 	$activeTreeDesc.removeClass 'hidden'
 
@@ -171,8 +178,8 @@ closeTree = ->
 	treeLoader.closeTree cActiveTreeId
 	$treeList.find('li').removeClass 'active' # clear all
 	cActiveTreeId = null
-	$activeTreeName.html ''
-	$activeTreeDesc.html ''
+	$activeTreeName.text ''
+	$activeTreeDesc.text ''
 	$activeTreeName.addClass 'hidden'
 	$activeTreeDesc.addClass 'hidden'
 	nodeConfig.hideEditor()
@@ -194,8 +201,10 @@ removeTree = (cTreeId) ->
 
 # Tree description
 
-$activeTreeDesc.on 'input', ->
-	cActiveTree.setDescription $activeTreeDesc.html()
+$activeTreeName.on 'blur', ->
+	cActiveTree.setName $activeTreeName.text()
+	alertify.success 'Tree name changed'
 
-$activeTreeName.on 'input', ->
-	cActiveTree.setName $activeTreeName.html()
+$activeTreeDesc.on 'blur', ->
+	cActiveTree.setDescription $activeTreeDesc.text()
+	alertify.success 'Tree description updated'
