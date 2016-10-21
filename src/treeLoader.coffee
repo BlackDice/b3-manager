@@ -29,6 +29,7 @@ treeConfig = {
 	}
 }
 
+activeChief = null
 tActiveTree = null
 tActiveTreeHasRoot = null
 tActiveNode = null
@@ -37,6 +38,7 @@ cActiveNode = null
 $container = null
 highlightedEl = null
 nodeMap = {}
+$open = $('#commandOpen')
 $erase = $('#commandErase')
 $left = $('#commandMoveLeft')
 $right = $('#commandMoveRight')
@@ -44,6 +46,7 @@ $contextmenu = $('#contextmenu')
 
 
 clearDisables = ->
+	$open.removeClass 'disabled'
 	$left.removeClass 'disabled'
 	$right.removeClass 'disabled'
 	$erase.removeClass 'disabled'
@@ -102,6 +105,10 @@ registerRightClick = (treantConfig, callback) ->
 			})
 
 			# disable those not applicable
+			cNode = cActiveTree.getNode cNodeId
+			behavior = activeChief.getBehavior cNode.getBehaviorId()
+			if behavior.isNative
+				$open.addClass 'disabled'
 			leftNeighborTId = parseInt tActiveTree.getNodeAttribute tNodeId, 'leftNeighborId'
 			rightNeighborTId = parseInt tActiveTree.getNodeAttribute tNodeId, 'rightNeighborId'
 			unless leftNeighborTId
@@ -204,7 +211,6 @@ unregisterAllEvents = ->
 	$erase.unbind 'click'
 
 createTNode = (cNode) ->
-	activeChief = behaviorList.getActiveChief()
 	behavior = activeChief.getBehavior cNode.getBehaviorId()
 	if behavior.isNative
 		imageName = cNode.getTitle()?.toLowerCase()
@@ -310,6 +316,7 @@ exports.getActiveCNode = -> return cActiveNode
 exports.getActiveTree = -> return tActiveTree
 
 exports.loadTree = (cTree, gridSize, handleTreeChange) ->
+	activeChief = behaviorList.getActiveChief()
 	config = _.cloneDeep treeConfig
 	config.quantize = gridSize
 
