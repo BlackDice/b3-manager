@@ -41,6 +41,7 @@ body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,
 html, body {
 	box-sizing: border-box;
 	height: 100%;
+	overflow: hidden;
 }
 
 *, *:before, *:after {
@@ -152,26 +153,37 @@ select {
 	overflow-x: hidden;
 }
 
+#panelFiller {
+	display: block;
+	width: 350px;
+	min-width: 350px;
+	height: 0px;
+}
+
 #code {
+	position: absolute;
+	top: 0px;
+	left: 0px;
 	display: flex;
-	position: relative;
 	height: 100%;
 	width: 100%;
-	background-color: #202020;
 	overflow: scroll;
 	overflow-x: hidden;
 	z-index: 500;
-	margin-left: 5px;
+	pointer-events: none;
 }
 
 #codeMirror, #behaviorConfig {
+	pointer-events: auto;
 	flex-direction: row;
 	position: relative;
 	height: 100%;
 	overflow-x: hidden;
+	background-color: #202020;
 }
 
 #codeMirror {
+	border-left: 3px #282828 solid;
 	cursor: text;
 	padding-top: 20px;
 	font-size: 14pt;
@@ -196,7 +208,7 @@ select {
 }
 
 #behaviorConfig {
-	border-left: 3px #333 solid;
+	border-left: 3px #282828 solid;
 	padding: 20px;
 	width: 300px;
 	border-radius: 4px;
@@ -313,7 +325,8 @@ select {
 
 .label {
 	color: #363636;
-	padding-right: 10px;
+	padding: 10px;
+	padding-left: 0px;
 }
 
 .underlined {
@@ -321,6 +334,7 @@ select {
 }
 
 input {
+	max-width: 100%;
 	font-size: 16pt;
 	padding: 10px;
 	margin-bottom: 5px;

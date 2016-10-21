@@ -25,6 +25,7 @@ $('#typeSelect').on 'change', ->
 	newValue = $(this).val().toUpperCase()
 	behavior = behaviorList.getActiveBehavior()
 	behavior.setType newValue
+	reload()
 	alertify.success 'Type changed'
 
 $('#categorySelect').on 'change', ->
@@ -36,8 +37,13 @@ $('#categorySelect').on 'change', ->
 	else meta = { category: newValue }
 	behavior.setMeta {}
 	behavior.setMeta meta
-
 	alertify.success 'Category changed'
+
+$('#maxChildren').on 'change', ->
+	newValue = $(this).val()
+	behavior = behaviorList.getActiveBehavior()
+	behavior.setMaxChildren newValue
+	alertify.success 'Max children changed'
 
 $('#behaviorName').on 'blur', ->
 	newValue = $(this).text()
@@ -83,14 +89,28 @@ getImage = (behavior) ->
 	image = behavior.getMeta()?.image
 	return image
 
-exports.load = (behavior) ->
+exports.reload = reload = ->
+	load behaviorList.getActiveBehavior()
+
+exports.load = load = (behavior) ->
 	behaviorConfig = behavior.getConfig()
-	type = behavior.getType().toLowerCase()
 	$('#behaviorName').text behavior.getName()
 	$('#behaviorDescription').text behavior.getDescription() or '...'
-	category = getCategory behavior
-	$('#categorySelect').val category
+
+	type = behavior.getType().toLowerCase()
 	$('#typeSelect').val type
+
+	$('#behaviorProperties').children().addClass 'hidden'
+
+	switch type
+		when 'leaf'
+			category = getCategory behavior
+			$('#leafConfig').removeClass 'hidden'
+			$('#categorySelect').val category
+			$('#categorySelect').removeClass 'hidden'
+		when 'composite'
+			$('#compositeConfig').removeClass 'hidden'
+			$('#maxChildren').val behavior.getMaxChildren()
 
 	image = getImage behavior
 	if image then $('#imageName').text image

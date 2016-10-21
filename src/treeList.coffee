@@ -46,8 +46,11 @@ dragTree = (evt) ->
 	transfer = JSON.stringify { type: 'addSubtree', treeId: evt.target.getAttribute 'data' }
 	evt.originalEvent.dataTransfer.setData 'text/plain', transfer
 
+exports.reload = reload = ->
+	loadTrees()
+
 exports.load = loadTrees = (chief) ->
-	activeChief = chief
+	if chief then activeChief = chief
 	cTreeList = activeChief.listTrees()
 
 	treeList = []
@@ -64,6 +67,9 @@ exports.load = loadTrees = (chief) ->
 		$li.attr 'data', cTree.getId()
 		$li.on 'dragstart', (evt) -> dragTree(evt)
 		$li.on 'click', toggleTree(cTree, $li)
+		description = cTree.getDescription()
+		if description
+			$description = $("<span class='listDescription'>" + description + '</span>').appendTo $li
 
 handleTreeChange = (change) ->
 
@@ -189,7 +195,7 @@ addTree = (name) ->
 	try activeChief.createTree name
 	catch e
 		alertify.error e
-	loadTrees activeChief
+	reload()
 
 removeTree = (cTreeId) ->
 	return (evt) ->
@@ -197,14 +203,16 @@ removeTree = (cTreeId) ->
 		alertify.confirm 'Delete tree?', ->
 			closeTree()
 			activeChief.destroyTree cTreeId
-			loadTrees activeChief
+			reload()
 
 # Tree description
 
 $activeTreeName.on 'blur', ->
 	cActiveTree.setName $activeTreeName.text()
 	alertify.success 'Tree name changed'
+	reload()
 
 $activeTreeDesc.on 'blur', ->
 	cActiveTree.setDescription $activeTreeDesc.text()
 	alertify.success 'Tree description updated'
+	reload()

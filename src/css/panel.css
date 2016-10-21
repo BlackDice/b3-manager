@@ -147,7 +147,7 @@
 	opacity: 0.5;
 }
 
-#panel .behaviorDescription {
+#panel .listDescription {
 	position: absolute;
 	top: 50px;
 	left: 0px;
@@ -163,6 +163,6 @@
 	box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.3);
 }
 
-#panel li:hover .behaviorDescription {
+#panel li:hover .listDescription {
 	display: block;
 }

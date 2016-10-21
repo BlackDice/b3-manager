@@ -31,7 +31,6 @@ exports.openCode = (content, readOnly) ->
 	editor.setValue content
 	editor.setOption 'readOnly', readOnly
 	$('#code').removeClass 'hidden'
-	$('#behaviorConfig').removeClass 'hidden'
 	editor.refresh()
 
 exports.closeCode = ->

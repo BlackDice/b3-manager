@@ -272,7 +272,6 @@ treantLoaded = ->
 	$('.node-name').wrapInner('<span></span>').textfill
 		maxFontPixels: 16
 		widthOnly: true
-		debug: true
 
 nodeAdded = (cNode, tNode, tNodeDefinition) ->
 	# register events
@@ -315,7 +314,7 @@ exports.loadTree = (cTree, gridSize, handleTreeChange) ->
 	config.quantize = gridSize
 
 	# sort nodes by childIndex
-	cNodes = _.sortBy cTree.listNodes(), (node) => node.getChildIndex()
+	cNodes = _.sortBy cTree.listNodes(), (node) -> node.getChildIndex()
 
 	# create treant node configs for all cNodes
 	for cNode in cNodes

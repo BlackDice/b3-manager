@@ -38,7 +38,7 @@ addBehavior = (name) ->
 	try activeChief.createBehavior name
 	catch e
 		alertify.error e
-	loadBehaviors activeChief
+	reload()
 
 removeBehavior = (cBehaviorId) ->
 	return (evt) ->
@@ -46,7 +46,7 @@ removeBehavior = (cBehaviorId) ->
 		alertify.confirm 'Delete behavior?', ->
 			closeBehavior()
 			activeChief.destroyBehavior cBehaviorId
-			loadBehaviors activeChief
+			reload()
 
 dragBehavior = (evt) ->
 	transfer = JSON.stringify { type: 'add', behaviorId: evt.target.getAttribute 'data' }
@@ -56,8 +56,8 @@ exports.getActiveBehavior = -> return activeBehavior
 
 exports.getActiveChief = -> return activeChief
 
-exports.reload = ->
-	loadBehaviors activeChief
+exports.reload = reload = ->
+	loadBehaviors()
 
 exports.getTypes = ->
 	return typeOrder
@@ -70,7 +70,7 @@ exports.getDefaultConfig = (behaviorId) ->
 	return behavior.getConfig()
 
 exports.load = loadBehaviors = (chief) ->
-	activeChief = chief
+	if chief then activeChief = chief
 	cBehaviorList = activeChief.listBehaviors()
 	behaviorList = []
 
@@ -125,7 +125,7 @@ addToList = (behavior, imageName, list) ->
 	$li.on 'dragstart', (evt) -> dragBehavior(evt)
 	description = behavior.getDescription()
 	if description
-		$description = $("<span class='behaviorDescription'>" + description + '</span>').appendTo $li
+		$description = $("<span class='listDescription'>" + description + '</span>').appendTo $li
 	return $li
 
 toggleBehavior = (behavior, $li) ->
