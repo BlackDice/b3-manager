@@ -269,6 +269,11 @@ treantLoaded = ->
 			nodeMap[id].tNode = tNode
 			nodeMap[id].connection = tActiveTree.tree.connectionStore[tNode.id]
 
+	$('.node-name').wrapInner('<span></span>').textfill
+		maxFontPixels: 16
+		widthOnly: true
+		debug: true
+
 nodeAdded = (cNode, tNode, tNodeDefinition) ->
 	# register events
 	$(tNode.nodeDOM).on 'dragstart', (evt) -> dragNode(evt)
