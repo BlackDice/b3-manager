@@ -30,6 +30,9 @@ $behaviorForm.find('button').on 'click', ->
 $('#addBehavior').on 'click', ->
 	toggleInput()
 
+$('#close').on 'click', ->
+	closeBehavior()
+
 toggleInput = ->
 	$(this).toggleClass 'active'
 	$behaviorForm.toggleClass 'hidden'
@@ -168,5 +171,6 @@ exports.closeBehavior = closeBehavior = ->
 	activeListItem = null
 	activeBehaviorId = null
 	code.closeCode()
+	$customList.find('li').removeClass 'active' # clear all
 	if treeList.getCActiveTreeId()
 		treeLoader.getActiveTree().resize()
