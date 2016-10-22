@@ -100,6 +100,20 @@ exports.handleTreeChange = handleTreeChange = (change) ->
 			else
 				alertify.error 'Node does not accept children'
 
+		when 'addSubtree'
+			cTreeId = change.treeId
+			cParentId = change.parentCId
+			if cActiveTree.canNodeAcceptChild cParentId
+				cTree = activeChief.getTree cTreeId
+				treeName = cTree.getName()
+				cNode = cActiveTree.createNode 'Native-Subtree'
+				cNode.setBehaviorConfig { treeId: cTreeId }
+				cNode.setTitle treeName
+				cActiveTree.addNodeChild cParentId, cNode
+				treeLoader.addNodeToTree cNode, change.parentTId
+			else
+				alertify.error 'Node does not accept children'
+
 		when 'removeNode'
 			cNode = cActiveTree.getNode change.cNodeId
 			cParentNodeId = cNode.getParentId()

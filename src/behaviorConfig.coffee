@@ -43,7 +43,7 @@ $('#categorySelect').on 'change', ->
 $('#maxChildren').on 'change', ->
 	newValue = $(this).val()
 	behavior = behaviorList.getActiveBehavior()
-	behavior.setMaxChildren newValue
+	behavior.setMaxChildren Number newValue
 	alertify.success 'Max children changed'
 
 $('#behaviorName').on 'blur', ->

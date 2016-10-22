@@ -245,6 +245,8 @@ registerDragAndDrop = (treantConfig, callback) ->
 					callback {action: 'addNode', behaviorId: obj.behaviorId, parentCId: parentCId, parentTId: parentTId}
 				when 'change'
 					callback {action: 'changeParent', tNodeId: obj.tid, cNodeId: obj.cid, parentTId: parentTId, parentCId: parentCId}
+				when 'addSubtree'
+					callback {action: 'addSubtree', treeId: obj.treeId, parentCId: parentCId, parentTId: parentTId}
 
 	$('.node').on 'dragstart', (evt) -> dragNode(evt)
 
@@ -384,7 +386,9 @@ exports.loadTree = loadTree = (cTree) ->
 	for cNode in cNodes
 		# take names from behaviors
 		behavior = activeChief.getBehavior cNode.getBehaviorId()
-		cNode.setTitle behavior.getName()
+		name = behavior.getName()
+		unless name is 'SubTree'
+			cNode.setTitle behavior.getName()
 
 		# create treant nodes
 		nodeMap[cNode.getId()] = createTNode cNode

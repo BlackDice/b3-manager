@@ -32,10 +32,10 @@ editor.on 'change', (cm, change) ->
 		content = editor.getValue()
 		if content is startContent
 			needsSave = false
-			$('#saveCode').removeClass 'gold'		
+			$('#saveCode').removeClass 'gold'
 		else
 			needsSave = true
-			$('#saveCode').addClass 'gold'		
+			$('#saveCode').addClass 'gold'
 
 $('#saveCode').on 'click', ->
 	save()
