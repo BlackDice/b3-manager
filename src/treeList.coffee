@@ -1,5 +1,6 @@
 # Tree list
 
+behaviorList = require './behaviorList'
 nodeConfig = require './nodeConfig'
 treeLoader = require './treeLoader'
 subjList = require './subjList'
@@ -144,6 +145,11 @@ handleTreeChange = (change) ->
 			if activeSubject
 				cNode = cActiveTree.getNode change.cNodeId
 				memory.loadNodeMemory activeSubject, cActiveTree, cNode
+
+		when 'openCode'
+			cNode = cActiveTree.getNode change.cNodeId
+			behavior = activeChief.getBehavior cNode.getBehaviorId()
+			behaviorList.openBehavior behavior
 
 
 toggleTree = (cTree, $li) ->

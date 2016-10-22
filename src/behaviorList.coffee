@@ -130,9 +130,8 @@ addToList = (behavior, imageName, list) ->
 
 toggleBehavior = (behavior, $li) ->
 	return ->
-		loadingBehaviorId = behavior.name # SWITCH TO ID NAME
+		loadingBehaviorId = behavior.getId()
 		$customList.find('li').removeClass 'active' # clear all
-
 		# clicking the same item
 		if activeBehaviorId == loadingBehaviorId
 			# stop displaying editor
@@ -146,15 +145,18 @@ toggleBehavior = (behavior, $li) ->
 		# load if new
 		if activeBehaviorId != loadingBehaviorId
 			# start displaying behavior
-			openBehavior loadingBehaviorId, behavior, $li
+			openBehavior behavior, $li
 
 behaviorConfig = require './behaviorConfig'
 
-openBehavior = (id, behavior, $li) ->
-	activeBehaviorId = id
+exports.openBehavior = openBehavior = (behavior, $li) ->
 	activeBehavior = behavior
+	activeBehaviorId = behavior.getId()
+
+	unless $li then $li = $('li:contains(' + behavior.getName() + ')')
 	$li.addClass 'active'
 	activeListItem = $li
+
 	readOnly = behavior.isNative
 	content = behavior.getDefinition()
 	code.openCode content, readOnly
@@ -162,7 +164,7 @@ openBehavior = (id, behavior, $li) ->
 	if treeList.getCActiveTreeId()
 		treeLoader.getActiveTree().resize()
 
-closeBehavior = ->
+exports.closeBehavior = closeBehavior = ->
 	activeListItem = null
 	activeBehaviorId = null
 	code.closeCode()

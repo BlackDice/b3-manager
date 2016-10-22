@@ -32,13 +32,14 @@ treeConfig = {
 activeChief = null
 tActiveTree = null
 tActiveTreeHasRoot = null
-tActiveNode = null
+tActiveNodeId = null
 cActiveTree = null
 cActiveNode = null
 $container = null
 highlightedEl = null
 nodeMap = {}
-$open = $('#commandOpen')
+#$open = $('#commandOpen')
+$config = $('#commandConfig')
 $erase = $('#commandErase')
 $left = $('#commandMoveLeft')
 $right = $('#commandMoveRight')
@@ -46,7 +47,8 @@ $contextmenu = $('#contextmenu')
 
 
 clearDisables = ->
-	$open.removeClass 'disabled'
+	#$open.removeClass 'disabled'
+	$config.removeClass 'disabled'
 	$left.removeClass 'disabled'
 	$right.removeClass 'disabled'
 	$erase.removeClass 'disabled'
@@ -60,11 +62,28 @@ registerClick = (treantConfig, callback) ->
 	$container.on 'click', (evt) ->
 		if evt.target.classList.contains 'node'
 			evt.preventDefault()
-			if tActiveNode != evt.target
-				if tActiveNode then tActiveNode.classList.remove 'highlight'
+			cNodeId = evt.target.getAttribute 'cnodeid'
+			cNode = cActiveTree.getNode cNodeId
+			behavior = activeChief.getBehavior cNode.getBehaviorId()
+			unless behavior.isNative
+				behaviorList.openBehavior behavior
+		else
+			tActiveNodeId = null
+			nodeConfig.hideEditor()
+			memory.disable '#tab-nodeEditor'
+			$contextmenu.hide()
+			clearHighlight()
+			clearDisables()
+
+	###
+	$container.on 'dblclick', (evt) ->
+		if evt.target.classList.contains 'node'
+			evt.preventDefault()
+			if tActiveNodeId != evt.target
+				if tActiveNodeId then tActiveNodeId.classList.remove 'highlight'
 				highlightedEl = evt.target
 				evt.target.classList.add 'highlight'
-				tActiveNode = evt.target
+				tActiveNodeId = evt.target
 				cNodeId = evt.target.getAttribute 'cnodeid'
 				cActiveNode = cActiveTree.getNode cNodeId
 				callback {action: 'showNodeMemory', cNodeId: cNodeId}
@@ -74,13 +93,7 @@ registerClick = (treantConfig, callback) ->
 				nodeConfig.showEditor()
 			else
 				evt.target.classList.add 'highlight'
-		else
-			tActiveNode = null
-			nodeConfig.hideEditor()
-			memory.disable '#tab-nodeEditor'
-			$contextmenu.hide()
-			clearHighlight()
-			clearDisables()
+	###
 
 registerRightClick = (treantConfig, callback) ->
 	$container = $(treantConfig.container)
@@ -105,10 +118,12 @@ registerRightClick = (treantConfig, callback) ->
 			})
 
 			# disable those not applicable
+			###
 			cNode = cActiveTree.getNode cNodeId
 			behavior = activeChief.getBehavior cNode.getBehaviorId()
 			if behavior.isNative
 				$open.addClass 'disabled'
+			###
 			leftNeighborTId = parseInt tActiveTree.getNodeAttribute tNodeId, 'leftNeighborId'
 			rightNeighborTId = parseInt tActiveTree.getNodeAttribute tNodeId, 'rightNeighborId'
 			unless leftNeighborTId
@@ -150,6 +165,38 @@ registerRightClick = (treantConfig, callback) ->
 		cNodeIdB = tActiveTree.getNodeAttribute rightNeighborTId, 'cNodeId'
 		tActiveTree.switchIndexes tNodeId, rightNeighborTId
 		callback {action: 'switchNodes', cNodeIdA: cNodeIdA, cNodeIdB: cNodeIdB}
+		$contextmenu.hide()
+
+	###
+	$open.on 'click', (evt) ->
+		if $open.hasClass 'disabled' then return
+		cNodeId = $(this).parent().attr 'cnodeid'
+		callback {action: 'openCode', cNodeId: cNodeId}
+		$contextmenu.hide()
+	###
+
+	$config.on 'click', (evt) ->
+		if $config.hasClass 'disabled' then return
+		tNodeId = $(this).parent().attr 'tnodeid'
+		tNode = tActiveTree.getNode(tNodeId).nodeDOM
+
+		if tActiveNodeId != tNodeId
+			if tActiveNodeId then tNode.classList.remove 'highlight'
+			highlightedEl = tNode
+			tActiveNodeId = tNodeId
+			tNode.classList.add 'highlight'
+			cNodeId = $(this).parent().attr 'cnodeid'
+			cActiveNode = cActiveTree.getNode cNodeId
+			callback {action: 'showNodeMemory', cNodeId: cNodeId}
+			memory.activate '#tab-nodeEditor'
+			nodeConfig.load cActiveNode
+			nodeConfig.positionEditor tNode
+			nodeConfig.showEditor()
+		else
+			highlightedEl = null
+			tActiveNodeId = null
+			nodeConfig.hideEditor()
+			tNode.classList.remove 'highlight'
 		$contextmenu.hide()
 
 	window.addEventListener 'resize', (evt) ->
@@ -206,6 +253,8 @@ unregisterAllEvents = ->
 	$container.unbind 'drop'
 	$container.unbind 'click'
 	$container.unbind 'contextmenu'
+	#$open.unbind 'click'
+	$config.unbind 'click'
 	$left.unbind 'click'
 	$right.unbind 'click'
 	$erase.unbind 'click'
