@@ -58,6 +58,7 @@ exports.closeCode = closeCode = ->
 			$('#saveCode').removeClass 'gold'
 	else
 		$('#code').addClass 'hidden'
+	needsSave = false
 
 exports.hasFocus = ->
 	return editor.hasFocus()
@@ -68,4 +69,5 @@ exports.save = save = ->
 	behavior.setDefinition content
 	startContent = content
 	$('#saveCode').removeClass 'gold'
+	needsSave = false
 	alertify.success 'Code saved'

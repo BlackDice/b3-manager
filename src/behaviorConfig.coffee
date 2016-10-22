@@ -1,6 +1,7 @@
 
 _ = require 'lodash'
 alertify = require('./alertify').get()
+treeLoader = require './treeLoader'
 behaviorList = require './behaviorList'
 
 options =
@@ -53,6 +54,8 @@ $('#behaviorName').on 'blur', ->
 		alertify.error e
 	li = behaviorList.getActiveListItem()
 	li.children('.behaviorLabel').text newValue
+	if treeLoader.getActiveTree()
+		treeLoader.reload()
 	alertify.success 'Name changed'
 
 $('#behaviorDescription').on 'blur', ->

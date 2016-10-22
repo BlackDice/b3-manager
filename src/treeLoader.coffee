@@ -3,6 +3,7 @@ _ = require 'lodash'
 Chief = require 'behavior3-chief'
 data = require './trees/tree.json'
 memory = require './memory'
+treeList = require './treeList'
 nodeConfig = require './nodeConfig'
 behaviorList = require './behaviorList'
 alertify = require('./alertify').get()
@@ -364,16 +365,28 @@ exports.getActiveCNode = -> return cActiveNode
 
 exports.getActiveTree = -> return tActiveTree
 
-exports.loadTree = (cTree, gridSize, handleTreeChange) ->
+exports.reload = ->
+	treeId = cActiveTree
+	closeTree()
+	loadTree treeId
+
+exports.loadTree = loadTree = (cTree) ->
+	if cTree then cActiveTree = cTree
+	handleTreeChange = treeList.handleTreeChange
 	activeChief = behaviorList.getActiveChief()
 	config = _.cloneDeep treeConfig
-	config.quantize = gridSize
+	config.quantize = 50
 
 	# sort nodes by childIndex
-	cNodes = _.sortBy cTree.listNodes(), (node) -> node.getChildIndex()
+	cNodes = _.sortBy cActiveTree.listNodes(), (node) -> node.getChildIndex()
 
 	# create treant node configs for all cNodes
 	for cNode in cNodes
+		# take names from behaviors
+		behavior = activeChief.getBehavior cNode.getBehaviorId()
+		cNode.setTitle behavior.getName()
+
+		# create treant nodes
 		nodeMap[cNode.getId()] = createTNode cNode
 		cNode.childIndex = cNode.getCh
 
@@ -388,15 +401,14 @@ exports.loadTree = (cTree, gridSize, handleTreeChange) ->
 	nodeStructure = _.values nodeMap
 	nodeStructure.unshift config
 
-	cActiveTree = cTree
 	tActiveTree = new Treant nodeStructure, handleTreeChange, treantLoaded
-	tActiveTreeHasRoot = cTree.getRootNode() isnt null
+	tActiveTreeHasRoot = cActiveTree.getRootNode() isnt null
 
 	registerDragAndDrop config, handleTreeChange
 	registerRightClick config, handleTreeChange
 	registerClick config, handleTreeChange
 
-exports.closeTree = (treeId) ->
+exports.closeTree = closeTree = ->
 	nodeMap = {}
 	if tActiveTree
 		tActiveTree.destroy()

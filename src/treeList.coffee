@@ -8,7 +8,6 @@ controls = require './controls'
 memory = require './memory'
 alertify = require('./alertify').get()
 
-gridSize = 50
 cActiveTreeId = null
 cActiveTree = null
 activeChief = null
@@ -72,7 +71,7 @@ exports.load = loadTrees = (chief) ->
 		if description
 			$description = $("<span class='listDescription'>" + description + '</span>').appendTo $li
 
-handleTreeChange = (change) ->
+exports.handleTreeChange = handleTreeChange = (change) ->
 
 	eraseChildren = (cNode) ->
 		children = cActiveTree.getNodeChildren cNode
@@ -177,7 +176,7 @@ exports.openTree = (treeId) ->
 	return cTree
 
 openTree = (cTree, $li) ->
-	treeLoader.loadTree cTree, gridSize, handleTreeChange
+	treeLoader.loadTree cTree
 	$li.addClass 'active'
 	cActiveTree = cTree
 	cActiveTreeId = cTree.getId()
@@ -187,7 +186,7 @@ openTree = (cTree, $li) ->
 	$activeTreeDesc.removeClass 'hidden'
 
 closeTree = ->
-	treeLoader.closeTree cActiveTreeId
+	treeLoader.closeTree()
 	$treeList.find('li').removeClass 'active' # clear all
 	cActiveTreeId = null
 	$activeTreeName.text ''
