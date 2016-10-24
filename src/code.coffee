@@ -1,4 +1,5 @@
 require './codelint'
+tabs = require './tabs'
 alertify = require('./alertify').get()
 behaviorList = require './behaviorList'
 
@@ -41,6 +42,7 @@ $('#saveCode').on 'click', ->
 	save()
 
 exports.openCode = openCode = (content, readOnly) ->
+	tabs.activateCustom()
 	startContent = content
 	editor.setValue content
 	editor.setOption 'readOnly', readOnly

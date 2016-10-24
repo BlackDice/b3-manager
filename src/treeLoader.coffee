@@ -39,7 +39,6 @@ cActiveNode = null
 $container = null
 highlightedEl = null
 nodeMap = {}
-#$open = $('#commandOpen')
 $config = $('#commandConfig')
 $erase = $('#commandErase')
 $left = $('#commandMoveLeft')
@@ -48,7 +47,6 @@ $contextmenu = $('#contextmenu')
 
 
 clearDisables = ->
-	#$open.removeClass 'disabled'
 	$config.removeClass 'disabled'
 	$left.removeClass 'disabled'
 	$right.removeClass 'disabled'
@@ -66,7 +64,11 @@ registerClick = (treantConfig, callback) ->
 			cNodeId = evt.target.getAttribute 'cnodeid'
 			cNode = cActiveTree.getNode cNodeId
 			behavior = activeChief.getBehavior cNode.getBehaviorId()
-			unless behavior.isNative
+			type = behavior.getType()
+			if type is 'SUBTREE'
+				config = cNode.getBehaviorConfig()
+				treeList.openTree config.treeId
+			else if behavior.isNative is false
 				behaviorList.openBehavior behavior
 		else
 			tActiveNodeId = null
@@ -75,26 +77,6 @@ registerClick = (treantConfig, callback) ->
 			$contextmenu.hide()
 			clearHighlight()
 			clearDisables()
-
-	###
-	$container.on 'dblclick', (evt) ->
-		if evt.target.classList.contains 'node'
-			evt.preventDefault()
-			if tActiveNodeId != evt.target
-				if tActiveNodeId then tActiveNodeId.classList.remove 'highlight'
-				highlightedEl = evt.target
-				evt.target.classList.add 'highlight'
-				tActiveNodeId = evt.target
-				cNodeId = evt.target.getAttribute 'cnodeid'
-				cActiveNode = cActiveTree.getNode cNodeId
-				callback {action: 'showNodeMemory', cNodeId: cNodeId}
-				memory.activate '#tab-nodeEditor'
-				nodeConfig.load cActiveNode
-				nodeConfig.positionEditor evt.target
-				nodeConfig.showEditor()
-			else
-				evt.target.classList.add 'highlight'
-	###
 
 registerRightClick = (treantConfig, callback) ->
 	$container = $(treantConfig.container)
@@ -118,13 +100,6 @@ registerRightClick = (treantConfig, callback) ->
 				left: evt.clientX - 20
 			})
 
-			# disable those not applicable
-			###
-			cNode = cActiveTree.getNode cNodeId
-			behavior = activeChief.getBehavior cNode.getBehaviorId()
-			if behavior.isNative
-				$open.addClass 'disabled'
-			###
 			leftNeighborTId = parseInt tActiveTree.getNodeAttribute tNodeId, 'leftNeighborId'
 			rightNeighborTId = parseInt tActiveTree.getNodeAttribute tNodeId, 'rightNeighborId'
 			unless leftNeighborTId
@@ -167,14 +142,6 @@ registerRightClick = (treantConfig, callback) ->
 		tActiveTree.switchIndexes tNodeId, rightNeighborTId
 		callback {action: 'switchNodes', cNodeIdA: cNodeIdA, cNodeIdB: cNodeIdB}
 		$contextmenu.hide()
-
-	###
-	$open.on 'click', (evt) ->
-		if $open.hasClass 'disabled' then return
-		cNodeId = $(this).parent().attr 'cnodeid'
-		callback {action: 'openCode', cNodeId: cNodeId}
-		$contextmenu.hide()
-	###
 
 	$config.on 'click', (evt) ->
 		if $config.hasClass 'disabled' then return
@@ -256,7 +223,6 @@ unregisterAllEvents = ->
 	$container.unbind 'drop'
 	$container.unbind 'click'
 	$container.unbind 'contextmenu'
-	#$open.unbind 'click'
 	$config.unbind 'click'
 	$left.unbind 'click'
 	$right.unbind 'click'
@@ -264,14 +230,19 @@ unregisterAllEvents = ->
 
 createTNode = (cNode) ->
 	behavior = activeChief.getBehavior cNode.getBehaviorId()
-	if behavior.isNative
-		imageName = cNode.getTitle()?.toLowerCase()
+	if behavior.getType() is 'SUBTREE'
+		imageName = 'subtree'
+		className = 'subtree'
 	else
-		meta = behavior.getMeta()
-		imageName = 'other'
-		if meta
-			if meta.image then imageName = meta.image
-			else if meta.category then imageName = meta.category
+		if behavior.isNative
+			imageName = cNode.getTitle()?.toLowerCase()
+		else
+			meta = behavior.getMeta()
+			imageName = 'other'
+			if meta
+				if meta.image then imageName = meta.image
+				else if meta.category then imageName = meta.category
+		className = 'none'
 
 	description = behavior.getDescription()
 	name = cNode.getTitle()
@@ -282,7 +253,7 @@ createTNode = (cNode) ->
 		text: {name: name, status: ' ', contact: ' ', desc: description }
 		image: './assets/behaviors/' + imageName + '.png'
 		collapsed: false
-		HTMLclass: 'none'			# running, failure, error, success
+		HTMLclass: className		# subtree, running, failure, error, success
 		cNodeId: cNode.getId()
 	}
 	return tNode
@@ -386,8 +357,7 @@ exports.loadTree = loadTree = (cTree) ->
 	for cNode in cNodes
 		# take names from behaviors
 		behavior = activeChief.getBehavior cNode.getBehaviorId()
-		name = behavior.getName()
-		unless name is 'SubTree'
+		unless behavior.getType() is 'SUBTREE'
 			cNode.setTitle behavior.getName()
 
 		# create treant nodes

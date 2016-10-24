@@ -1,18 +1,33 @@
 
-toggle = ->
-	unless $(this).hasClass('active') or $(this).hasClass('disabled')
-		$(this).toggleClass 'active'
-		$(this).siblings().removeClass 'active'
+toggleMe = ->
+	toggle $(this)
 
-		tabName = $(this).attr 'data'
-		$(this).parent().parent().find('.panelContent').not(tabName).css 'display', 'none'
-		$(this).parent().parent().find(tabName).show()
+toggle = ($el) ->
+	unless $el.hasClass('active') or $el.hasClass('disabled')
+		$el.toggleClass 'active'
+		$el.siblings().removeClass 'active'
 
-$('#tab-trees').on 'click', toggle
-$('#tab-behaviors').on 'click', toggle
-$('#tab-custom').on 'click', toggle
-$('#tab-subjects').on 'click', toggle
+		tabName = $el.attr 'data'
+		$el.parent().parent().find('.panelContent').not(tabName).css 'display', 'none'
+		$el.parent().parent().find(tabName).show()
 
-$('#tab-treeEditor').on 'click', toggle
-$('#tab-nodeEditor').on 'click', toggle
-$('#tab-subjEditor').on 'click', toggle
+$('#tab-trees').on 'click', toggleMe
+$('#tab-behaviors').on 'click', toggleMe
+$('#tab-custom').on 'click', toggleMe
+$('#tab-subjects').on 'click', toggleMe
+
+$('#tab-treeEditor').on 'click', toggleMe
+$('#tab-nodeEditor').on 'click', toggleMe
+$('#tab-subjEditor').on 'click', toggleMe
+
+exports.activateTrees = activateTrees = ->
+	toggle $('#tab-trees')
+
+exports.activateBehaviors = activateBehaviors = ->
+	toggle $('#tab-behaviors')
+
+exports.activateCustom = activateCustom = ->
+	toggle $('#tab-custom')
+
+exports.activateSubjects = activateSubjects = ->
+	toggle $('#tab-subjects')

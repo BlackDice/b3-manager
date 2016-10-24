@@ -146,7 +146,6 @@ select {
 #panel {
 	display: block;
 	width: 350px;
-	min-width: 350px;
 	height: 100%;
 	background-color: #202020;
 	/*overflow: scroll;*/
@@ -156,7 +155,6 @@ select {
 #panelFiller {
 	display: block;
 	width: 350px;
-	min-width: 350px;
 	height: 0px;
 }
 

@@ -6,6 +6,7 @@ treeLoader = require './treeLoader'
 subjList = require './subjList'
 controls = require './controls'
 memory = require './memory'
+tabs = require './tabs'
 alertify = require('./alertify').get()
 
 cActiveTreeId = null
@@ -190,6 +191,7 @@ exports.openTree = (treeId) ->
 	return cTree
 
 openTree = (cTree, $li) ->
+	tabs.activateTrees()
 	treeLoader.loadTree cTree
 	$li.addClass 'active'
 	cActiveTree = cTree

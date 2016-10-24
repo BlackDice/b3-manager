@@ -22,7 +22,7 @@
 	box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.3);
 }
 
-.node:not(#start):not(.highlight):hover {
+.node:not(.highlight):hover {
 	cursor: pointer;
 	background-color: #3B3B3B;
 }
@@ -46,6 +46,17 @@
 	white-space: nowrap;
 	/*text-overflow: ellipsis;*/
 }
+
+.node.subtree {
+	background-color: #60628e;
+	border: 2px #6b6d9e solid;
+}
+
+.node.subtree:not(.highlight):hover {
+	background-color: #6b6d9e;
+	border: 2px #787bb7 solid;
+}
+
 
 /* tooltip */
 
