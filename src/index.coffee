@@ -1,4 +1,5 @@
 
+require './css/loader.css'
 require './css/main.css'
 require './css/tree.css'
 require './css/panel.css'
@@ -46,6 +47,8 @@ setupFirebase = (envName) ->
 		firebaseRef: firebaseRef
 
 	adapter.sync().then ->
+		$('#firebase').removeClass 'hidden'
+		$('#connectionLoader').addClass 'hidden'
 		loadData()
 
 loadData = ->
