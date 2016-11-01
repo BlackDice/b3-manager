@@ -16,6 +16,7 @@ require './css/codemirror/lint.css'
 _ = require 'lodash'
 Chief = require 'behavior3-chief'
 firebase = require 'tauros-firebase/b3manager'
+dragscroll = require 'dragscroll'
 
 tabs = require './tabs'
 alertify = require('./alertify').get()

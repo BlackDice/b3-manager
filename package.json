@@ -10,6 +10,7 @@
     "alertify.js": "^1.0.12",
     "behavior3-chief": "^0.6.0",
     "debug": "^2.2.0",
+    "dragscroll": "0.0.7",
     "jsoneditor": "^5.5.5",
     "lodash": "^4.13.1",
     "loot-diff": "^1.0.1",
