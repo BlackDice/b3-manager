@@ -186,8 +186,11 @@ registerDragAndDrop = (treantConfig, callback) ->
 		if tActiveTreeHasRoot is false
 			evt.preventDefault()
 		else if evt.target.classList.contains 'node'
-			evt.preventDefault()
-			evt.target.classList.add 'highlight'
+			# check if accepts children
+			parentCId = evt.target.getAttribute 'cnodeid'
+			if cActiveTree.canNodeAcceptChild parentCId
+				evt.preventDefault()
+				evt.target.classList.add 'highlight'
 
 	$container.on 'dragleave', (evt) ->
 		if evt.target.classList.contains 'node'
@@ -298,14 +301,7 @@ treantLoaded = ->
 			nodeMap[id].tNode = tNode
 			nodeMap[id].connection = tActiveTree.tree.connectionStore[tNode.id]
 
-	#$('#treant').children().get(0).setAttribute('nochilddrag', true)
-	#document.getElementById('treant').childNodes.setAttribute('nochilddrag', true)
-
-	nodes = document.getElementById('treant').getElementsByClassName 'node'
-	for key, node of nodes
-		if node.setAttribute
-			node.setAttribute 'nochilddrag', true
-
+	$('.node').attr 'nochilddrag', true
 	$('.node-name').wrapInner('<span></span>').textfill
 		maxFontPixels: 16
 		widthOnly: true
