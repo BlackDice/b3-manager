@@ -1337,6 +1337,8 @@
 
 		node.setAttribute('tnodeid', this.id);
 
+		node.setAttribute('nochilddrag', true);
+
 		if(this.nodeHTMLid) node.id = this.nodeHTMLid;
 
 		/////////// CREATE innerHTML //////////////

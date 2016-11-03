@@ -280,6 +280,19 @@ select {
 	display: none;
 }
 
+#reloadTreant {
+	position: absolute;
+	left: 10px;
+	bottom: 10px;
+	opacity: 0.5;
+	cursor: pointer;
+	user-select: none;
+}
+
+#reloadTreant:hover {
+	opacity: 1;
+}
+
 #memory {
 	position: absolute;
 	right: 0px;

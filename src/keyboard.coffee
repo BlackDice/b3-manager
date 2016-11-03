@@ -17,6 +17,6 @@ document.addEventListener 'keydown', (evt) ->
 			treeLoader.redrawTree false
 
 	if code.hasFocus()
-		if evt.keyCode == 83 && evt.ctrlKey
+		if evt.keyCode == 83 && evt.ctrlKey 		# CTRL+S
 			evt.preventDefault()
 			code.save()

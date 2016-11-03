@@ -200,6 +200,7 @@ openTree = (cTree, $li) ->
 	$activeTreeDesc.text cActiveTree.getDescription()
 	$activeTreeName.removeClass 'hidden'
 	$activeTreeDesc.removeClass 'hidden'
+	$('#reloadTreant').removeClass 'hidden'
 
 closeTree = ->
 	treeLoader.closeTree()
@@ -209,6 +210,7 @@ closeTree = ->
 	$activeTreeDesc.text ''
 	$activeTreeName.addClass 'hidden'
 	$activeTreeDesc.addClass 'hidden'
+	$('#reloadTreant').addClass 'hidden'
 	nodeConfig.hideEditor()
 	controls.hide()
 

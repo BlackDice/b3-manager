@@ -301,7 +301,6 @@ treantLoaded = ->
 			nodeMap[id].tNode = tNode
 			nodeMap[id].connection = tActiveTree.tree.connectionStore[tNode.id]
 
-	$('.node').attr 'nochilddrag', true
 	$('.node-name').wrapInner('<span></span>').textfill
 		maxFontPixels: 16
 		widthOnly: true
@@ -342,7 +341,10 @@ exports.getActiveCNode = -> return cActiveNode
 
 exports.getActiveTree = -> return tActiveTree
 
-exports.reload = ->
+$('#reloadTreant').on 'click', ->
+	reload()
+
+exports.reload = reload = ->
 	treeId = cActiveTree
 	closeTree()
 	loadTree treeId
