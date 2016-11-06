@@ -33,7 +33,7 @@ handleConfigChange = (data) ->
 exports.load = (cNode) ->
 	activeNode = cNode
 	nodeConfig = cNode.getBehaviorConfig()
-	defaultConfig = behaviorList.getDefaultConfig cNode.getBehaviorId()
+	defaultConfig = behaviorList.getDefaultConfig(cNode.getBehaviorId()) or {}
 	mergedConfig = _.merge {}, defaultConfig, nodeConfig
 
 	customOptions = _.assign {onChange: handleConfigChange}, options
