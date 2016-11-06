@@ -78,6 +78,7 @@ exports.handleTreeChange = handleTreeChange = (change) ->
 		children = cActiveTree.getNodeChildren cNode
 		for child in children
 			eraseChildren child
+		cActiveTree.removeChildNode cNode
 		cActiveTree.destroyNode cNode
 
 	setNodeTitle = (cNode) ->
