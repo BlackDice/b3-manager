@@ -11,7 +11,14 @@ options =
 behaviorConfig = null
 behaviorConfigEditor = null
 behaviorEditorEl = document.getElementById 'behaviorConfigEditor'
-behaviorEditorEl.addEventListener 'keydown', (evt) -> confirmChange evt, behaviorConfigEditor, behaviorConfig
+behaviorEditorEl.addEventListener 'keydown', (evt) -> confirmChange evt, behaviorConfig
+
+confirmChange = (evt, config) ->
+	if evt.keyCode is 13 # enter key
+		evt.preventDefault()
+		json = behaviorConfigEditor.get()
+		activeBehavior = behaviorList.getActiveBehavior()
+		activeBehavior.setConfig json
 
 # fill category select
 categoryList = ['action', 'condition', 'other']
@@ -77,8 +84,10 @@ $('#imageName').on 'blur', ->
 	alertify.success 'Image changed'
 
 handleConfigChange = (data) ->
-	node = data.nodes?[0]
-	if node?.parent is null then behaviorConfig.set(node.field, null) # Delete
+	json = behaviorConfigEditor.get()
+	unless json.hasOwnProperty('')
+		activeBehavior = behaviorList.getActiveBehavior()
+		activeBehavior.setConfig json
 
 getCategory = (behavior) ->
 	category = behavior.getMeta()?.category
@@ -134,10 +143,3 @@ exports.enableEditor = ->
 
 exports.disableEditor = ->
 	behaviorConfigEditor.setMode 'view'
-
-confirmChange = (evt, editor, config) ->
-	if evt.keyCode is 13 # enter key
-		evt.preventDefault()
-		json = editor.get()
-		activeBehavior = behaviorList.getActiveBehavior()
-		activeBehavior.setConfig json
