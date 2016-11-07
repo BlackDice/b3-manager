@@ -89,8 +89,8 @@ getCategory = (behavior) ->
 	return cat
 
 getImage = (behavior) ->
-	image = behavior.getMeta()?.image
-	return image
+	imageName = behavior.getMeta()?.image
+	return imageName
 
 exports.reload = reload = ->
 	load behaviorList.getActiveBehavior()
@@ -115,8 +115,9 @@ exports.load = load = (behavior) ->
 			$('#compositeConfig').removeClass 'hidden'
 			$('#maxChildren').val behavior.getMaxChildren()
 
-	image = getImage behavior
-	if image then $('#imageName').text image
+	imageName = getImage behavior
+	unless imageName then imageName = ''
+	$('#imageName').text imageName
 
 	customOptions = _.assign {onChange: handleConfigChange}, options
 	unless behaviorConfigEditor

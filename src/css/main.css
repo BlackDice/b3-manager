@@ -235,10 +235,6 @@ select {
 	font-style: italic;
 }
 
-#typeSelect {
-	margin-top: 18px;
-}
-
 #behaviorName:hover {
 	background-color: #181818;
 }
@@ -342,6 +338,7 @@ select {
 
 .underlined {
 	border-bottom: 2px #282828 solid;
+	padding-top: 10px;
 }
 
 input {
