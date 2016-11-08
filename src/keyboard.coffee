@@ -1,10 +1,15 @@
 
 code = require './code'
 treeLoader = require './treeLoader'
+
 idsOn = false
+ctrlDown = false
 
 exports.areIDSon = areIDSon = ->
 	return idsOn
+
+exports.isCtrlDown = isCtrlDown = ->
+	return ctrlDown
 
 # keyboard controls: tab to close panel
 tab = 9
@@ -35,3 +40,10 @@ document.addEventListener 'keydown', (evt) ->
 		else
 			$('.chiefId').removeClass 'hidden'
 			idsOn = true
+
+	if evt.ctrlKey
+		ctrlDown = true
+
+document.addEventListener 'keyup', (evt) ->
+	if evt.ctrlKey is false
+		ctrlDown = false

@@ -56,6 +56,7 @@ clearDisables = ->
 clearHighlight = ->
 	if highlightedEl
 		highlightedEl.classList.remove 'highlight'
+		highlightedEl.classList.remove 'highlightOrange'
 
 registerClick = (treantConfig, callback) ->
 	$container = $(treantConfig.container)
@@ -151,6 +152,7 @@ registerRightClick = (treantConfig, callback) ->
 
 		if tActiveNodeId != tNodeId
 			if tActiveNodeId then tNode.classList.remove 'highlight'
+			if tActiveNodeId then tNode.classList.remove 'highlightOrange'
 			highlightedEl = tNode
 			tActiveNodeId = tNodeId
 			tNode.classList.add 'highlight'
@@ -166,6 +168,7 @@ registerRightClick = (treantConfig, callback) ->
 			tActiveNodeId = null
 			nodeConfig.hideEditor()
 			tNode.classList.remove 'highlight'
+			tNode.classList.remove 'highlightOrange'
 		$contextmenu.hide()
 
 	window.addEventListener 'resize', (evt) ->
@@ -191,11 +194,15 @@ registerDragAndDrop = (treantConfig, callback) ->
 			parentCId = evt.target.getAttribute 'cnodeid'
 			if cActiveTree.canNodeAcceptChild parentCId
 				evt.preventDefault()
-				evt.target.classList.add 'highlight'
+				if keyboard.isCtrlDown()
+					evt.target.classList.add 'highlightOrange'
+				else
+					evt.target.classList.add 'highlight'
 
 	$container.on 'dragleave', (evt) ->
 		if evt.target.classList.contains 'node'
 			evt.target.classList.remove 'highlight'
+			evt.target.classList.remove 'highlightOrange'
 
 	$container.on 'drop', (evt) ->
 		if tActiveTreeHasRoot is false
@@ -204,20 +211,26 @@ registerDragAndDrop = (treantConfig, callback) ->
 			callback {action: 'createRoot', behaviorId: obj.behaviorId}
 
 		else if evt.target.classList.contains 'node'
+
 			evt.preventDefault()
 			evt.target.classList.remove 'highlight'
+			evt.target.classList.remove 'highlightOrange'
 
 			obj = JSON.parse evt.originalEvent.dataTransfer.getData 'text'
 			parentCId = evt.target.getAttribute 'cnodeid'
 			parentTId = parseInt evt.target.getAttribute 'tnodeid'
 
-			switch obj.type
-				when 'add'
-					callback {action: 'addNode', behaviorId: obj.behaviorId, parentCId: parentCId, parentTId: parentTId}
-				when 'change'
-					callback {action: 'changeParent', tNodeId: obj.tid, cNodeId: obj.cid, parentTId: parentTId, parentCId: parentCId}
-				when 'addSubtree'
-					callback {action: 'addSubtree', treeId: obj.treeId, parentCId: parentCId, parentTId: parentTId}
+			if keyboard.isCtrlDown()
+				# change node type
+			else
+				# add node
+				switch obj.type
+					when 'add'
+						callback {action: 'addNode', behaviorId: obj.behaviorId, parentCId: parentCId, parentTId: parentTId}
+					when 'change'
+						callback {action: 'changeParent', tNodeId: obj.tid, cNodeId: obj.cid, parentTId: parentTId, parentCId: parentCId}
+					when 'addSubtree'
+						callback {action: 'addSubtree', treeId: obj.treeId, parentCId: parentCId, parentTId: parentTId}
 
 	$('.node').on 'dragstart', (evt) -> dragNode(evt)
 

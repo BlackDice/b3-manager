@@ -3,6 +3,7 @@
 playing = false
 tickInterval = 100
 tickIntervalRef = null
+alertify = require('./alertify').get()
 
 $('#play').on 'click', ->
 	if playing is false
@@ -18,7 +19,7 @@ $('#play').on 'click', ->
 		$(this).removeClass('stop').addClass('play')
 		clearInterval tickIntervalRef
 		activeSubject.getMemory().forget()
-		console.log 'memory cleared'
+		alertify.success 'Memory cleared'
 
 $('#step').on 'click', ->
 	activeChief.tick()

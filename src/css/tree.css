@@ -36,6 +36,11 @@
 	border: 2px #495769 solid;
 }
 
+.node.highlightOrange {
+	background: #524226;
+	border: 2px #5E4A23 solid;
+}
+
 .node .node-name {
 	font-weight: bold;
 	font-size: 12pt;

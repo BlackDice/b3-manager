@@ -46,7 +46,9 @@ toggleInput = ->
 dragTree = (evt) ->
 	transfer = JSON.stringify { type: 'addSubtree', treeId: evt.target.getAttribute 'data' }
 	evt.originalEvent.dataTransfer.setData 'text/plain', transfer
-	evt.target.getElementsByClassName('listDescription')[0].classList.add 'hidden'
+	list = evt.target.getElementsByClassName('listDescription')
+	if list.length > 0
+		list[0].classList.add 'hidden'
 
 exports.reload = reload = ->
 	loadTrees()

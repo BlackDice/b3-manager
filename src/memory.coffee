@@ -32,7 +32,6 @@ confirmChange = (evt, editor, memory) ->
 		for key, val of json
 			mem = memory.get(key)
 			if mem is val then continue # skip same
-			console.log key, val
 			if mem? then memory.set key, val # change
 			else memory.set key, val # add
 
