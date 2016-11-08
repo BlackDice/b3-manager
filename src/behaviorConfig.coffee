@@ -107,6 +107,7 @@ exports.reload = reload = ->
 exports.load = load = (behavior) ->
 	behaviorConfig = behavior.getConfig()
 	$('#behaviorName').text behavior.getName()
+	$('#behaviorId').text behavior.getId()
 	$('#behaviorDescription').text behavior.getDescription() or '...'
 
 	type = behavior.getType().toLowerCase()

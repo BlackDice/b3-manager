@@ -72,6 +72,7 @@ exports.load = loadTrees = (chief) ->
 		description = cTree.getDescription()
 		if description
 			$description = $("<span class='listDescription'>" + description + '</span>').appendTo $li
+		$("<span class='chiefId hidden'>" + cTree.getId() + '</span>').appendTo $li
 
 exports.handleTreeChange = handleTreeChange = (change) ->
 

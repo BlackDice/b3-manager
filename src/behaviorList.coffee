@@ -116,6 +116,7 @@ exports.load = loadBehaviors = (chief) ->
 				$li.on 'click', toggleBehavior(behavior, $li)
 				$erase = $("<i>delete</i>").addClass('material-icons').appendTo($li)
 				$erase.on 'click', removeBehavior(behavior.getId())
+			$("<span class='chiefId hidden'>" + behavior.getId() + '</span>').appendTo $li
 
 addToList = (behavior, imageName, list) ->
 	$li = $('<li></li>').attr('draggable', 'true').appendTo list

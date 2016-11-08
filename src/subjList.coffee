@@ -18,9 +18,11 @@ exports.load = loadSubjects = (chief) ->
 	cSubjectList = activeChief.listSubjects()
 	$subjectList.empty()
 	for subject in cSubjectList
-		$li = $('<li>' + subject.getId() + '</li>').appendTo $subjectList
-		$li.attr 'data', subject.getId()
+		id = subject.getId()
+		$li = $('<li>' + id + '</li>').appendTo $subjectList
+		$li.attr 'data', id
 		$li.on 'click', toggleSubject(subject, $li)
+		$("<span class='chiefId hidden'>" + id + '</span>').appendTo $li
 
 window.createSubject = ->
 	cActiveTree = treeList.getCActiveTree()

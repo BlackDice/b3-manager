@@ -1333,6 +1333,11 @@
 
 		if(this.cNodeId) {
 			node.setAttribute('cnodeid', this.cNodeId);
+			var idLabel = document.createElement('span');
+			idLabel.classList.add('chiefId');
+			idLabel.classList.add('hidden');
+			idLabel.innerHTML = this.cNodeId;
+			node.appendChild(idLabel);
 		}
 
 		node.setAttribute('tnodeid', this.id);

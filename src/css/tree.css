@@ -80,6 +80,19 @@
 	display: block;
 }
 
+/* ids */
+
+.node .chiefId {
+	left: 50%;
+	top: 0px;
+	margin-left: -50%;
+	background: none !important;
+}
+
+.node.subtree .chiefId {
+	color: #fff;
+}
+
 /* status icons */
 
 .node .node-status {
