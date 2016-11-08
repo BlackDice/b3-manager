@@ -7,6 +7,7 @@ treeList = require './treeList'
 nodeConfig = require './nodeConfig'
 behaviorList = require './behaviorList'
 alertify = require('./alertify').get()
+keyboard = require './keyboard'
 
 treeConfig = {
 	container: '#treant',
@@ -304,6 +305,9 @@ treantLoaded = ->
 	$('.node-name').wrapInner('<span></span>').textfill
 		maxFontPixels: 16
 		widthOnly: true
+
+	if keyboard.areIDSon()
+		$('#treant .chiefId').removeClass 'hidden'
 
 nodeAdded = (cNode, tNode, tNodeDefinition) ->
 	# register events

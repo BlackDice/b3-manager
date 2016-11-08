@@ -3,6 +3,9 @@ code = require './code'
 treeLoader = require './treeLoader'
 idsOn = false
 
+exports.areIDSon = areIDSon = ->
+	return idsOn
+
 # keyboard controls: tab to close panel
 tab = 9
 document.addEventListener 'keydown', (evt) ->
