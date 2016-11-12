@@ -82,6 +82,9 @@ exports.handleTreeChange = handleTreeChange = (change) ->
 		children = cActiveTree.getNodeChildren cNode
 		for child in children
 			eraseChildren child
+		eraseNode cNode
+
+	eraseNode = (cNode) ->
 		cActiveTree.removeChildNode cNode
 		cActiveTree.destroyNode cNode
 
@@ -158,6 +161,40 @@ exports.handleTreeChange = handleTreeChange = (change) ->
 				treeLoader.redrawTree()
 			else
 				alertify.error 'Node does not accept children'
+
+		when 'replaceNode'
+			cOldNodeId = change.parentCId
+			cOldNode = cActiveTree.getNode cOldNodeId
+			cOldNodeParentId = cOldNode.getParentId()
+			newBehaviorId = change.behaviorId
+			behavior = activeChief.getBehavior newBehaviorId
+
+			cNode = cActiveTree.createNode change.behaviorId
+			cNodeId = cNode.getId()
+			setNodeTitle cNode
+
+			children = cActiveTree.getNodeChildren cOldNode
+
+			# test if node accepts that many children, throw error if not
+			maxChildren = cActiveTree.getBehaviorMaxChildren newBehaviorId
+			if maxChildren < children.length
+				alertify.error 'Behavior accepts only ' + maxChildren + ' children'
+				return
+
+			for child in children
+				child.changeParent cNodeId
+
+			# if root node, change root, otherwise erase
+			if cOldNodeParentId == cActiveTree.getId()
+				cActiveTree.setRootNode cNode
+				cActiveTree.destroyNode cOldNode
+			else
+				cOldNodeIndex = cOldNode.getChildIndex()
+				cActiveTree.addNodeChild cOldNodeParentId, cNode
+				cNode.changeChildIndex cOldNodeIndex
+				eraseNode cOldNode
+
+			treeLoader.reload()
 
 		when 'showNodeMemory'
 			activeSubject = subjList.getActiveSubject()

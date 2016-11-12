@@ -68,6 +68,8 @@ if navigator.onLine
 			setupFirebase env
 else
 	alertify.error 'Offline mode'
+	$('#firebase').removeClass 'hidden'
+	$('#connectionLoader').addClass 'hidden'
 	$('#fbSelect').append $('<option>',
 		text: 'Offline'
 	)

@@ -194,10 +194,12 @@ registerDragAndDrop = (treantConfig, callback) ->
 			parentCId = evt.target.getAttribute 'cnodeid'
 			if cActiveTree.canNodeAcceptChild parentCId
 				evt.preventDefault()
-				if keyboard.isCtrlDown()
+				if evt.ctrlKey
 					evt.target.classList.add 'highlightOrange'
+					evt.target.classList.remove 'highlight'
 				else
 					evt.target.classList.add 'highlight'
+					evt.target.classList.remove 'highlightOrange'
 
 	$container.on 'dragleave', (evt) ->
 		if evt.target.classList.contains 'node'
@@ -220,8 +222,9 @@ registerDragAndDrop = (treantConfig, callback) ->
 			parentCId = evt.target.getAttribute 'cnodeid'
 			parentTId = parseInt evt.target.getAttribute 'tnodeid'
 
-			if keyboard.isCtrlDown()
+			if evt.ctrlKey
 				# change node type
+				callback {action: 'replaceNode', behaviorId: obj.behaviorId, parentCId: parentCId, parentTId: parentTId}
 			else
 				# add node
 				switch obj.type
