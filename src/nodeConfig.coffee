@@ -1,6 +1,7 @@
 
 _ = require 'lodash'
 diff = require 'loot-diff'
+alertify = require('./alertify').get()
 treeLoader = require './treeLoader'
 behaviorList = require './behaviorList'
 
@@ -22,6 +23,7 @@ confirmChange = (evt) ->
 		json = nodeConfigEditor.get()
 		diffObject = diff defaultConfig, json
 		activeNode.setBehaviorConfig diffObject
+		alertify.success 'Config changed'
 
 handleConfigChange = (data) ->
 	node = data.nodes?[0]

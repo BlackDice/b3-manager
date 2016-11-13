@@ -19,6 +19,7 @@ confirmChange = (evt, config) ->
 		json = behaviorConfigEditor.get()
 		activeBehavior = behaviorList.getActiveBehavior()
 		activeBehavior.setConfig json
+		alertify.success 'Config changed'
 
 # fill category select
 categoryList = ['action', 'condition', 'other']
