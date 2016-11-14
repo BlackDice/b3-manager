@@ -57,6 +57,11 @@
 	border: 2px #6b6d9e solid;
 }
 
+.node.erased {
+	background-color: #8a3814;
+	border: 2px #a54115 solid;
+}
+
 .node.subtree:not(.highlight):hover {
 	background-color: #6b6d9e;
 	border: 2px #787bb7 solid;

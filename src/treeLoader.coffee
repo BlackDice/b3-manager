@@ -251,21 +251,26 @@ unregisterAllEvents = ->
 
 createTNode = (cNode) ->
 	behavior = activeChief.getBehavior cNode.getBehaviorId()
-	if behavior.getType() is 'SUBTREE'
-		imageName = 'subtree'
-		className = 'subtree'
-	else
-		if behavior.isNative
-			imageName = cNode.getTitle()?.toLowerCase()
+	if behavior
+		if behavior.getType() is 'SUBTREE'
+			imageName = 'subtree'
+			className = 'subtree'
 		else
-			meta = behavior.getMeta()
-			imageName = 'other'
-			if meta
-				if meta.image then imageName = meta.image
-				else if meta.category then imageName = meta.category
-		className = 'none'
+			if behavior.isNative
+				imageName = cNode.getTitle()?.toLowerCase()
+			else
+				meta = behavior.getMeta()
+				imageName = 'other'
+				if meta
+					if meta.image then imageName = meta.image
+					else if meta.category then imageName = meta.category
+			className = 'none'
+		description = behavior.getDescription()
+	else
+		imageName = 'error'
+		description = 'Erased'
+		className = 'erased'
 
-	description = behavior.getDescription()
 	name = cNode.getTitle()
 	if name.length > 15
 		description = name + ': ' + description
@@ -384,12 +389,14 @@ exports.loadTree = loadTree = (cTree) ->
 	for cNode in cNodes
 		# take names from behaviors
 		behavior = activeChief.getBehavior cNode.getBehaviorId()
-		unless behavior.getType() is 'SUBTREE'
-			cNode.setTitle behavior.getName()
+		if behavior
+			unless behavior.getType() is 'SUBTREE'
+				cNode.setTitle behavior.getName()
+		else
+			alertify.error('Behavior is missing, please remove node: ' + cNode.getTitle())
 
 		# create treant nodes
 		nodeMap[cNode.getId()] = createTNode cNode
-		cNode.childIndex = cNode.getCh
 
 	# set parent values for everything but root
 	for cNode in cNodes
