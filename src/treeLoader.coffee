@@ -15,6 +15,7 @@ treeConfig = {
 	nodeAlign: 'TOP',
 	levelSeparation: 50,
 	siblingSeparation: 50,
+	padding: 50,
 	node: {
 		collapsable: true
 	}
