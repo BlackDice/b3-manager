@@ -390,7 +390,11 @@ exports.loadTree = loadTree = (cTree) ->
 		# take names from behaviors
 		behavior = activeChief.getBehavior cNode.getBehaviorId()
 		if behavior
-			unless behavior.getType() is 'SUBTREE'
+			if behavior.getType() is 'SUBTREE'
+				subtreeId = cNode.getBehaviorConfig('treeId').treeId
+				subTree = activeChief.getTree(subtreeId)
+				cNode.setTitle subTree.getName()
+			else
 				cNode.setTitle behavior.getName()
 		else
 			alertify.error('Behavior is missing, please remove node: ' + cNode.getTitle())
@@ -402,7 +406,7 @@ exports.loadTree = loadTree = (cTree) ->
 	for cNode in cNodes
 		cParentNodeId = cNode.getParentId()
 		tNode = nodeMap[cNode.getId()]
-		if cParentNodeId.indexOf('Tree') == -1
+		if cParentNodeId != cActiveTree.getId()
 			tParentNode = nodeMap[cParentNodeId]
 			tNode.parent = tParentNode
 
