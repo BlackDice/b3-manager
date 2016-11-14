@@ -191,16 +191,18 @@ registerDragAndDrop = (treantConfig, callback) ->
 		if tActiveTreeHasRoot is false
 			evt.preventDefault()
 		else if evt.target.classList.contains 'node'
-			# check if accepts children
 			parentCId = evt.target.getAttribute 'cnodeid'
-			if cActiveTree.canNodeAcceptChild parentCId
+
+			if evt.ctrlKey
+				evt.target.classList.add 'highlightOrange'
+				evt.target.classList.remove 'highlight'
 				evt.preventDefault()
-				if evt.ctrlKey
-					evt.target.classList.add 'highlightOrange'
-					evt.target.classList.remove 'highlight'
-				else
+			else
+				evt.target.classList.remove 'highlightOrange'
+				# check if accepts children
+				if cActiveTree.canNodeAcceptChild parentCId
 					evt.target.classList.add 'highlight'
-					evt.target.classList.remove 'highlightOrange'
+					evt.preventDefault()
 
 	$container.on 'dragleave', (evt) ->
 		if evt.target.classList.contains 'node'
