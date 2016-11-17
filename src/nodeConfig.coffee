@@ -43,6 +43,7 @@ exports.load = (cNode) ->
 		nodeConfigEditor = new JSONEditor nodeConfigEditorEl, customOptions
 		nodeConfigEditor.set mergedConfig
 	else nodeConfigEditor.set mergedConfig
+	return mergedConfig
 
 exports.positionEditor = (element) ->
 	node = element.getBoundingClientRect()

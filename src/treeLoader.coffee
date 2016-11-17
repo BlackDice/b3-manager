@@ -59,6 +59,22 @@ clearHighlight = ->
 		highlightedEl.classList.remove 'highlight'
 		highlightedEl.classList.remove 'highlightOrange'
 
+registerHover = (treantConfig) ->
+	$container = $(treantConfig.container)
+	$('.node').on 'mouseenter', (evt) ->
+		cNodeId = $(this).attr 'cnodeid'
+		tNodeId = $(this).attr 'tnodeid'
+		cNode = cActiveTree.getNode cNodeId
+		tNode = tActiveTree.getNode(tNodeId).nodeDOM
+		config = nodeConfig.load cNode
+		unless _.isEmpty config
+			nodeConfig.positionEditor tNode
+			nodeConfig.showEditor()
+
+	$('.node').on 'mouseleave', (evt) ->
+		unless cActiveNode
+			nodeConfig.hideEditor()
+
 registerClick = (treantConfig, callback) ->
 	$container = $(treantConfig.container)
 	$container.on 'click', (evt) ->
@@ -74,6 +90,7 @@ registerClick = (treantConfig, callback) ->
 			else if behavior.isNative is false
 				behaviorList.openBehavior behavior
 		else
+			cActiveNode = null
 			tActiveNodeId = null
 			nodeConfig.hideEditor()
 			memory.disable '#tab-nodeEditor'
@@ -167,6 +184,7 @@ registerRightClick = (treantConfig, callback) ->
 		else
 			highlightedEl = null
 			tActiveNodeId = null
+			cActiveNode = null
 			nodeConfig.hideEditor()
 			tNode.classList.remove 'highlight'
 			tNode.classList.remove 'highlightOrange'
@@ -425,6 +443,7 @@ exports.loadTree = loadTree = (cTree) ->
 	registerDragAndDrop config, handleTreeChange
 	registerRightClick config, handleTreeChange
 	registerClick config, handleTreeChange
+	registerHover config
 
 exports.closeTree = closeTree = ->
 	nodeMap = {}
