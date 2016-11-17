@@ -166,13 +166,23 @@ exports.handleTreeChange = handleTreeChange = (change) ->
 			cOldNodeId = change.parentCId
 			cOldNode = cActiveTree.getNode cOldNodeId
 			cOldNodeParentId = cOldNode.getParentId()
-			newBehaviorId = change.behaviorId
-			behavior = activeChief.getBehavior newBehaviorId
 
-			cNode = cActiveTree.createNode change.behaviorId
+			if change.behaviorId
+				# behavior
+				newBehaviorId = change.behaviorId
+				behavior = activeChief.getBehavior newBehaviorId
+				cNode = cActiveTree.createNode newBehaviorId
+				setNodeTitle cNode
+			else if change.treeId
+				# subtree
+				cTreeId = change.treeId
+				cTree = activeChief.getTree cTreeId
+				treeName = cTree.getName()
+				cNode = cActiveTree.createNode 'Native-Subtree'
+				cNode.setBehaviorConfig { treeId: cTreeId }
+				cNode.setTitle treeName
+
 			cNodeId = cNode.getId()
-			setNodeTitle cNode
-
 			children = cActiveTree.getNodeChildren cOldNode
 
 			# test if node accepts that many children, throw error if not

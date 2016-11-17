@@ -226,8 +226,12 @@ registerDragAndDrop = (treantConfig, callback) ->
 			parentTId = parseInt evt.target.getAttribute 'tnodeid'
 
 			if evt.ctrlKey
-				# change node type
-				callback {action: 'replaceNode', behaviorId: obj.behaviorId, parentCId: parentCId, parentTId: parentTId}
+				if obj.treeId
+					# replace subtree
+					callback {action: 'replaceNode', treeId: obj.treeId, parentCId: parentCId, parentTId: parentTId}
+				else
+					# replace behavior
+					callback {action: 'replaceNode', behaviorId: obj.behaviorId, parentCId: parentCId, parentTId: parentTId}
 			else
 				# add node
 				switch obj.type
