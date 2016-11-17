@@ -123,6 +123,7 @@ exports.load = loadBehaviors = (chief) ->
 addToList = (behavior, imageName, list) ->
 	$li = $('<li></li>').attr('draggable', 'true').appendTo list
 	$img = $('<span></span>').addClass('behaviorIcon').appendTo $li
+	$replace = $("<i>swap_horiz</i>").addClass('material-icons replace md-36 silver hidden').prependTo($li)
 
 	url = '/assets/behaviors/' + imageName + '.png'
 	$img.css 'background-image', "url('" + url + "')"
@@ -130,6 +131,11 @@ addToList = (behavior, imageName, list) ->
 	$label = $("<span class='behaviorLabel'>" + behavior.name + '</span>').appendTo $li
 	$li.attr 'data', behavior.getId()
 	$li.on 'dragstart', (evt) -> dragBehavior(evt)
+	$li.on 'drag', (evt) ->
+		if evt.ctrlKey
+			$(this).find('.replace').removeClass 'hidden'
+		else
+			$(this).find('.replace').addClass 'hidden'
 	description = behavior.getDescription()
 	if description
 		$description = $("<span class='listDescription'>" + description + '</span>').appendTo $li

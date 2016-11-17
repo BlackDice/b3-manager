@@ -318,6 +318,14 @@ select {
 	border-bottom: 1px #282828 solid;
 }
 
+.white {
+	color: #fff !important;
+}
+
+.silver {
+	color: #c5c5c5 !important;
+}
+
 .collapsed {
     flex-grow: 0.001 !important;
 }

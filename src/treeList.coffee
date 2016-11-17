@@ -68,8 +68,16 @@ exports.load = loadTrees = (chief) ->
 		$li = $('<li>' + cTree.getName() + '</li>').attr('draggable', 'true').appendTo $treeList
 		$erase = $("<i>delete</i>").addClass('material-icons').appendTo($li)
 		$erase.on 'click', removeTree(cTree.getId())
+		$replace = $("<i>swap_horiz</i>").addClass('material-icons replace md-36 silver hidden').prependTo($li)
 		$li.attr 'data', cTree.getId()
-		$li.on 'dragstart', (evt) -> dragTree(evt)
+		$li.on 'dragstart', (evt) ->
+			dragTree(evt)
+		$li.on 'drag', (evt) ->
+			if evt.ctrlKey
+				$(this).find('.replace').removeClass 'hidden'
+			else
+				$(this).find('.replace').addClass 'hidden'
+
 		$li.on 'click', toggleTree(cTree, $li)
 		description = cTree.getDescription()
 		if description

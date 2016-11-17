@@ -83,6 +83,11 @@
 	color: #c5c5c5;
 }
 
+.replace {
+	float: left !important;
+	margin-right: 5px;
+}
+
 .behaviorLabel {
 	max-width: 210px;
 	display: inline-block;
