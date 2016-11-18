@@ -54,7 +54,7 @@ removeBehavior = (cBehaviorId) ->
 dragBehavior = (evt) ->
 	transfer = JSON.stringify { type: 'add', behaviorId: evt.target.getAttribute 'data' }
 	evt.originalEvent.dataTransfer.setData 'text/plain', transfer
-	list = evt.target.getElementsByClassName('listDescription')
+	list = evt.target.getElementsByClassName 'listDescription'
 	if list.length > 0
 		list[0].classList.add 'hidden'
 
@@ -115,7 +115,6 @@ exports.load = loadBehaviors = (chief) ->
 				else
 					imageName = 'other'
 				$li = addToList behavior, imageName, $ulCustom
-				$li.on 'click', toggleBehavior(behavior, $li)
 				$erase = $("<i>delete</i>").addClass('material-icons').appendTo($li)
 				$erase.on 'click', removeBehavior(behavior.getId())
 			$("<span class='chiefId hidden'>" + behavior.getId() + '</span>').appendTo $li
@@ -128,7 +127,7 @@ addToList = (behavior, imageName, list) ->
 	url = '/assets/behaviors/' + imageName + '.png'
 	$img.css 'background-image', "url('" + url + "')"
 
-	$label = $("<span class='behaviorLabel'>" + behavior.name + '</span>').appendTo $li
+	$("<span class='behaviorLabel'>" + behavior.name + '</span>').appendTo $li
 	$li.attr 'data', behavior.getId()
 	$li.on 'dragstart', (evt) -> dragBehavior(evt)
 	$li.on 'drag', (evt) ->
@@ -136,13 +135,14 @@ addToList = (behavior, imageName, list) ->
 			$(this).find('.replace').removeClass 'hidden'
 		else
 			$(this).find('.replace').addClass 'hidden'
+	$li.on 'mouseup', toggleBehavior(behavior, $li)
 	description = behavior.getDescription()
 	if description
 		$description = $("<span class='listDescription'>" + description + '</span>').appendTo $li
 	return $li
 
 toggleBehavior = (behavior, $li) ->
-	return ->
+	return (evt) ->
 		loadingBehaviorId = behavior.getId()
 		$customList.find('li').removeClass 'active' # clear all
 		# clicking the same item

@@ -46,7 +46,7 @@ toggleInput = ->
 dragTree = (evt) ->
 	transfer = JSON.stringify { type: 'addSubtree', treeId: evt.target.getAttribute 'data' }
 	evt.originalEvent.dataTransfer.setData 'text/plain', transfer
-	list = evt.target.getElementsByClassName('listDescription')
+	list = evt.target.getElementsByClassName 'listDescription'
 	if list.length > 0
 		list[0].classList.add 'hidden'
 
@@ -70,15 +70,13 @@ exports.load = loadTrees = (chief) ->
 		$erase.on 'click', removeTree(cTree.getId())
 		$replace = $("<i>swap_horiz</i>").addClass('material-icons replace md-36 silver hidden').prependTo($li)
 		$li.attr 'data', cTree.getId()
-		$li.on 'dragstart', (evt) ->
-			dragTree(evt)
+		$li.on 'dragstart', (evt) -> dragTree(evt)
 		$li.on 'drag', (evt) ->
 			if evt.ctrlKey
 				$(this).find('.replace').removeClass 'hidden'
 			else
 				$(this).find('.replace').addClass 'hidden'
-
-		$li.on 'click', toggleTree(cTree, $li)
+		$li.on 'mouseup', toggleTree(cTree, $li)
 		description = cTree.getDescription()
 		if description
 			$description = $("<span class='listDescription'>" + description + '</span>').appendTo $li
