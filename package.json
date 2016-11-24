@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "alertify.js": "^1.0.12",
-    "behavior3-chief": "^0.6.2",
+    "behavior3-chief": "^0.7.1",
     "debug": "^2.2.0",
     "jsoneditor": "^5.5.5",
     "lodash": "^4.13.1",
