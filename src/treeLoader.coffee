@@ -417,7 +417,10 @@ exports.loadTree = loadTree = (cTree) ->
 			if behavior.getType() is 'SUBTREE'
 				subtreeId = cNode.getBehaviorConfig('treeId').treeId
 				subTree = activeChief.getTree(subtreeId)
-				cNode.setTitle subTree.getName()
+				if subTree
+					cNode.setTitle subTree.getName()
+				else
+					alertify.error('Subtree is missing, please remove node: ' + cNode.getTitle())
 			else
 				cNode.setTitle behavior.getName()
 		else
